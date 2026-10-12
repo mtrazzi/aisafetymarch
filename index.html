@@ -91,20 +91,10 @@
   h1 .line { display: block; }
   h1 .red { color: var(--red); }
 
-  .intro {
-    max-width: 620px;
-    margin-top: 2rem;
-    font-size: 1.1rem;
-    line-height: 1.65;
-    color: #333;
-  }
-  .intro p + p { margin-top: 0.9rem; }
-  .intro strong { color: var(--black); }
-
   .cities {
     margin-top: 3.5rem;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 380px));
+    grid-template-columns: repeat(2, minmax(0, 320px));
     gap: 1.5rem;
     width: 100%;
     justify-content: center;
@@ -134,15 +124,6 @@
     font-size: 0.85rem;
     color: var(--red);
   }
-  .schedule {
-    list-style: none;
-    margin-top: 1.25rem;
-    text-align: left;
-    font-size: 0.92rem;
-    line-height: 1.45;
-  }
-  .schedule li { display: grid; grid-template-columns: 3.2rem 1fr; gap: 0.5rem; padding: 0.4rem 0; border-top: 1px solid rgba(17,17,17,0.15); }
-  .schedule b { font-family: var(--font-mono); font-weight: 600; }
   .city .cta {
     display: inline-block;
     margin-top: 1.25rem;
@@ -167,17 +148,7 @@
 
   @media (max-width: 640px) {
     .topbar { padding: 1rem; }
-    .intro {
-    max-width: 620px;
-    margin-top: 2rem;
-    font-size: 1.1rem;
-    line-height: 1.65;
-    color: #333;
-  }
-  .intro p + p { margin-top: 0.9rem; }
-  .intro strong { color: var(--black); }
-
-  .cities { grid-template-columns: 1fr; }
+    .cities { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -193,28 +164,15 @@
       <span class="line red">an AI Treaty</span>
     </h1>
 
-    <div class="intro">
-      <p>On November 18, Trump will travel to China to meet Xi Jinping at the APEC summit.</p>
-      <p>It's time they make a deal to stop the AI arms race, or we might all die.</p>
-      <p>So on Saturday Nov 14, we are marching in SF, DC and NYC with one demand: <strong>governments should start negotiating an AI Treaty that would ban the development of more powerful AI systems.</strong></p>
-    </div>
-
     <div class="cities">
       <a class="city" href="https://partiful.com/e/IKicFMI9yxmA0qZOJN0E" target="_blank" rel="noopener">
         <div class="name">San Francisco</div>
         <div class="when">Sat, Nov 14 &middot; 12 PM &rarr; 3 PM</div>
-        <ul class="schedule">
-          <li><b>12:00</b> Rally at OpenAI (1455 3rd St), chalking</li>
-          <li><b>12:30</b> Speeches &amp; chants</li>
-          <li><b>1:00</b> Walk to Veterans Building (401 Van Ness Ave), where the UN Charter was signed</li>
-          <li><b>2:00</b> Rally at Veterans Building</li>
-          <li><b>2:30</b> Afterparty at Civic Center Plaza</li>
-        </ul>
         <div class="cta">RSVP &rarr;</div>
       </a>
       <a class="city" href="https://partiful.com/e/WMRLtTLXNxQeircVi4Cv" target="_blank" rel="noopener">
         <div class="name">Washington, DC</div>
-        <div class="when">Sat, Nov 14</div>
+        <div class="when">Sat, Nov 14 &middot; 11 AM &rarr; 1 PM</div>
         <div class="cta">RSVP &rarr;</div>
       </a>
     </div>
