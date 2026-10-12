@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Safety March</title>
+<meta name="description" content="March for AI safety in San Francisco and Washington, DC.">
+<meta property="og:title" content="AI Safety March">
+<meta property="og:description" content="March for AI safety in San Francisco and Washington, DC.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #111111;
+    --paper: #f2eee6;
+    --red: #d62828;
+    --gray: #6b6b6b;
+    --font-display: 'Archivo Black', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  ::selection { background: var(--red); color: var(--paper); }
+
+  body {
+    background: var(--paper);
+    color: var(--black);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+  }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 2rem;
+    border-bottom: 3px solid var(--black);
+  }
+  .wordmark {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .wordmark span { color: var(--red); }
+
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 5rem 1rem;
+  }
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 1.5rem;
+  }
+  h1 {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-size: clamp(3rem, 11vw, 8rem);
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+  }
+  h1 .line { display: block; }
+  h1 .red { color: var(--red); }
+
+  .cities {
+    margin-top: 3.5rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 320px));
+    gap: 1.5rem;
+    width: 100%;
+    justify-content: center;
+  }
+  .city {
+    display: block;
+    text-decoration: none;
+    color: var(--black);
+    border: 3px solid var(--black);
+    background: var(--paper);
+    padding: 2rem 1.5rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .city:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 6px 6px 0 var(--black);
+  }
+  .city .name {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    text-transform: uppercase;
+  }
+  .city .cta {
+    display: inline-block;
+    margin-top: 1.25rem;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: var(--red);
+    color: var(--paper);
+    padding: 0.8rem 1.4rem;
+  }
+
+  footer {
+    border-top: 3px solid var(--black);
+    padding: 1.2rem 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--gray);
+    text-align: center;
+  }
+
+  @media (max-width: 640px) {
+    .topbar { padding: 1rem; }
+    .cities { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wordmark">AI Safety <span>March</span></div>
+  </header>
+
+  <main>
+    <div class="kicker">Two cities. One demand.</div>
+    <h1>
+      <span class="line">March for</span>
+      <span class="line red">AI Safety</span>
+    </h1>
+
+    <div class="cities">
+      <a class="city" href="https://partiful.com/e/IKicFMI9yxmA0qZOJN0E" target="_blank" rel="noopener">
+        <div class="name">San Francisco</div>
+        <div class="cta">RSVP &rarr;</div>
+      </a>
+      <a class="city" href="https://partiful.com/e/WMRLtTLXNxQeircVi4Cv" target="_blank" rel="noopener">
+        <div class="name">Washington, DC</div>
+        <div class="cta">RSVP &rarr;</div>
+      </a>
+    </div>
+  </main>
+
+  <footer>Pick your city and RSVP on Partiful.</footer>
+</body>
+</html>
