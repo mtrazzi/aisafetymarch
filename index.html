@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Safety March</title>
-<meta name="description" content="March for AI safety in San Francisco and Washington, DC.">
-<meta property="og:title" content="AI Safety March">
-<meta property="og:description" content="March for AI safety in San Francisco and Washington, DC.">
+<title>AI Treaty March</title>
+<meta name="description" content="March for an AI Treaty. Saturday, Nov 14 in San Francisco and Washington, DC.">
+<meta property="og:title" content="AI Treaty March">
+<meta property="og:description" content="March for an AI Treaty. Saturday, Nov 14 in San Francisco and Washington, DC.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aitreatymarch.org">
 <link rel="canonical" href="https://aitreatymarch.org">
@@ -91,13 +91,24 @@
   h1 .line { display: block; }
   h1 .red { color: var(--red); }
 
+  .intro {
+    max-width: 620px;
+    margin-top: 2rem;
+    font-size: 1.1rem;
+    line-height: 1.65;
+    color: #333;
+  }
+  .intro p + p { margin-top: 0.9rem; }
+  .intro strong { color: var(--black); }
+
   .cities {
     margin-top: 3.5rem;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 320px));
+    grid-template-columns: repeat(2, minmax(0, 380px));
     gap: 1.5rem;
     width: 100%;
     justify-content: center;
+    align-items: start;
   }
   .city {
     display: block;
@@ -117,6 +128,21 @@
     font-size: 2rem;
     text-transform: uppercase;
   }
+  .city .when {
+    margin-top: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--red);
+  }
+  .schedule {
+    list-style: none;
+    margin-top: 1.25rem;
+    text-align: left;
+    font-size: 0.92rem;
+    line-height: 1.45;
+  }
+  .schedule li { display: grid; grid-template-columns: 3.2rem 1fr; gap: 0.5rem; padding: 0.4rem 0; border-top: 1px solid rgba(17,17,17,0.15); }
+  .schedule b { font-family: var(--font-mono); font-weight: 600; }
   .city .cta {
     display: inline-block;
     margin-top: 1.25rem;
@@ -141,29 +167,54 @@
 
   @media (max-width: 640px) {
     .topbar { padding: 1rem; }
-    .cities { grid-template-columns: 1fr; }
+    .intro {
+    max-width: 620px;
+    margin-top: 2rem;
+    font-size: 1.1rem;
+    line-height: 1.65;
+    color: #333;
+  }
+  .intro p + p { margin-top: 0.9rem; }
+  .intro strong { color: var(--black); }
+
+  .cities { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
   <header class="topbar">
-    <div class="wordmark">AI Safety <span>March</span></div>
+    <div class="wordmark">AI Treaty <span>March</span></div>
   </header>
 
   <main>
-    <div class="kicker">Two cities. One demand.</div>
+    <div class="kicker">Saturday, Nov 14</div>
     <h1>
       <span class="line">March for</span>
-      <span class="line red">AI Safety</span>
+      <span class="line red">an AI Treaty</span>
     </h1>
+
+    <div class="intro">
+      <p>On November 18, Trump will travel to China to meet Xi Jinping at the APEC summit.</p>
+      <p>It's time they make a deal to stop the AI arms race, or we might all die.</p>
+      <p>So on Saturday Nov 14, we are marching in SF, DC and NYC with one demand: <strong>governments should start negotiating an AI Treaty that would ban the development of more powerful AI systems.</strong></p>
+    </div>
 
     <div class="cities">
       <a class="city" href="https://partiful.com/e/IKicFMI9yxmA0qZOJN0E" target="_blank" rel="noopener">
         <div class="name">San Francisco</div>
+        <div class="when">Sat, Nov 14 &middot; 12 PM &rarr; 3 PM</div>
+        <ul class="schedule">
+          <li><b>12:00</b> Rally at OpenAI (1455 3rd St), chalking</li>
+          <li><b>12:30</b> Speeches &amp; chants</li>
+          <li><b>1:00</b> Walk to Veterans Building (401 Van Ness Ave), where the UN Charter was signed</li>
+          <li><b>2:00</b> Rally at Veterans Building</li>
+          <li><b>2:30</b> Afterparty at Civic Center Plaza</li>
+        </ul>
         <div class="cta">RSVP &rarr;</div>
       </a>
       <a class="city" href="https://partiful.com/e/WMRLtTLXNxQeircVi4Cv" target="_blank" rel="noopener">
         <div class="name">Washington, DC</div>
+        <div class="when">Sat, Nov 14</div>
         <div class="cta">RSVP &rarr;</div>
       </a>
     </div>
