@@ -65,13 +65,11 @@
   .wordmark span { color: var(--red); }
 
   main {
-    flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 5rem 1rem;
+    padding: 2.5rem 1rem 2.5rem;
   }
   .kicker {
     font-family: var(--font-mono);
@@ -84,7 +82,7 @@
   h1 {
     font-family: var(--font-display);
     text-transform: uppercase;
-    font-size: clamp(2.6rem, 9.5vw, 8rem);
+    font-size: clamp(2.6rem, 9.5vw, 6.5rem);
     line-height: 0.95;
     letter-spacing: -0.01em;
   }
@@ -102,7 +100,7 @@
   .intro p + p { margin-top: 0.5rem; }
 
   .cities {
-    margin-top: 3.5rem;
+    margin-top: 2.5rem;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 400px));
     gap: 1.5rem;
@@ -185,7 +183,7 @@
   .orgs {
     background: var(--black);
     border-top: 3px solid var(--black);
-    padding: 2rem 1rem 2.25rem;
+    padding: 1.5rem 1rem 1.75rem;
     text-align: center;
   }
   .orgs-label {
@@ -195,7 +193,7 @@
     text-transform: uppercase;
     color: var(--paper);
     opacity: 0.7;
-    margin-bottom: 1.25rem;
+    margin-bottom: 1rem;
   }
   .orgs-row {
     display: flex;
@@ -216,6 +214,7 @@
   .orgs-row a:hover img { transform: translateY(-3px); }
 
   .about {
+    flex: 1;
     padding: 2.5rem 1rem 3rem;
     text-align: center;
   }
