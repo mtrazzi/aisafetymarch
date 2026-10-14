@@ -84,7 +84,7 @@
   h1 {
     font-family: var(--font-display);
     text-transform: uppercase;
-    font-size: clamp(3rem, 11vw, 8rem);
+    font-size: clamp(2.6rem, 9.5vw, 8rem);
     line-height: 0.95;
     letter-spacing: -0.01em;
   }
@@ -104,7 +104,7 @@
   .cities {
     margin-top: 3.5rem;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 320px));
+    grid-template-columns: repeat(2, minmax(0, 400px));
     gap: 1.5rem;
     width: 100%;
     justify-content: center;
@@ -125,7 +125,8 @@
   }
   .city .name {
     font-family: var(--font-display);
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    white-space: nowrap;
     text-transform: uppercase;
   }
   .city .when {
@@ -160,6 +161,20 @@
     .topbar { padding: 1rem; }
     .cities { grid-template-columns: 1fr; }
   }
+
+  .city { cursor: default; }
+  .city:hover { transform: none; box-shadow: none; }
+  .rsvp-label { margin-top: 1.25rem; font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.2em; color: var(--gray); }
+  .btns { display: flex; gap: 0.6rem; justify-content: center; margin-top: 0.5rem; flex-wrap: wrap; }
+  .opt {
+    font-family: var(--font-mono); font-weight: 600; font-size: 0.85rem;
+    text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none;
+    padding: 0.75rem 1.1rem; border: 3px solid var(--black);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .opt:hover { transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--black); }
+  .opt.primary { background: var(--red); border-color: var(--red); color: var(--paper); }
+  .opt.secondary { background: var(--paper); color: var(--black); }
 </style>
 </head>
 <body>
@@ -180,19 +195,27 @@
     </div>
 
     <div class="cities">
-      <a class="city" href="https://partiful.com/e/IKicFMI9yxmA0qZOJN0E" target="_blank" rel="noopener">
+      <div class="city">
         <div class="name">San Francisco</div>
         <div class="when">Sat, Nov 14 &middot; 12 PM &rarr; 3 PM</div>
-        <div class="cta">RSVP &rarr;</div>
-      </a>
-      <a class="city" href="https://partiful.com/e/WMRLtTLXNxQeircVi4Cv" target="_blank" rel="noopener">
+        <div class="rsvp-label">RSVP</div>
+        <div class="btns">
+          <a class="opt primary" href="https://partiful.com/e/IKicFMI9yxmA0qZOJN0E" target="_blank" rel="noopener">Partiful &rarr;</a>
+          <a class="opt secondary" href="https://www.mobilize.us/stoptheairace/event/1059616/" target="_blank" rel="noopener">Mobilize &rarr;</a>
+        </div>
+      </div>
+      <div class="city">
         <div class="name">Washington, DC</div>
         <div class="when">Sat, Nov 14 &middot; 11 AM &rarr; 1 PM</div>
-        <div class="cta">RSVP &rarr;</div>
-      </a>
+        <div class="rsvp-label">RSVP</div>
+        <div class="btns">
+          <a class="opt primary" href="https://luma.com/2j6hkk6a" target="_blank" rel="noopener">Luma &rarr;</a>
+          <a class="opt secondary" href="https://partiful.com/e/WMRLtTLXNxQeircVi4Cv" target="_blank" rel="noopener">Partiful &rarr;</a>
+        </div>
+      </div>
     </div>
   </main>
 
-  <footer>Pick your city and RSVP on Partiful.</footer>
+  <footer>Pick your city and RSVP.</footer>
 </body>
 </html>
