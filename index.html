@@ -148,14 +148,6 @@
     padding: 0.8rem 1.4rem;
   }
 
-  footer {
-    border-top: 3px solid var(--black);
-    padding: 1.2rem 2rem;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--gray);
-    text-align: center;
-  }
 
   @media (max-width: 640px) {
     .topbar { padding: 1rem; }
@@ -234,7 +226,6 @@
     </div>
   </main>
 
-  <footer>Pick your city and RSVP.</footer>
 <script>
 document.querySelectorAll('.rsvp > button').forEach(b => b.addEventListener('click', e => {
   e.stopPropagation();
