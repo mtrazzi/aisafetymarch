@@ -181,6 +181,53 @@
   }
   .rsvp .menu a + a { border-top: 2px solid var(--black); }
   .rsvp .menu a:hover { background: var(--red); color: var(--paper); }
+
+  .orgs {
+    background: var(--black);
+    border-top: 3px solid var(--black);
+    padding: 2rem 1rem 2.25rem;
+    text-align: center;
+  }
+  .orgs-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--paper);
+    opacity: 0.7;
+    margin-bottom: 1.25rem;
+  }
+  .orgs-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+  }
+  .orgs-row img {
+    display: block;
+    height: 80px;
+    width: auto;
+    background: #fff;
+    padding: 6px 10px;
+    border-radius: 4px;
+    transition: transform 0.15s ease;
+  }
+  .orgs-row a:hover img { transform: translateY(-3px); }
+
+  .about {
+    padding: 2.5rem 1rem 3rem;
+    text-align: center;
+  }
+  .about p {
+    max-width: 620px;
+    margin: 0 auto;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: #333;
+    text-wrap: balance;
+  }
+  .about a { color: var(--red); font-weight: 700; }
 </style>
 </head>
 <body>
@@ -225,6 +272,19 @@
       </div>
     </div>
   </main>
+
+  <section class="orgs">
+    <div class="orgs-label">Organized with</div>
+    <div class="orgs-row">
+      <a href="https://stoptherace.ai/" target="_blank" rel="noopener"><img src="img/stoptheairace.jpeg" alt="Stop The AI Race"></a>
+      <a href="https://www.foodandwaterwatch.org/" target="_blank" rel="noopener"><img src="img/foodandwaterwatch.jpg" alt="Food &amp; Water Watch"></a>
+      <a href="https://home.nuhw.org/" target="_blank" rel="noopener"><img src="img/nuhw.jpg" alt="National Union of Healthcare Workers"></a>
+    </div>
+  </section>
+
+  <section class="about">
+    <p><a href="https://stoptherace.ai/" target="_blank" rel="noopener">Stop The AI Race</a> is an international movement calling for an international AI Treaty that would prevent the development of more powerful AI systems.</p>
+  </section>
 
 <script>
 document.querySelectorAll('.rsvp > button').forEach(b => b.addEventListener('click', e => {
