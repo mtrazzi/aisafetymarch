@@ -64,12 +64,15 @@
   }
   .wordmark span { color: var(--red); }
 
+  /* fill the screen minus a strip, so the black logo band peeks in at the bottom */
   main {
+    min-height: calc(100svh - 60px - 64px);
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 2.5rem 1rem 2.5rem;
+    padding: 3rem 1rem;
   }
   .kicker {
     font-family: var(--font-mono);
@@ -82,7 +85,7 @@
   h1 {
     font-family: var(--font-display);
     text-transform: uppercase;
-    font-size: clamp(2.6rem, 9.5vw, 6.5rem);
+    font-size: clamp(2.6rem, 9.5vw, 8rem);
     line-height: 0.95;
     letter-spacing: -0.01em;
   }
@@ -100,7 +103,7 @@
   .intro p + p { margin-top: 0.5rem; }
 
   .cities {
-    margin-top: 2.5rem;
+    margin-top: 3.5rem;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 400px));
     gap: 1.5rem;
@@ -183,7 +186,7 @@
   .orgs {
     background: var(--black);
     border-top: 3px solid var(--black);
-    padding: 1.5rem 1rem 1.75rem;
+    padding: 2rem 1rem 2.25rem;
     text-align: center;
   }
   .orgs-label {
@@ -193,7 +196,7 @@
     text-transform: uppercase;
     color: var(--paper);
     opacity: 0.7;
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
   }
   .orgs-row {
     display: flex;
