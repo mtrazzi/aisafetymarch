@@ -109,7 +109,7 @@
   .cities {
     margin-top: 3.5rem;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 400px));
+    grid-template-columns: repeat(3, minmax(0, 360px));
     gap: 1.5rem;
     width: 100%;
     justify-content: center;
@@ -154,6 +154,9 @@
   }
 
 
+  @media (max-width: 1000px) {
+    .cities { grid-template-columns: minmax(0, 400px); }
+  }
   @media (max-width: 640px) {
     .topbar { padding: 1rem; }
     .cities { grid-template-columns: 1fr; }
@@ -239,6 +242,17 @@
           <div class="menu">
             <a href="https://luma.com/2j6hkk6a" target="_blank" rel="noopener">Luma &rarr;</a>
             <a href="https://partiful.com/e/WMRLtTLXNxQeircVi4Cv" target="_blank" rel="noopener">Partiful &rarr;</a>
+          </div>
+        </div>
+      </div>
+      <div class="city">
+        <div class="name">New York</div>
+        <div class="when">Sat, Nov 14 &middot; 12 PM &rarr; 3:30 PM</div>
+        <div class="rsvp">
+          <button class="cta" type="button">RSVP &darr;</button>
+          <div class="menu">
+            <a href="https://partiful.com/e/gQVxTbV4c1xxI8k5SzeX" target="_blank" rel="noopener">Partiful &rarr;</a>
+            <a href="https://www.mobilize.us/stoptheairace/event/1069424/" target="_blank" rel="noopener">Mobilize &rarr;</a>
           </div>
         </div>
       </div>
