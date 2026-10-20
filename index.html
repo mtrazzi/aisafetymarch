@@ -220,6 +220,25 @@
     border: 3px solid var(--black);
     background: #e8e4dc;
   }
+  .map-wrap { position: relative; }
+  .map-hint {
+    position: absolute;
+    right: 12px;
+    bottom: 40px;
+    border: 3px solid var(--black);
+    background: var(--paper);
+    box-shadow: 3px 3px 0 var(--black);
+    padding: 0.5rem 0.75rem;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--black);
+    cursor: pointer;
+  }
+  .map-hint:hover { background: var(--black); color: var(--paper); }
+  .map-hint[hidden] { display: none; }
   .list {
     border: 3px solid var(--black);
     height: 480px;
@@ -260,8 +279,6 @@
     color: var(--red);
   }
   .ev .venue { grid-column: 1; font-size: 0.9rem; color: #333; }
-  .ev.planned .city-name, .ev.planned .venue { color: var(--gray); }
-  .ev.planned .meta { color: var(--gray); }
   .ev a, .pop a {
     font-family: var(--font-mono);
     font-weight: 600;
@@ -372,13 +389,16 @@
     <h2>Find your march</h2>
     <p class="sub">Saturday, Nov 14 &middot; click a dot to see the route</p>
     <div class="find-grid">
-      <div id="map"></div>
+      <div class="map-wrap">
+        <div id="map"></div>
+        <button class="map-hint" id="hint" type="button" hidden></button>
+      </div>
       <div class="list">
         <input type="search" id="q" placeholder="Search by city or state" aria-label="Search marches">
         <ul id="events"></ul>
       </div>
     </div>
-    <p class="note">Hollow dots are cities still being confirmed. Lines connect the stops; the DC route is provisional. Follow marshals on the day.</p>
+    <p class="note">Hollow dots are cities still being confirmed. Drag the map to explore. Lines connect the stops; the DC route is provisional. Follow marshals on the day.</p>
   </section>
 
   <section class="about">
@@ -518,13 +538,13 @@ function openEvent(ev) {
 function renderList(events) {
   const ul = document.getElementById('events');
   const q = document.getElementById('q').value.trim().toLowerCase();
-  const shown = events.filter(e => !q || `${e.city} ${e.region} ${e.venue}`.toLowerCase().includes(q));
+  const shown = events.filter(e => !e.planned && (!q || `${e.city} ${e.region} ${e.venue}`.toLowerCase().includes(q)));
   ul.innerHTML = shown.length ? shown.map(e => `
-    <li class="ev${e.planned ? ' planned' : ''}" data-city="${esc(e.city)}">
+    <li class="ev" data-city="${esc(e.city)}">
       <div class="city-name">${label(e)}</div>
-      <div class="meta">${esc(metaLine(e))}</div>
-      <div class="venue">${esc(e.planned ? e.region : e.venue)}</div>
-      ${e.planned ? '' : `<a href="${esc(e.url)}" target="_blank" rel="noopener">RSVP &rarr;</a>`}
+      <div class="meta">${esc(when(e))}</div>
+      <div class="venue">${esc(e.venue)}</div>
+      <a href="${esc(e.url)}" target="_blank" rel="noopener">RSVP &rarr;</a>
     </li>`).join('') : '<li class="empty">No march there yet.</li>';
   ul.querySelectorAll('.ev').forEach(li => li.addEventListener('click', e => {
     if (e.target.closest('a')) return;
@@ -558,8 +578,27 @@ Promise.all([eventsReady, new Promise(r => map.on('load', r))]).then(([events]) 
              'circle-color': ['case', ['get', 'planned'], '#f2eee6', '#d62828'],
              'circle-stroke-color': ['case', ['get', 'planned'], '#6b6b6b', '#111111'], 'circle-stroke-width': 3 } });
 
-  map.fitBounds(events.reduce((b, e) => b.extend([e.lng, e.lat]), new maplibregl.LngLatBounds()),
-    { padding: 80, maxZoom: 4, duration: 0 });
+  // Open on North America; the hint button points to cities across the Atlantic.
+  const home = events.filter(e => e.lng < -30).reduce((b, e) => b.extend([e.lng, e.lat]), new maplibregl.LngLatBounds());
+  const away = events.filter(e => e.lng >= -30);
+  map.fitBounds(home, { padding: 60, maxZoom: 4, duration: 0 });
+
+  const hint = document.getElementById('hint');
+  let goHome = false;
+  const updateHint = () => {
+    const view = map.getBounds();
+    const offscreen = away.filter(e => !view.contains([e.lng, e.lat]));
+    goHome = !offscreen.length && !view.contains(home.getCenter());
+    hint.hidden = !offscreen.length && !goHome;
+    hint.textContent = goHome ? '← Back to North America' : `Drag to see ${offscreen.map(e => e.city).join(', ')} →`;
+  };
+  map.on('moveend', updateHint);
+  updateHint();
+  hint.addEventListener('click', () => {
+    popup?.remove();
+    const target = goHome ? home : away.reduce((b, e) => b.extend([e.lng, e.lat]), new maplibregl.LngLatBounds());
+    map.fitBounds(target, { padding: 60, maxZoom: 4 });
+  });
 
   for (const id of ['marches', 'stops']) {
     map.on('mouseenter', id, () => map.getCanvas().style.cursor = 'pointer');
