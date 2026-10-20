@@ -260,6 +260,8 @@
     color: var(--red);
   }
   .ev .venue { grid-column: 1; font-size: 0.9rem; color: #333; }
+  .ev.planned .city-name, .ev.planned .venue { color: var(--gray); }
+  .ev.planned .meta { color: var(--gray); }
   .ev a, .pop a {
     font-family: var(--font-mono);
     font-weight: 600;
@@ -376,7 +378,7 @@
         <ul id="events"></ul>
       </div>
     </div>
-    <p class="note">Lines connect the stops; the DC route is provisional. Follow marshals on the day.</p>
+    <p class="note">Hollow dots are cities still being confirmed. Lines connect the stops; the DC route is provisional. Follow marshals on the day.</p>
   </section>
 
   <section class="about">
@@ -407,6 +409,14 @@ const FALLBACK = [
   { city: 'New York', region: 'NY', lng: -73.99545, lat: 40.72447, venue: 'OpenAI NYC, 295 Lafayette St', tz: 'America/New_York',
     start: '2026-11-14T12:00:00-05:00', end: '2026-11-14T15:30:00-05:00', url: 'https://www.mobilize.us/stoptheairace/event/1069424/' },
 ];
+
+// Cities that may march but aren't confirmed; dropped once a real event exists there.
+const PLANNED = [
+  { city: 'Chicago', region: 'IL', lng: -87.6298, lat: 41.8781 },
+  { city: 'Montreal', region: 'QC, Canada', lng: -73.5674, lat: 45.5019 },
+  { city: 'Paris', region: 'France', lng: 2.3522, lat: 48.8566 },
+  { city: 'Philadelphia', region: 'PA', lng: -75.1652, lat: 39.9526 },
+].map(e => ({ ...e, planned: true }));
 
 // Stops (and, for DC, the provisional path) keyed by city. [lng, lat]
 const ROUTES = {
@@ -461,15 +471,21 @@ async function loadEvents() {
       if (!slot) continue;
       live.push({
         city: loc.locality, region: loc.region, lng: pt.longitude, lat: pt.latitude, tz,
-        venue: [loc.venue, (loc.address_lines || [])[0]].filter(Boolean).join(', ').replace(/ \(starting point\)/i, ''),
+        venue: [loc.venue, (loc.address_lines || [])[0]].filter(Boolean).join(', ').replace(/ \(starting point\)/i, '')
+          .replace(/\bAvenue\b/g, 'Ave').replace(/\bStreet\b/g, 'St').replace(/\bNorthwest\b/g, 'NW'),
         start: slot.start_date * 1000, end: slot.end_date * 1000, url: e.browser_url,
       });
     }
   } catch (err) { /* fall back to the static list */ }
   const have = new Set(live.map(e => e.city));
-  return live.concat(FALLBACK.filter(e => !have.has(e.city)))
-    .sort((a, b) => a.city.localeCompare(b.city));
+  const confirmed = live.concat(FALLBACK.filter(e => !have.has(e.city)));
+  confirmed.forEach(e => have.add(e.city));
+  const byCity = (a, b) => a.city.localeCompare(b.city);
+  return confirmed.sort(byCity).concat(PLANNED.filter(e => !have.has(e.city)).sort(byCity));
 }
+
+const label = ev => esc(ev.city) + (ev.region === 'DC' ? ', DC' : '');
+const metaLine = ev => ev.planned ? 'Unconfirmed · details coming soon' : when(ev);
 
 const map = new maplibregl.Map({
   container: 'map',
@@ -486,12 +502,16 @@ function openEvent(ev) {
   popup?.remove();
   popup = new maplibregl.Popup({ offset: 12, maxWidth: '280px' })
     .setLngLat([ev.lng, ev.lat])
-    .setHTML(`<div class="pop"><div class="city-name">${esc(ev.city)}${ev.region === 'DC' ? ', DC' : ''}</div>
-      <div class="meta">${esc(when(ev))}</div><a href="${esc(ev.url)}" target="_blank" rel="noopener">RSVP &rarr;</a></div>`)
+    .setHTML(`<div class="pop"><div class="city-name">${label(ev)}</div>
+      <div class="meta">${esc(metaLine(ev))}</div>${ev.planned ? '' : `<a href="${esc(ev.url)}" target="_blank" rel="noopener">RSVP &rarr;</a>`}</div>`)
     .addTo(map);
-  const pts = (ROUTES[ev.city]?.stops || []).map(s => s[0]).concat([[ev.lng, ev.lat]]);
-  const b = pts.reduce((b, p) => b.extend(p), new maplibregl.LngLatBounds(pts[0], pts[0]));
-  map.fitBounds(b, { padding: 70, maxZoom: 15, duration: 1200 });
+  const stops = ROUTES[ev.city]?.stops;
+  if (stops) {
+    const b = stops.reduce((b, s) => b.extend(s[0]), new maplibregl.LngLatBounds([ev.lng, ev.lat], [ev.lng, ev.lat]));
+    map.fitBounds(b, { padding: 70, maxZoom: 15, duration: 1200 });
+  } else {
+    map.flyTo({ center: [ev.lng, ev.lat], zoom: 10, duration: 1200 });
+  }
   document.querySelectorAll('.ev').forEach(li => li.classList.toggle('on', li.dataset.city === ev.city));
 }
 
@@ -500,11 +520,11 @@ function renderList(events) {
   const q = document.getElementById('q').value.trim().toLowerCase();
   const shown = events.filter(e => !q || `${e.city} ${e.region} ${e.venue}`.toLowerCase().includes(q));
   ul.innerHTML = shown.length ? shown.map(e => `
-    <li class="ev" data-city="${esc(e.city)}">
-      <div class="city-name">${esc(e.city)}${e.region === 'DC' ? ', DC' : ''}</div>
-      <div class="meta">${esc(when(e))}</div>
-      <div class="venue">${esc(e.venue)}</div>
-      <a href="${esc(e.url)}" target="_blank" rel="noopener">RSVP &rarr;</a>
+    <li class="ev${e.planned ? ' planned' : ''}" data-city="${esc(e.city)}">
+      <div class="city-name">${label(e)}</div>
+      <div class="meta">${esc(metaLine(e))}</div>
+      <div class="venue">${esc(e.planned ? e.region : e.venue)}</div>
+      ${e.planned ? '' : `<a href="${esc(e.url)}" target="_blank" rel="noopener">RSVP &rarr;</a>`}
     </li>`).join('') : '<li class="empty">No march there yet.</li>';
   ul.querySelectorAll('.ev').forEach(li => li.addEventListener('click', e => {
     if (e.target.closest('a')) return;
@@ -526,15 +546,17 @@ Promise.all([eventsReady, new Promise(r => map.on('load', r))]).then(([events]) 
   map.addSource('stops', { type: 'geojson', data: { type: 'FeatureCollection', features: routes.flatMap(([, r]) =>
     r.stops.map(([c, label]) => ({ type: 'Feature', properties: { label }, geometry: { type: 'Point', coordinates: c } }))) } });
   map.addSource('marches', { type: 'geojson', data: { type: 'FeatureCollection', features: events.map(e => ({
-    type: 'Feature', properties: { city: e.city }, geometry: { type: 'Point', coordinates: [e.lng, e.lat] } })) } });
+    type: 'Feature', properties: { city: e.city, planned: !!e.planned }, geometry: { type: 'Point', coordinates: [e.lng, e.lat] } })) } });
 
   map.addLayer({ id: 'routes', type: 'line', source: 'routes', minzoom: 10,
     paint: { 'line-color': '#111111', 'line-width': 3, 'line-dasharray': [2, 1.5] } });
   map.addLayer({ id: 'stops', type: 'circle', source: 'stops', minzoom: 10,
     paint: { 'circle-radius': 6, 'circle-color': '#f2eee6', 'circle-stroke-color': '#111111', 'circle-stroke-width': 3 } });
   map.addLayer({ id: 'marches', type: 'circle', source: 'marches',
-    paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, 9, 12, 11], 'circle-color': '#d62828',
-             'circle-stroke-color': '#111111', 'circle-stroke-width': 3 } });
+    layout: { 'circle-sort-key': ['case', ['get', 'planned'], 0, 1] },
+    paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, ['case', ['get', 'planned'], 7, 9], 12, 11],
+             'circle-color': ['case', ['get', 'planned'], '#f2eee6', '#d62828'],
+             'circle-stroke-color': ['case', ['get', 'planned'], '#6b6b6b', '#111111'], 'circle-stroke-width': 3 } });
 
   map.fitBounds(events.reduce((b, e) => b.extend([e.lng, e.lat]), new maplibregl.LngLatBounds()),
     { padding: 80, maxZoom: 4, duration: 0 });
