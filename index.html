@@ -349,27 +349,30 @@
   }
 
   /* handshake video behind the hero, faded in after load with the text turning light */
-  main { position: relative; isolation: isolate; overflow: hidden; }
-  .bgvid {
+  /* clip the video in its own layer so the RSVP menus can overflow the hero */
+  main { position: relative; isolation: isolate; z-index: 1; }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 1.6s ease;
+  }
+  .hero-bg video {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    z-index: -2;
-    opacity: 0;
-    transition: opacity 1.6s ease;
   }
-  main::before {
+  .hero-bg::after {
     content: '';
     position: absolute;
     inset: 0;
-    z-index: -1;
     background: linear-gradient(rgba(17,17,17,0.55), rgba(17,17,17,0.8));
-    opacity: 0;
-    transition: opacity 1.6s ease;
   }
-  .vid-on .bgvid, .vid-on main::before { opacity: 1; }
+  .vid-on .hero-bg { opacity: 1; }
   .kicker, h1, h1 .red, .intro { transition: color 1.6s ease; }
   .vid-on .kicker, .vid-on h1, .vid-on .intro { color: var(--paper); }
   .vid-on h1 .red { color: #ff3b3b; }
@@ -381,7 +384,7 @@
   </header>
 
   <main>
-    <video class="bgvid" src="img/handshake.mp4" poster="img/handshake.jpg" muted loop playsinline preload="auto" aria-hidden="true"></video>
+    <div class="hero-bg" aria-hidden="true"><video src="img/handshake.mp4" poster="img/handshake.jpg" muted loop playsinline preload="auto"></video></div>
     <div class="kicker">Saturday, Nov 14</div>
     <h1>
       <span class="line">March for</span>
@@ -650,7 +653,7 @@ Promise.all([eventsReady, new Promise(r => map.on('load', r))]).then(([events]) 
 </script>
 <script>
 (() => {
-  const v = document.querySelector('.bgvid');
+  const v = document.querySelector('.hero-bg video');
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   setTimeout(() => { v.play().catch(() => {}); document.body.classList.add('vid-on'); }, 1500);
 })();
