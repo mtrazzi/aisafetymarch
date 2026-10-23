@@ -1,11 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="12" fill="#111"/>
-  <path d="M13 7h28l10 10v40H13z" fill="#f2eee6"/>
-  <path d="M41 7v10h10" fill="#c9c3b8"/>
-  <rect x="19" y="20" width="18" height="4" fill="#111"/>
-  <rect x="19" y="28" width="26" height="4" fill="#111"/>
-  <rect x="19" y="36" width="14" height="4" fill="#111"/>
-  <path d="M38 50l-4 12 6-3 4 5 2-13z M50 50l4 12-6-3-4 5-2-13z" fill="#d62828"/>
-  <circle cx="44" cy="47" r="10" fill="#d62828" stroke="#111" stroke-width="2.5"/>
-  <path d="M44 41l1.8 3.7 4 .6-2.9 2.8.7 4-3.6-1.9-3.6 1.9.7-4-2.9-2.8 4-.6z" fill="#f2eee6"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><clipPath id="c"><circle cx="32" cy="32" r="29"/></clipPath><clipPath id="l"><path d="M0 0H32V64H0z"/></clipPath></defs>
+<g clip-path="url(#c)"><rect width="64" height="64" fill="#de2910"/>
+<g clip-path="url(#l)"><rect width="64" height="64" fill="#fff"/><g fill="#b22234"><rect y="3" width="64" height="5"/><rect y="13" width="64" height="5"/><rect y="23" width="64" height="5"/><rect y="33" width="64" height="5"/><rect y="43" width="64" height="5"/><rect y="53" width="64" height="5"/></g><rect width="32" height="28" fill="#3c3b6e"/><g fill="#fff"><circle cx="12" cy="9" r="2"/><circle cx="22" cy="9" r="2"/><circle cx="17" cy="16" r="2"/><circle cx="27" cy="16" r="2"/><circle cx="12" cy="23" r="2"/><circle cx="22" cy="23" r="2"/></g></g>
+<path d="M45 14l3.5 10.8h11.3l-9.2 6.7 3.5 10.8-9.1-6.7-9.2 6.7 3.5-10.8-9.1-6.7h11.3z" fill="#ffde00" transform="translate(-4 2) scale(.9)"/></g>
+<circle cx="32" cy="32" r="29" fill="none" stroke="#111" stroke-width="4"/><rect x="30" y="3" width="4" height="58" fill="#111"/></svg>
