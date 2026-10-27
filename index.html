@@ -129,14 +129,21 @@
     flex: none;
     width: 3.25rem; height: 3.25rem;
     border: 3px solid var(--black);
-    background: var(--paper);
-    color: var(--black);
+    background: var(--red);
+    color: var(--paper);
     font-size: 1.5rem;
     cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 4px 4px 0 var(--black);
   }
-  .carousel .arrow:hover { transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--black); }
+  .carousel .next { animation: nudge-right 1.2s ease-in-out infinite; }
+  .carousel .prev { animation: nudge-left 1.2s ease-in-out infinite; }
+  .carousel .arrow:hover { animation-play-state: paused; }
   .carousel .arrow[hidden] { display: block; visibility: hidden; }
+  .carousel .cities { width: auto; flex: 0 1 auto; margin-top: 0; }
+  .carousel .city { padding-left: 1.25rem; padding-right: 1.25rem; }
+  @keyframes nudge-right { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(8px); } }
+  @keyframes nudge-left { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-8px); } }
+  @media (prefers-reduced-motion: reduce) { .carousel .arrow { animation: none; } }
   .cities .city.off { display: none; }
   .cities {
     display: grid;
@@ -161,7 +168,7 @@
   }
   .city .name {
     font-family: var(--font-display);
-    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    font-size: clamp(1.1rem, 2vw, 2rem);
     white-space: nowrap;
     text-transform: uppercase;
   }
@@ -185,7 +192,7 @@
   }
 
 
-  @media (max-width: 1000px) {
+  @media (max-width: 1080px) {
     .cities { grid-template-columns: minmax(0, 400px); }
     .cities .city.off { display: block; }
     .carousel .arrow { display: none !important; }
