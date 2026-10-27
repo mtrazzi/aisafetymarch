@@ -117,10 +117,30 @@
   }
   .intro p + p { margin-top: 0.5rem; }
 
-  .cities {
+  .carousel {
     margin-top: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    width: 100%;
+  }
+  .carousel .arrow {
+    flex: none;
+    width: 3.25rem; height: 3.25rem;
+    border: 3px solid var(--black);
+    background: var(--paper);
+    color: var(--black);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .carousel .arrow:hover { transform: translate(-2px,-2px); box-shadow: 4px 4px 0 var(--black); }
+  .carousel .arrow[hidden] { display: block; visibility: hidden; }
+  .cities .city.off { display: none; }
+  .cities {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 360px));
+    grid-template-columns: repeat(3, minmax(0, 360px));
     gap: 1.5rem;
     width: 100%;
     justify-content: center;
@@ -167,6 +187,8 @@
 
   @media (max-width: 1000px) {
     .cities { grid-template-columns: minmax(0, 400px); }
+    .cities .city.off { display: block; }
+    .carousel .arrow { display: none !important; }
   }
   @media (max-width: 640px) {
     .topbar { padding: 1rem; }
@@ -403,6 +425,8 @@
       <p>It's time they make a deal to stop the AI arms race.</p>
     </div>
 
+    <div class="carousel">
+    <button class="arrow prev" type="button" aria-label="Previous cities" hidden>&larr;</button>
     <div class="cities">
       <div class="city">
         <div class="name">San Francisco</div>
@@ -449,6 +473,8 @@
         </div>
       </div>
     </div>
+    <button class="arrow next" type="button" aria-label="More cities">&rarr;</button>
+    </div>
   </main>
 
   <section class="find" id="marches">
@@ -487,6 +513,21 @@ document.querySelectorAll('.rsvp > button').forEach(b => b.addEventListener('cli
   if (!was) r.classList.add('open');
 }));
 document.addEventListener('click', () => document.querySelectorAll('.rsvp.open').forEach(x => x.classList.remove('open')));
+
+// Show three cities at a time on wide screens; the arrows slide the window one city over.
+(() => {
+  const cards = [...document.querySelectorAll('.cities .city')], SHOWN = 3;
+  const prev = document.querySelector('.carousel .prev'), next = document.querySelector('.carousel .next');
+  let start = 0;
+  const show = () => {
+    cards.forEach((c, i) => c.classList.toggle('off', i < start || i >= start + SHOWN));
+    prev.hidden = start === 0;
+    next.hidden = start + SHOWN >= cards.length;
+  };
+  prev.addEventListener('click', () => { start = Math.max(0, start - 1); show(); });
+  next.addEventListener('click', () => { start = Math.min(cards.length - SHOWN, start + 1); show(); });
+  show();
+})();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.js"></script>
 <script>
