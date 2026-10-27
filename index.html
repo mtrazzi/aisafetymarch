@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Treaty March</title>
-<meta name="description" content="March for an AI Treaty. Saturday, Nov 14 in San Francisco, Washington, DC and New York.">
+<meta name="description" content="March for an AI Treaty. Saturday, Nov 14 in San Francisco, Washington, DC, New York and Paris.">
 <meta property="og:title" content="AI Treaty March">
-<meta property="og:description" content="March for an AI Treaty. Saturday, Nov 14 in San Francisco, Washington, DC and New York.">
+<meta property="og:description" content="March for an AI Treaty. Saturday, Nov 14 in San Francisco, Washington, DC, New York and Paris.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aitreatymarch.org">
 <meta property="og:image" content="https://aitreatymarch.org/img/og.png">
@@ -120,7 +120,7 @@
   .cities {
     margin-top: 3.5rem;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 360px));
+    grid-template-columns: repeat(2, minmax(0, 360px));
     gap: 1.5rem;
     width: 100%;
     justify-content: center;
@@ -438,6 +438,16 @@
           </div>
         </div>
       </div>
+      <div class="city">
+        <div class="name">Paris</div>
+        <div class="when">Sat, Nov 14 &middot; 11 AM &rarr; 1 PM</div>
+        <div class="rsvp">
+          <button class="cta" type="button">RSVP &darr;</button>
+          <div class="menu">
+            <a href="https://luma.com/stop-pjeb" target="_blank" rel="noopener">Luma &rarr;</a>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 
@@ -492,13 +502,14 @@ const FALLBACK = [
     start: '2026-11-14T11:00:00-05:00', end: '2026-11-14T13:00:00-05:00', url: 'https://www.mobilize.us/stoptheairace/event/1069471/' },
   { city: 'New York', region: 'NY', lng: -73.99545, lat: 40.72447, venue: 'OpenAI NYC, 295 Lafayette St', tz: 'America/New_York',
     start: '2026-11-14T12:00:00-05:00', end: '2026-11-14T15:30:00-05:00', url: 'https://www.mobilize.us/stoptheairace/event/1069424/' },
+  { city: 'Paris', region: 'France', lng: 2.3205, lat: 48.8663, venue: 'US Embassy, 2 Ave Gabriel', tz: 'Europe/Paris',
+    start: '2026-11-14T11:00:00+01:00', end: '2026-11-14T13:00:00+01:00', url: 'https://luma.com/stop-pjeb' },
 ];
 
 // Cities that may march but aren't confirmed; dropped once a real event exists there.
 const PLANNED = [
   { city: 'Chicago', region: 'IL', lng: -87.6298, lat: 41.8781 },
   { city: 'Montreal', region: 'QC, Canada', lng: -73.5674, lat: 45.5019 },
-  { city: 'Paris', region: 'France', lng: 2.3522, lat: 48.8566 },
   { city: 'Philadelphia', region: 'PA', lng: -75.1652, lat: 39.9526 },
 ].map(e => ({ ...e, planned: true }));
 
@@ -527,6 +538,13 @@ const ROUTES = {
       [[-73.9720, 40.7447], '2:00 · Rally at the Chinese Mission to the UN'],
       [[-73.9686, 40.7507], '2:40 · Rally at the US Mission to the UN'],
       [[-73.9692, 40.7529], '3:00 · Final rally at Dag Hammarskjöld Plaza'],
+    ],
+  },
+  'Paris': {
+    stops: [
+      [[2.3205, 48.8663], '11:00 · Rally near the US Embassy'],
+      [[2.3009, 48.8665], '12:00 · Rally near the Chinese Embassy'],
+      [[2.2885, 48.8620], '12:40 · Final rally at Trocadéro'],
     ],
   },
 };
