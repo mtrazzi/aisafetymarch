@@ -248,6 +248,12 @@
     font-size: 0.85rem;
     color: var(--red);
   }
+  .find .host {
+    margin-top: 1.5rem;
+    font-size: 1rem;
+    text-align: center;
+  }
+  .find .host a { color: var(--red); font-weight: 700; }
   .find-grid {
     margin-top: 2rem;
     display: grid;
@@ -313,6 +319,7 @@
   }
   .ev a { grid-column: 2; grid-row: 1 / span 3; }
   .list .empty { padding: 1rem; font-family: var(--font-mono); font-size: 0.85rem; color: var(--gray); }
+  .list .empty a { color: var(--red); }
 
   .maplibregl-popup-content {
     background: var(--paper);
@@ -494,6 +501,7 @@
         <ul id="events"></ul>
       </div>
     </div>
+    <p class="host">Want to run a march in your city? Email <a href="mailto:contact@stoptherace.ai">contact@stoptherace.ai</a></p>
   </section>
 
   <section class="about">
@@ -675,7 +683,7 @@ function renderList(events) {
       <div class="meta">${esc(when(e))}</div>
       <div class="venue">${esc(e.venue)}</div>
       <a href="${esc(e.url)}" target="_blank" rel="noopener">RSVP &rarr;</a>
-    </li>`).join('') : '<li class="empty">No march there yet.</li>';
+    </li>`).join('') : '<li class="empty">No march there yet. Want to run one? Email <a href="mailto:contact@stoptherace.ai">contact@stoptherace.ai</a></li>';
   ul.querySelectorAll('.ev').forEach(li => li.addEventListener('click', e => {
     if (e.target.closest('a')) return;
     openEvent(events.find(x => x.city === li.dataset.city));
