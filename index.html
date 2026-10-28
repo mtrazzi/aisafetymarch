@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Treaty March</title>
-<meta name="description" content="March for an AI Treaty. Saturday, Nov 14 in San Francisco, Washington, DC, New York and Paris.">
+<meta name="description" content="March for an AI Treaty. Saturday, Nov 14 in San Francisco, Washington, DC, New York, Montréal, Toronto and Paris.">
 <meta property="og:title" content="AI Treaty March">
-<meta property="og:description" content="March for an AI Treaty. Saturday, Nov 14 in San Francisco, Washington, DC, New York and Paris.">
+<meta property="og:description" content="March for an AI Treaty. Saturday, Nov 14 in San Francisco, Washington, DC, New York, Montréal, Toronto and Paris.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aitreatymarch.org">
 <meta property="og:image" content="https://aitreatymarch.org/img/og.png">
@@ -477,6 +477,26 @@
         </div>
       </div>
       <div class="city">
+        <div class="name">Montr&eacute;al</div>
+        <div class="when">Sat, Nov 14 &middot; 1 PM &rarr; 3 PM</div>
+        <div class="rsvp">
+          <button class="cta" type="button">RSVP &darr;</button>
+          <div class="menu">
+            <a href="https://luma.com/g93q6ksk" target="_blank" rel="noopener">Luma &rarr;</a>
+          </div>
+        </div>
+      </div>
+      <div class="city">
+        <div class="name">Toronto</div>
+        <div class="when">Sat, Nov 14 &middot; 12:45 PM &rarr; 3:15 PM</div>
+        <div class="rsvp">
+          <button class="cta" type="button">RSVP &darr;</button>
+          <div class="menu">
+            <a href="https://luma.com/20vit6m2" target="_blank" rel="noopener">Luma &rarr;</a>
+          </div>
+        </div>
+      </div>
+      <div class="city">
         <div class="name">Paris</div>
         <div class="when">Sat, Nov 14 &middot; 11 AM &rarr; 1 PM</div>
         <div class="rsvp">
@@ -517,6 +537,9 @@
       <a href="https://dcaisafety.org/" target="_blank" rel="noopener"><img src="img/dmvaisafety.png" alt="D.C. AI Safety Collective"></a>
       <a href="https://aiactionnow.org/" target="_blank" rel="noopener"><img src="img/aiaction.png" alt="AI Action"></a>
       <a href="https://evitable.com/" target="_blank" rel="noopener"><img src="img/evitable.png" alt="Evitable"></a>
+      <a href="https://coalitionaitreaty.ca/" target="_blank" rel="noopener"><img src="img/coalitionaitreaty.avif" alt="Coalition for an AI Treaty"></a>
+      <a href="https://pauseai.ca/en/" target="_blank" rel="noopener"><img src="img/pauseaicanada.png" alt="PauseAI Canada"></a>
+      <a href="https://pauseia.fr/en" target="_blank" rel="noopener"><img src="img/pauseia.png" alt="Pause IA"></a>
     </div>
   </section>
 
@@ -529,18 +552,34 @@ document.querySelectorAll('.rsvp > button').forEach(b => b.addEventListener('cli
 }));
 document.addEventListener('click', () => document.querySelectorAll('.rsvp.open').forEach(x => x.classList.remove('open')));
 
-// Show three cities at a time on wide screens; the arrows slide the window one city over.
+// Show three cities at a time on wide screens; the arrows slide over to the next three.
 (() => {
   const cards = [...document.querySelectorAll('.cities .city')], SHOWN = 3;
   const prev = document.querySelector('.carousel .prev'), next = document.querySelector('.carousel .next');
-  let start = 0;
+  const row = document.querySelector('.carousel .cities');
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let start = 0, busy = false;
   const show = () => {
     cards.forEach((c, i) => c.classList.toggle('off', i < start || i >= start + SHOWN));
     prev.hidden = start === 0;
     next.hidden = start + SHOWN >= cards.length;
   };
-  prev.addEventListener('click', () => { start = Math.max(0, start - 1); show(); });
-  next.addEventListener('click', () => { start = Math.min(cards.length - SHOWN, start + 1); show(); });
+  // Slide the current three out, swap in the next three, slide them in from the other side.
+  const go = async dir => {
+    const to = Math.min(Math.max(0, start + dir * SHOWN), Math.max(0, cards.length - SHOWN));
+    if (to === start || busy) return;
+    busy = true;
+    const out = still ? null : row.animate([{ transform: 'none', opacity: 1 }, { transform: `translateX(${-dir * 60}px)`, opacity: 0 }],
+      { duration: 220, easing: 'ease-in', fill: 'forwards' });
+    await out?.finished;
+    start = to; show();
+    out?.cancel();
+    if (!still) await row.animate([{ transform: `translateX(${dir * 60}px)`, opacity: 0 }, { transform: 'none', opacity: 1 }],
+      { duration: 320, easing: 'ease-out' }).finished;
+    busy = false;
+  };
+  prev.addEventListener('click', () => go(-1));
+  next.addEventListener('click', () => go(1));
   show();
 })();
 </script>
@@ -558,6 +597,10 @@ const FALLBACK = [
     start: '2026-11-14T11:00:00-05:00', end: '2026-11-14T13:00:00-05:00', url: 'https://www.mobilize.us/stoptheairace/event/1069471/' },
   { city: 'New York', region: 'NY', lng: -73.99545, lat: 40.72447, venue: 'OpenAI NYC, 295 Lafayette St', tz: 'America/New_York',
     start: '2026-11-14T12:00:00-05:00', end: '2026-11-14T15:30:00-05:00', url: 'https://www.mobilize.us/stoptheairace/event/1069424/' },
+  { city: 'Montréal', region: 'QC, Canada', lng: -73.5714, lat: 45.4999, venue: 'Dorchester Square, 2903 Rue Peel', tz: 'America/Toronto',
+    start: '2026-11-14T13:00:00-05:00', end: '2026-11-14T15:00:00-05:00', url: 'https://luma.com/g93q6ksk' },
+  { city: 'Toronto', region: 'ON, Canada', lng: -79.3925, lat: 43.6646, venue: "Queen's Park, King Edward VII statue", tz: 'America/Toronto',
+    start: '2026-11-14T12:45:00-05:00', end: '2026-11-14T15:15:00-05:00', url: 'https://luma.com/20vit6m2' },
   { city: 'Paris', region: 'France', lng: 2.3205, lat: 48.8663, venue: 'US Embassy, 2 Ave Gabriel', tz: 'Europe/Paris',
     start: '2026-11-14T11:00:00+01:00', end: '2026-11-14T13:00:00+01:00', url: 'https://luma.com/stop-pjeb' },
 ];
@@ -565,7 +608,6 @@ const FALLBACK = [
 // Cities that may march but aren't confirmed; dropped once a real event exists there.
 const PLANNED = [
   { city: 'Chicago', region: 'IL', lng: -87.6298, lat: 41.8781 },
-  { city: 'Montreal', region: 'QC, Canada', lng: -73.5674, lat: 45.5019 },
   { city: 'Philadelphia', region: 'PA', lng: -75.1652, lat: 39.9526 },
 ].map(e => ({ ...e, planned: true }));
 
@@ -594,6 +636,20 @@ const ROUTES = {
       [[-73.9720, 40.7447], '2:00 · Rally at the Chinese Mission to the UN'],
       [[-73.9686, 40.7507], '2:40 · Rally at the US Mission to the UN'],
       [[-73.9692, 40.7529], '3:00 · Final rally at Dag Hammarskjöld Plaza'],
+    ],
+  },
+  'Montréal': {
+    stops: [
+      [[-73.5714, 45.4999], '1:00 · Meet at Dorchester Square'],
+      [[-73.5703, 45.5006], 'Rally at the US Consulate General'],
+      [[-73.5806, 45.4934], 'Rally at the Chinese Consulate General'],
+    ],
+  },
+  'Toronto': {
+    stops: [
+      [[-79.3925, 43.6646], "1:00 · Rally at Queen's Park"],
+      [[-79.3880, 43.6545], 'Rally at the US Consulate General'],
+      [[-79.3835, 43.6525], 'Final rally at Nathan Phillips Square'],
     ],
   },
   'Paris': {
@@ -675,8 +731,9 @@ function openEvent(ev) {
 
 function renderList(events) {
   const ul = document.getElementById('events');
-  const q = document.getElementById('q').value.trim().toLowerCase();
-  const shown = events.filter(e => !e.planned && (!q || `${e.city} ${e.region} ${e.venue}`.toLowerCase().includes(q)));
+  const fold = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const q = fold(document.getElementById('q').value.trim());
+  const shown = events.filter(e => !e.planned && (!q || fold(`${e.city} ${e.region} ${e.venue}`).includes(q)));
   ul.innerHTML = shown.length ? shown.map(e => `
     <li class="ev" data-city="${esc(e.city)}">
       <div class="city-name">${label(e)}</div>
@@ -737,7 +794,7 @@ Promise.all([eventsReady, new Promise(r => map.on('load', r))]).then(([events]) 
 (() => {
   const v = document.querySelector('.hero-bg video');
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  setTimeout(() => { v.play().catch(() => {}); document.body.classList.add('vid-on'); }, 1500);
+  setTimeout(() => { v.play().catch(() => {}); document.body.classList.add('vid-on'); }, 700);
 })();
 </script>
 </body>
