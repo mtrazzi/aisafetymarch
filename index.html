@@ -117,6 +117,39 @@
   }
   .intro p + p { margin-top: 0.5rem; }
 
+  /* "Why are we protesting?" — closed by default, opens below the city cards */
+  .why {
+    width: 100%;
+    max-width: 640px;
+    margin-top: 2.5rem;
+    text-align: left;
+  }
+  .why summary {
+    cursor: pointer;
+    list-style: none;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+  .why summary::-webkit-details-marker { display: none; }
+  .why summary::after { content: ' \2193'; }
+  .why[open] summary::after { content: ' \2191'; }
+  .why-body {
+    margin-top: 1.25rem;
+    padding: 1.5rem 1.75rem;
+    border: 3px solid var(--black);
+    background: var(--paper);
+    color: var(--black);
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+  .why-body p + p { margin-top: 0.9rem; }
+  .why-body a { color: var(--red); }
+
   .carousel {
     margin-top: 3.5rem;
     display: flex;
@@ -432,6 +465,7 @@
   .kicker, h1, h1 .red, .intro { transition: color 1.6s ease; }
   .vid-on .kicker, .vid-on h1, .vid-on .intro { color: var(--paper); }
   .vid-on h1 .red { color: #ff3b3b; }
+  .vid-on .why summary { color: #ff3b3b; }
 </style>
 </head>
 <body>
@@ -441,7 +475,7 @@
 
   <main>
     <div class="hero-bg" aria-hidden="true"><video src="img/handshake.mp4" poster="img/handshake.jpg" muted loop playsinline preload="auto"></video></div>
-    <div class="kicker">Saturday, Nov 14</div>
+    <div class="kicker">Saturday, Nov 14 &middot; US &middot; Canada &middot; France</div>
     <h1>
       <span class="line">March for</span>
       <span class="line red">an AI Treaty</span>
@@ -522,6 +556,15 @@
     </div>
     <button class="arrow next" type="button" aria-label="More cities">&rarr;</button>
     </div>
+
+    <details class="why">
+      <summary>Why are we protesting?</summary>
+      <div class="why-body">
+        <p>In March and July, Stop The AI Race protested outside AI companies, asking their CEOs to commit to pausing if others did too. Since then, <a href="https://www.aa.com.tr/en/science-technology/anthropic-calls-for-global-coordination-to-pause-frontier-ai-development/3957328" target="_blank" rel="noopener">Anthropic</a> and <a href="https://openai.com/index/our-principles/" target="_blank" rel="noopener">OpenAI</a> have said that, under the right conditions, they'd support an internationally coordinated slowdown.</p>
+        <p>From July to September, we <a href="https://stoptherace.ai/occupy" target="_blank" rel="noopener">protested daily</a> outside Anthropic and OpenAI, asking them to urge the US government to negotiate a treaty. They did <a href="https://www.stlpr.org/npr/2026-09-13/trump-downplays-calls-for-ai-slowdown" target="_blank" rel="noopener">call for a slowdown</a>. What we got instead was a <a href="https://www.news4jax.com/business/2026/09/29/trump-vows-to-never-stifle-ai-as-leading-executives-urge-caution/" target="_blank" rel="noopener">White House meeting</a> that ended in voluntary commitments.</p>
+        <p><strong>The time of voluntary commitments is over.</strong> On Nov 18, Trump meets Xi Jinping. We're asking them to start negotiating an international AI Treaty that bans the development of more powerful AI systems until we can proceed safely.</p>
+      </div>
+    </details>
   </main>
 
   <section class="find" id="marches">
