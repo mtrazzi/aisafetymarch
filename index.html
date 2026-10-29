@@ -396,12 +396,12 @@
     object-fit: contain;
   }
   .orgs-row a:hover { transform: translateY(-3px); }
-  /* portrait logo: widen its card to match the square ones */
-  .orgs-row a.sq { width: 100px; }
+  /* portrait logo: widen its card to match the square ones, and let it use nearly the full height */
+  .orgs-row a.sq { width: 100px; padding-top: 3px; padding-bottom: 3px; }
   @media (max-width: 600px) {
     .orgs-row { gap: 1.25rem; }
     .orgs-row a { height: 68px; max-width: 150px; padding: 6px 9px; }
-    .orgs-row a.sq { width: 74px; }
+    .orgs-row a.sq { width: 74px; padding-top: 2px; padding-bottom: 2px; }
   }
 
   /* handshake video behind the hero, faded in after load with the text turning light */
