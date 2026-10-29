@@ -376,19 +376,32 @@
     gap: 2.5rem;
     flex-wrap: wrap;
   }
-  .orgs-row img {
-    display: block;
-    height: 80px;
-    width: auto;
+  /* every logo sits on an identical-height white card; wide wordmarks are capped so they don't dominate */
+  .orgs-row a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 92px;
+    max-width: 200px;
+    padding: 8px 12px;
     background: #fff;
-    padding: 6px 10px;
     border-radius: 4px;
     transition: transform 0.15s ease;
   }
-  .orgs-row a:hover img { transform: translateY(-3px); }
+  .orgs-row img {
+    display: block;
+    height: 100%;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+  }
+  .orgs-row a:hover { transform: translateY(-3px); }
+  /* portrait logo: widen its card to match the square ones */
+  .orgs-row a.sq { width: 100px; }
   @media (max-width: 600px) {
     .orgs-row { gap: 1.25rem; }
-    .orgs-row img { height: 60px; }
+    .orgs-row a { height: 68px; max-width: 150px; padding: 6px 9px; }
+    .orgs-row a.sq { width: 74px; }
   }
 
   /* handshake video behind the hero, faded in after load with the text turning light */
@@ -532,16 +545,16 @@
     <div class="orgs-label">Coalition partners</div>
     <div class="orgs-row">
       <a href="https://stoptherace.ai/" target="_blank" rel="noopener"><img src="img/stoptheairace.jpeg" alt="Stop The AI Race"></a>
-      <a href="https://humansincontrol.org/" target="_blank" rel="noopener"><img src="img/humansincontrol.png" alt="Humans in Control"></a>
-      <a href="https://evitable.com/" target="_blank" rel="noopener"><img src="img/evitable.png" alt="Evitable"></a>
+      <a href="https://coalitionaitreaty.ca/" target="_blank" rel="noopener"><img src="img/coalitionaitreaty.avif" alt="Coalition for an AI Treaty"></a>
+      <a class="sq" href="https://humansincontrol.org/" target="_blank" rel="noopener"><img src="img/humansincontrol.png" alt="Humans in Control"></a>
       <a href="https://www.foodandwaterwatch.org/" target="_blank" rel="noopener"><img src="img/foodandwaterwatch.jpg" alt="Food &amp; Water Watch"></a>
+      <a href="https://evitable.com/" target="_blank" rel="noopener"><img src="img/evitable.webp" alt="Evitable"></a>
       <a href="https://home.nuhw.org/" target="_blank" rel="noopener"><img src="img/nuhw.jpg" alt="National Union of Healthcare Workers"></a>
       <a href="https://dcaisafety.org/" target="_blank" rel="noopener"><img src="img/dmvaisafety.png" alt="D.C. AI Safety Collective"></a>
       <a href="https://aiactionnow.org/" target="_blank" rel="noopener"><img src="img/aiaction.png" alt="AI Action"></a>
       <a href="https://peopleforapause.org/" target="_blank" rel="noopener"><img src="img/peopleforapause.svg" alt="People for a Pause"></a>
-      <a href="https://coalitionaitreaty.ca/" target="_blank" rel="noopener"><img src="img/coalitionaitreaty.avif" alt="Coalition for an AI Treaty"></a>
       <a href="https://pauseai.ca/en/" target="_blank" rel="noopener"><img src="img/pauseaicanada.png" alt="PauseAI Canada"></a>
-      <a href="https://pauseia.fr/en" target="_blank" rel="noopener"><img src="img/pauseia.png" alt="Pause IA"></a>
+      <a href="https://pauseia.fr/en" target="_blank" rel="noopener"><img src="img/pauseia-circle.png" alt="Pause IA"></a>
     </div>
   </section>
 
