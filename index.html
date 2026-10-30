@@ -225,14 +225,21 @@
   }
 
 
+  /* narrow screens: one city at a time, with the arrows hugging the card */
   @media (max-width: 1080px) {
-    .cities { grid-template-columns: minmax(0, 400px); }
-    .cities .city.off { display: block; }
-    .carousel .arrow { display: none !important; }
+    .carousel { margin-top: 2.5rem; gap: 0.6rem; }
+    .carousel .cities { grid-template-columns: minmax(0, 400px); flex: 1 1 auto; max-width: 400px; }
+    .carousel .arrow { width: 2.75rem; height: 2.75rem; font-size: 1.25rem; box-shadow: 3px 3px 0 var(--black); }
   }
   @media (max-width: 640px) {
     .topbar { padding: 1rem; }
     .cities { grid-template-columns: 1fr; }
+    .carousel .cities { grid-template-columns: 1fr; }
+    .carousel { gap: 0.4rem; }
+    .carousel .arrow { width: 2.3rem; height: 2.3rem; font-size: 1.1rem; }
+    .carousel .city { padding-left: 0.75rem; padding-right: 0.75rem; }
+    /* fill the first screen so the map section starts below the fold */
+    main { min-height: calc(100svh - 3.6rem); }
   }
 
   .city { cursor: default; }
@@ -370,7 +377,7 @@
 
   @media (max-width: 800px) {
     .find-grid { grid-template-columns: 1fr; }
-    #map { height: 340px; }
+    #map { height: 260px; }
     .list { height: auto; max-height: 420px; }
   }
 
@@ -459,8 +466,13 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(rgba(17,17,17,0.55), rgba(17,17,17,0.8));
+    background: linear-gradient(rgba(17,17,17,0.66), rgba(17,17,17,0.84));
   }
+  /* portrait crops: keep both leaders (right of center in the frame) in view */
+  /* tall screens show the whole height, so zoom up from the bottom to lift their heads */
+  @media (max-width: 800px) { .hero-bg video { object-position: 59% center; transform: scale(1.15); transform-origin: 59% 100%; } }
+  /* wide screens show the whole width, so zoom in from the right edge to pull Xi toward center */
+  @media (min-width: 801px) { .hero-bg video { object-position: center 30%; transform: scale(1.18); transform-origin: 100% 0; } }
   .vid-on .hero-bg { opacity: 1; }
   .kicker, h1, h1 .red, .intro { transition: color 1.6s ease; }
   .vid-on .kicker, .vid-on h1, .vid-on .intro { color: var(--paper); }
@@ -610,9 +622,11 @@ document.querySelectorAll('.rsvp > button').forEach(b => b.addEventListener('cli
 }));
 document.addEventListener('click', () => document.querySelectorAll('.rsvp.open').forEach(x => x.classList.remove('open')));
 
-// Show three cities at a time on wide screens; the arrows slide over to the next three.
+// Show three cities at a time on wide screens (one on narrow ones); the arrows slide to the next set.
 (() => {
-  const cards = [...document.querySelectorAll('.cities .city')], SHOWN = 3;
+  const cards = [...document.querySelectorAll('.cities .city')];
+  const narrow = matchMedia('(max-width: 1080px)');
+  let SHOWN = narrow.matches ? 1 : 3;
   const prev = document.querySelector('.carousel .prev'), next = document.querySelector('.carousel .next');
   const row = document.querySelector('.carousel .cities');
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -638,6 +652,11 @@ document.addEventListener('click', () => document.querySelectorAll('.rsvp.open')
   };
   prev.addEventListener('click', () => go(-1));
   next.addEventListener('click', () => go(1));
+  narrow.addEventListener('change', () => {
+    SHOWN = narrow.matches ? 1 : 3;
+    start = Math.min(start, Math.max(0, cards.length - SHOWN));
+    show();
+  });
   show();
 })();
 </script>
@@ -831,9 +850,10 @@ Promise.all([eventsReady, new Promise(r => map.on('load', r))]).then(([events]) 
              'circle-color': ['case', ['get', 'planned'], '#f2eee6', '#d62828'],
              'circle-stroke-color': ['case', ['get', 'planned'], '#6b6b6b', '#111111'], 'circle-stroke-width': 3 } });
 
-  // Open on North America; cities across the Atlantic are a drag away.
-  const home = events.filter(e => e.lng < -30).reduce((b, e) => b.extend([e.lng, e.lat]), new maplibregl.LngLatBounds());
-  map.fitBounds(home, { padding: 60, maxZoom: 4, duration: 0 });
+  // Open on the lower 48 plus the Canadian marches; cities across the Atlantic are a drag away.
+  const home = events.filter(e => e.lng < -30).reduce((b, e) => b.extend([e.lng, e.lat]), new maplibregl.LngLatBounds([-124, 26], [-68, 48]));
+  map.resize();
+  map.fitBounds(home, { padding: window.innerWidth <= 800 ? 20 : 60, maxZoom: 4, duration: 0 });
 
   for (const id of ['marches', 'stops']) {
     map.on('mouseenter', id, () => map.getCanvas().style.cursor = 'pointer');
