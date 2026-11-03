@@ -357,9 +357,17 @@
     text-decoration: none;
     white-space: nowrap;
   }
-  .ev .links { grid-column: 2; grid-row: 1 / span 3; display: flex; flex-direction: column; gap: 0.35rem; }
-  .ev .links a { text-align: center; }
-  .pop .links { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .ev .rsvp { grid-column: 2; grid-row: 1 / span 3; }
+  .rsvp.mini { margin-top: 0; }
+  .rsvp.mini > button {
+    border: 0; cursor: pointer; font-family: var(--font-mono); font-weight: 600; font-size: 0.8rem;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--paper); background: var(--red);
+    padding: 0.5rem 0.75rem; white-space: nowrap;
+  }
+  .rsvp.mini .menu { left: auto; right: 0; transform: none; min-width: 180px; }
+  .pop .rsvp.mini .menu { left: 0; right: auto; }
+  .rsvp.up .menu { top: auto; bottom: calc(100% + 8px); }
+  .rsvp .menu a { background: var(--paper); }
   .list .empty { padding: 1rem; font-family: var(--font-mono); font-size: 0.85rem; color: var(--gray); }
   .list .empty a { color: var(--red); }
 
@@ -616,13 +624,17 @@
   </section>
 
 <script>
-document.querySelectorAll('.rsvp > button').forEach(b => b.addEventListener('click', e => {
-  e.stopPropagation();
-  const r = b.parentElement, was = r.classList.contains('open');
-  document.querySelectorAll('.rsvp.open').forEach(x => x.classList.remove('open'));
-  if (!was) r.classList.add('open');
-}));
-document.addEventListener('click', () => document.querySelectorAll('.rsvp.open').forEach(x => x.classList.remove('open')));
+// One handler for every RSVP menu, including the ones the map section draws later.
+document.addEventListener('click', e => {
+  const b = e.target.closest('.rsvp > button');
+  const r = b?.parentElement, was = r?.classList.contains('open');
+  document.querySelectorAll('.rsvp.open').forEach(x => x.classList.remove('open', 'up'));
+  if (!b || was) return;
+  r.classList.add('open');
+  // In the scrolling event list, open upward if the menu would be cut off at the bottom.
+  const box = r.closest('ul');
+  if (box && r.querySelector('.menu').getBoundingClientRect().bottom > box.getBoundingClientRect().bottom) r.classList.add('up');
+});
 
 // Show three cities at a time on wide screens (one on narrow ones); the arrows slide to the next set.
 (() => {
@@ -757,8 +769,8 @@ const cardIndex = ev => { const i = CARDS.findIndex(c => c.key === cityKey(ev.ci
 function rsvpLinks(ev) {
   const card = CARDS.find(c => c.key === cityKey(ev.city));
   const links = card?.links.length ? card.links : [{ href: ev.url, text: 'RSVP' }];
-  return `<div class="links">${links.map(l =>
-    `<a href="${esc(l.href)}" target="_blank" rel="noopener">${esc(l.text)} &rarr;</a>`).join('')}</div>`;
+  return `<div class="rsvp mini"><button type="button">RSVP &darr;</button><div class="menu">${links.map(l =>
+    `<a href="${esc(l.href)}" target="_blank" rel="noopener">${esc(l.text)} &rarr;</a>`).join('')}</div></div>`;
 }
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -843,7 +855,7 @@ function renderList(events) {
       ${rsvpLinks(e)}
     </li>`).join('') : '<li class="empty">No march there yet. Want to run one? Email <a href="mailto:contact@stoptherace.ai">contact@stoptherace.ai</a></li>';
   ul.querySelectorAll('.ev').forEach(li => li.addEventListener('click', e => {
-    if (e.target.closest('a')) return;
+    if (e.target.closest('a, .rsvp')) return;
     openEvent(events.find(x => x.city === li.dataset.city));
     if (window.innerWidth <= 800) document.getElementById('map').scrollIntoView({ behavior: 'smooth' });
   }));
