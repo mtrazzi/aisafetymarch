@@ -357,7 +357,9 @@
     text-decoration: none;
     white-space: nowrap;
   }
-  .ev a { grid-column: 2; grid-row: 1 / span 3; }
+  .ev .links { grid-column: 2; grid-row: 1 / span 3; display: flex; flex-direction: column; gap: 0.35rem; }
+  .ev .links a { text-align: center; }
+  .pop .links { display: flex; flex-wrap: wrap; gap: 0.35rem; }
   .list .empty { padding: 1rem; font-family: var(--font-mono); font-size: 0.85rem; color: var(--gray); }
   .list .empty a { color: var(--red); }
 
@@ -526,7 +528,7 @@
       </div>
       <div class="city">
         <div class="name">New York</div>
-        <div class="when">Sat, Nov 14 &middot; 12 PM &rarr; 3:30 PM</div>
+        <div class="when">Sat, Nov 14 &middot; 12 PM &rarr; 2 PM</div>
         <div class="rsvp">
           <button class="cta" type="button">RSVP &darr;</button>
           <div class="menu">
@@ -672,8 +674,8 @@ const FALLBACK = [
     start: '2026-11-14T12:00:00-08:00', end: '2026-11-14T14:30:00-08:00', url: 'https://www.mobilize.us/stoptheairace/event/1059616/' },
   { city: 'Washington', region: 'DC', lng: -77.0153, lat: 38.8916, venue: 'Pennsylvania Ave & 3rd St NW', tz: 'America/New_York',
     start: '2026-11-14T11:00:00-05:00', end: '2026-11-14T13:00:00-05:00', url: 'https://www.mobilize.us/stoptheairace/event/1069471/' },
-  { city: 'New York', region: 'NY', lng: -73.99545, lat: 40.72447, venue: 'OpenAI NYC, 295 Lafayette St', tz: 'America/New_York',
-    start: '2026-11-14T12:00:00-05:00', end: '2026-11-14T15:30:00-05:00', url: 'https://www.mobilize.us/stoptheairace/event/1069424/' },
+  { city: 'New York', region: 'NY', lng: -73.9741, lat: 40.7626, venue: 'Trump Tower, 725 5th Ave', tz: 'America/New_York',
+    start: '2026-11-14T12:00:00-05:00', end: '2026-11-14T14:00:00-05:00', url: 'https://www.mobilize.us/stoptheairace/event/1069424/' },
   { city: 'Montréal', region: 'QC, Canada', lng: -73.5714, lat: 45.4999, venue: 'Dorchester Square, 2903 Rue Peel', tz: 'America/Toronto',
     start: '2026-11-14T13:00:00-05:00', end: '2026-11-14T15:00:00-05:00', url: 'https://luma.com/g93q6ksk' },
   { city: 'Toronto', region: 'ON, Canada', lng: -79.3925, lat: 43.6646, venue: "Queen's Park, King Edward VII statue", tz: 'America/Toronto',
@@ -710,11 +712,17 @@ const ROUTES = {
   },
   'New York': {
     stops: [
-      [[-73.99545, 40.72447], '12:00 · Rally at OpenAI NYC'],
-      [[-73.9720, 40.7447], '2:00 · Rally at the Chinese Mission to the UN'],
-      [[-73.9686, 40.7507], '2:40 · Rally at the US Mission to the UN'],
-      [[-73.9692, 40.7529], '3:00 · Final rally at Dag Hammarskjöld Plaza'],
+      [[-73.9741, 40.7626], '12:00 · Rally at Trump Tower'],
+      [[-73.9735, 40.7445], '1:30 · Rally at the Chinese Mission to the UN'],
+      [[-73.9736, 40.7451], '2:00 · Afterparty at St. Vartan Park'],
     ],
+    // from the route map at stoptherace.ai/nov14nyc-route
+    path: [[-73.9741, 40.7626], [-73.9769, 40.7588], [-73.9807, 40.7536], [-73.9810, 40.7537],
+           [-73.9815, 40.7529], [-73.9812, 40.7528], [-73.9808, 40.7533], [-73.9795, 40.7528],
+           [-73.9794, 40.7530], [-73.9782, 40.7525], [-73.9699, 40.7490], [-73.9687, 40.7507],
+           [-73.9686, 40.7508], [-73.9683, 40.7506], [-73.9703, 40.7481], [-73.9730, 40.7443],
+           [-73.9735, 40.7446], [-73.9732, 40.7445], [-73.9731, 40.7446], [-73.9734, 40.7450],
+           [-73.9736, 40.7451]],
   },
   'Montréal': {
     stops: [
@@ -738,6 +746,20 @@ const ROUTES = {
     ],
   },
 };
+
+// Signup links and display order come from the city cards above, so they stay in sync.
+const cityKey = c => String(c ?? '').split(',')[0].normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
+const CARDS = [...document.querySelectorAll('.cities .city')].map(c => ({
+  key: cityKey(c.querySelector('.name').textContent),
+  links: [...c.querySelectorAll('.menu a')].map(a => ({ href: a.href, text: a.textContent.replace(/\s*→\s*$/, '') })),
+}));
+const cardIndex = ev => { const i = CARDS.findIndex(c => c.key === cityKey(ev.city)); return i < 0 ? Infinity : i; };
+function rsvpLinks(ev) {
+  const card = CARDS.find(c => c.key === cityKey(ev.city));
+  const links = card?.links.length ? card.links : [{ href: ev.url, text: 'RSVP' }];
+  return `<div class="links">${links.map(l =>
+    `<a href="${esc(l.href)}" target="_blank" rel="noopener">${esc(l.text)} &rarr;</a>`).join('')}</div>`;
+}
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -763,7 +785,8 @@ async function loadEvents() {
       if (!slot) continue;
       live.push({
         city: loc.locality, region: loc.region, lng: pt.longitude, lat: pt.latitude, tz,
-        venue: [loc.venue, (loc.address_lines || [])[0]].filter(Boolean).join(', ').replace(/ \(starting point\)/i, '')
+        venue: [loc.venue, (loc.address_lines || [])[0]].filter(Boolean)
+          .filter((x, i, a) => !(i === 0 && a[1]?.startsWith(x))).join(', ').replace(/ \(starting point\)/i, '')
           .replace(/\bAvenue\b/g, 'Ave').replace(/\bStreet\b/g, 'St').replace(/\bNorthwest\b/g, 'NW'),
         start: slot.start_date * 1000, end: slot.end_date * 1000, url: e.browser_url,
       });
@@ -772,7 +795,7 @@ async function loadEvents() {
   const have = new Set(live.map(e => e.city));
   const confirmed = live.concat(FALLBACK.filter(e => !have.has(e.city)));
   confirmed.forEach(e => have.add(e.city));
-  const byCity = (a, b) => a.city.localeCompare(b.city);
+  const byCity = (a, b) => cardIndex(a) - cardIndex(b) || a.city.localeCompare(b.city);
   return confirmed.sort(byCity).concat(PLANNED.filter(e => !have.has(e.city)).sort(byCity));
 }
 
@@ -795,7 +818,7 @@ function openEvent(ev) {
   popup = new maplibregl.Popup({ offset: 12, maxWidth: '280px' })
     .setLngLat([ev.lng, ev.lat])
     .setHTML(`<div class="pop"><div class="city-name">${label(ev)}</div>
-      <div class="meta">${esc(metaLine(ev))}</div>${ev.planned ? '' : `<a href="${esc(ev.url)}" target="_blank" rel="noopener">RSVP &rarr;</a>`}</div>`)
+      <div class="meta">${esc(metaLine(ev))}</div>${ev.planned ? '' : rsvpLinks(ev)}</div>`)
     .addTo(map);
   const stops = ROUTES[ev.city]?.stops;
   if (stops) {
@@ -817,7 +840,7 @@ function renderList(events) {
       <div class="city-name">${label(e)}</div>
       <div class="meta">${esc(when(e))}</div>
       <div class="venue">${esc(e.venue)}</div>
-      <a href="${esc(e.url)}" target="_blank" rel="noopener">RSVP &rarr;</a>
+      ${rsvpLinks(e)}
     </li>`).join('') : '<li class="empty">No march there yet. Want to run one? Email <a href="mailto:contact@stoptherace.ai">contact@stoptherace.ai</a></li>';
   ul.querySelectorAll('.ev').forEach(li => li.addEventListener('click', e => {
     if (e.target.closest('a')) return;
