@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Treaty March</title>
-<meta name="description" content="March for an AI Treaty. Saturday, Nov 14 in San Francisco, Washington, DC, New York, Montréal, Toronto and Paris.">
+<meta name="description" content="March for an AI Treaty. Saturday, Nov 14 in San Francisco, Washington, DC, New York, Montréal, Toronto, Paris and Marseille.">
 <meta property="og:title" content="AI Treaty March">
-<meta property="og:description" content="March for an AI Treaty. Saturday, Nov 14 in San Francisco, Washington, DC, New York, Montréal, Toronto and Paris.">
+<meta property="og:description" content="March for an AI Treaty. Saturday, Nov 14 in San Francisco, Washington, DC, New York, Montréal, Toronto, Paris and Marseille.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aitreatymarch.org">
 <meta property="og:image" content="https://aitreatymarch.org/img/og.png">
@@ -300,6 +300,7 @@
     grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
     gap: 1.5rem;
   }
+  .find-grid.no-map { grid-template-columns: minmax(0, 1fr); }
   #map {
     height: 480px;
     border: 3px solid var(--black);
@@ -575,6 +576,16 @@
           </div>
         </div>
       </div>
+      <div class="city">
+        <div class="name">Marseille</div>
+        <div class="when">Sat, Nov 14 &middot; 10 AM &rarr; 12 PM</div>
+        <div class="rsvp">
+          <button class="cta" type="button">RSVP &darr;</button>
+          <div class="menu">
+            <a href="https://luma.com/19ycjrpg" target="_blank" rel="noopener">Luma &rarr;</a>
+          </div>
+        </div>
+      </div>
     </div>
     <button class="arrow next" type="button" aria-label="More cities">&rarr;</button>
     </div>
@@ -694,6 +705,8 @@ const FALLBACK = [
     start: '2026-11-14T12:45:00-05:00', end: '2026-11-14T15:15:00-05:00', url: 'https://luma.com/20vit6m2' },
   { city: 'Paris', region: 'France', lng: 2.3205, lat: 48.8663, venue: 'US Embassy, 2 Ave Gabriel', tz: 'Europe/Paris',
     start: '2026-11-14T11:00:00+01:00', end: '2026-11-14T13:00:00+01:00', url: 'https://luma.com/stop-pjeb' },
+  { city: 'Marseille', region: 'France', lng: 5.3789, lat: 43.2906, venue: 'US Consulate General, 12 Bd Paul Peytral', tz: 'Europe/Paris',
+    start: '2026-11-14T10:00:00+01:00', end: '2026-11-14T12:00:00+01:00', url: 'https://luma.com/19ycjrpg' },
 ];
 
 // Cities that may march but aren't confirmed; dropped once a real event exists there.
@@ -814,18 +827,26 @@ async function loadEvents() {
 const label = ev => esc(ev.city) + (ev.region === 'DC' ? ', DC' : '');
 const metaLine = ev => ev.planned ? 'Unconfirmed · details coming soon' : when(ev);
 
-const map = new maplibregl.Map({
-  container: 'map',
-  style: 'https://tiles.openfreemap.org/styles/positron',
-  center: [-96, 38.5],
-  zoom: 3,
-  cooperativeGestures: true,
-  attributionControl: { compact: true },
-});
-map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
+// The map needs WebGL and a CDN; without them, drop it and keep the list working.
+let map = null;
+try {
+  map = new maplibregl.Map({
+    container: 'map',
+    style: 'https://tiles.openfreemap.org/styles/positron',
+    center: [-96, 38.5],
+    zoom: 3,
+    cooperativeGestures: true,
+    attributionControl: { compact: true },
+  });
+  map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
+} catch (err) {
+  document.getElementById('map').hidden = true;
+  document.querySelector('.find-grid').classList.add('no-map');
+}
 
 let popup;
 function openEvent(ev) {
+  if (!map) return;
   popup?.remove();
   popup = new maplibregl.Popup({ offset: 12, maxWidth: '280px' })
     .setLngLat([ev.lng, ev.lat])
@@ -867,7 +888,7 @@ const eventsReady = loadEvents().then(events => {
   return events;
 });
 
-Promise.all([eventsReady, new Promise(r => map.on('load', r))]).then(([events]) => {
+if (map) Promise.all([eventsReady, new Promise(r => map.on('load', r))]).then(([events]) => {
   const routes = Object.entries(ROUTES).filter(([city]) => events.some(e => e.city === city));
   map.addSource('routes', { type: 'geojson', data: { type: 'FeatureCollection', features: routes.map(([, r]) => ({
     type: 'Feature', geometry: { type: 'LineString', coordinates: r.path || r.stops.map(s => s[0]) } })) } });
