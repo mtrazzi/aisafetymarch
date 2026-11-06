@@ -761,6 +761,11 @@ const ROUTES = {
            [-73.9735, 40.7446], [-73.9732, 40.7445], [-73.9731, 40.7446], [-73.9734, 40.7450],
            [-73.9736, 40.7451]],
   },
+  'Boston': {
+    stops: [
+      [[-71.0637, 42.3581], '12:00 · Rally at the Massachusetts State House'],
+    ],
+  },
   'Montréal': {
     stops: [
       [[-73.5714, 45.4999], '1:00 · Meet at Dorchester Square'],
@@ -780,6 +785,11 @@ const ROUTES = {
       [[2.3205, 48.8663], '11:00 · Rally near the US Embassy'],
       [[2.3009, 48.8665], '12:00 · Rally near the Chinese Embassy'],
       [[2.2885, 48.8620], '12:40 · Final rally at Trocadéro'],
+    ],
+  },
+  'Marseille': {
+    stops: [
+      [[5.3789, 43.2906], '10:00 · Rally at the US Consulate General'],
     ],
   },
 };
@@ -902,8 +912,9 @@ const eventsReady = loadEvents().then(events => {
 
 if (map) Promise.all([eventsReady, new Promise(r => map.on('load', r))]).then(([events]) => {
   const routes = Object.entries(ROUTES).filter(([city]) => events.some(e => e.city === city));
-  map.addSource('routes', { type: 'geojson', data: { type: 'FeatureCollection', features: routes.map(([, r]) => ({
-    type: 'Feature', geometry: { type: 'LineString', coordinates: r.path || r.stops.map(s => s[0]) } })) } });
+  map.addSource('routes', { type: 'geojson', data: { type: 'FeatureCollection', features: routes
+    .map(([, r]) => r.path || r.stops.map(s => s[0])).filter(coords => coords.length > 1).map(coordinates => ({
+    type: 'Feature', geometry: { type: 'LineString', coordinates } })) } });
   map.addSource('stops', { type: 'geojson', data: { type: 'FeatureCollection', features: routes.flatMap(([, r]) =>
     r.stops.map(([c, label]) => ({ type: 'Feature', properties: { label }, geometry: { type: 'Point', coordinates: c } }))) } });
   map.addSource('marches', { type: 'geojson', data: { type: 'FeatureCollection', features: events.map(e => ({
