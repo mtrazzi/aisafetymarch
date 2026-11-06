@@ -107,6 +107,22 @@
   h1 .line { display: block; }
   h1 .red { color: var(--red); }
 
+  /* the march date, as a tilted red stamp under the headline */
+  .date { margin-top: 1.75rem; }
+  .date span {
+    display: inline-block;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-size: clamp(1.6rem, 4.2vw, 3.25rem);
+    line-height: 1;
+    padding: 0.55em 0.8em;
+    background: var(--red);
+    color: var(--paper);
+    border: 3px solid var(--black);
+    box-shadow: 6px 6px 0 var(--black);
+    transform: rotate(-3.5deg);
+  }
+
   .intro {
     max-width: 640px;
     margin-top: 2rem;
@@ -498,14 +514,15 @@
 
   <main>
     <div class="hero-bg" aria-hidden="true"><video src="img/handshake.mp4" poster="img/handshake.jpg" muted loop playsinline preload="auto"></video></div>
-    <div class="kicker">Saturday, Nov 14 &middot; US &middot; Canada &middot; France</div>
+    <div class="kicker">US &middot; Canada &middot; France</div>
     <h1>
       <span class="line">March for</span>
       <span class="line red">an AI Treaty</span>
     </h1>
+    <div class="date"><span>Saturday, Nov 14</span></div>
 
     <div class="intro">
-      <p>On Nov 18, Trump meets Xi Jinping in China.</p>
+      <p>Trump is about to meet Xi Jinping in China.</p>
       <p>It's time they make a deal to stop the AI arms race.</p>
     </div>
 
