@@ -637,7 +637,7 @@
         <ul id="events"></ul>
       </div>
     </div>
-    <p class="host">Want to run a march in your city? Email <a href="mailto:contact@stoptherace.ai">contact@stoptherace.ai</a></p>
+    <p class="host">Want to run a march in your city? In the US, <a href="https://www.mobilize.us/stoptheairace/c/march-for-an-ai-treaty/event/create/" target="_blank" rel="noopener">use our Mobilize template</a>. Outside the US, <a href="https://luma.com/stop-the-ai-race" target="_blank" rel="noopener">submit it to our Luma calendar</a>.</p>
   </section>
 
   <section class="about">
@@ -767,16 +767,18 @@ const ROUTES = {
   'New York': {
     stops: [
       [[-73.9741, 40.7626], '12:00 · Rally at Trump Tower'],
-      [[-73.9735, 40.7445], '1:30 · Rally at the Chinese Mission to the UN'],
-      [[-73.9736, 40.7451], '2:00 · Afterparty at St. Vartan Park'],
+      [[-73.9769, 40.7588], "St. Patrick's Cathedral"],
+      [[-73.9815, 40.7529], 'New York Public Library'],
+      [[-73.9735, 40.7445], 'Chinese Mission to the UN'],
+      [[-73.9687, 40.7506], 'US Mission to the UN'],
+      [[-73.9680, 40.7520], '2:00 · Finish at Dag Hammarskjöld Plaza'],
     ],
     // from the route map at stoptherace.ai/nov14nyc-route
-    path: [[-73.9741, 40.7626], [-73.9769, 40.7588], [-73.9807, 40.7536], [-73.9810, 40.7537],
-           [-73.9815, 40.7529], [-73.9812, 40.7528], [-73.9808, 40.7533], [-73.9795, 40.7528],
-           [-73.9794, 40.7530], [-73.9782, 40.7525], [-73.9699, 40.7490], [-73.9687, 40.7507],
-           [-73.9686, 40.7508], [-73.9683, 40.7506], [-73.9703, 40.7481], [-73.9730, 40.7443],
-           [-73.9735, 40.7446], [-73.9732, 40.7445], [-73.9731, 40.7446], [-73.9734, 40.7450],
-           [-73.9736, 40.7451]],
+    path: [[-73.9741, 40.7626], [-73.9767, 40.7591], [-73.9769, 40.7588], [-73.9780, 40.7573],
+           [-73.9807, 40.7536], [-73.9809, 40.7534], [-73.9811, 40.7534], [-73.9815, 40.7529],
+           [-73.9819, 40.7523], [-73.9816, 40.7522], [-73.9844, 40.7485], [-73.9760, 40.7449],
+           [-73.9757, 40.7448], [-73.9753, 40.7453], [-73.9734, 40.7446], [-73.9732, 40.7445],
+           [-73.9701, 40.7488], [-73.9687, 40.7506], [-73.9678, 40.7519], [-73.9680, 40.7520]],
   },
   'Montréal': {
     stops: [
@@ -882,9 +884,10 @@ function openEvent(ev) {
     .setHTML(`<div class="pop"><div class="city-name">${label(ev)}</div>
       <div class="meta">${esc(metaLine(ev))}</div>${ev.planned ? '' : rsvpLinks(ev)}</div>`)
     .addTo(map);
-  const stops = ROUTES[ev.city]?.stops;
-  if (stops) {
-    const b = stops.reduce((b, s) => b.extend(s[0]), new maplibregl.LngLatBounds([ev.lng, ev.lat], [ev.lng, ev.lat]));
+  const route = ROUTES[ev.city];
+  if (route) {
+    const pts = [...route.stops.map(s => s[0]), ...(route.path || [])];
+    const b = pts.reduce((b, p) => b.extend(p), new maplibregl.LngLatBounds([ev.lng, ev.lat], [ev.lng, ev.lat]));
     map.fitBounds(b, { padding: 70, maxZoom: 15, duration: 1200 });
   } else {
     map.flyTo({ center: [ev.lng, ev.lat], zoom: 10, duration: 1200 });
@@ -903,7 +906,7 @@ function renderList(events) {
       <div class="meta">${esc(when(e))}</div>
       <div class="venue">${esc(e.venue)}</div>
       ${rsvpLinks(e)}
-    </li>`).join('') : '<li class="empty">No march there yet. Want to run one? Email <a href="mailto:contact@stoptherace.ai">contact@stoptherace.ai</a></li>';
+    </li>`).join('') : '<li class="empty">No march there yet. Want to run one? In the US, <a href="https://www.mobilize.us/stoptheairace/c/march-for-an-ai-treaty/event/create/" target="_blank" rel="noopener">use our Mobilize template</a>. Outside the US, <a href="https://luma.com/stop-the-ai-race" target="_blank" rel="noopener">submit it to our Luma calendar</a>.</li>';
   ul.querySelectorAll('.ev').forEach(li => li.addEventListener('click', e => {
     if (e.target.closest('a, .rsvp')) return;
     openEvent(events.find(x => x.city === li.dataset.city));
