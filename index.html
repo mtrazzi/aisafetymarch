@@ -637,7 +637,7 @@
         <ul id="events"></ul>
       </div>
     </div>
-    <p class="host">Want to run a march in your city? In the US, <a href="https://www.mobilize.us/stoptheairace/c/march-for-an-ai-treaty/event/create/" target="_blank" rel="noopener">use our Mobilize template</a>. Outside the US, <a href="https://luma.com/stop-the-ai-race" target="_blank" rel="noopener">submit it to our Luma calendar</a>.</p>
+    <p class="host">Want to run a march in your city? <a href="https://www.mobilize.us/stoptheairace/c/march-for-an-ai-treaty/event/create/" target="_blank" rel="noopener">Submit an event on Mobilize</a> (US) or <a href="https://luma.com/stop-the-ai-race" target="_blank" rel="noopener">Luma</a> (outside the US).</p>
   </section>
 
   <section class="about">
@@ -906,7 +906,7 @@ function renderList(events) {
       <div class="meta">${esc(when(e))}</div>
       <div class="venue">${esc(e.venue)}</div>
       ${rsvpLinks(e)}
-    </li>`).join('') : '<li class="empty">No march there yet. Want to run one? In the US, <a href="https://www.mobilize.us/stoptheairace/c/march-for-an-ai-treaty/event/create/" target="_blank" rel="noopener">use our Mobilize template</a>. Outside the US, <a href="https://luma.com/stop-the-ai-race" target="_blank" rel="noopener">submit it to our Luma calendar</a>.</li>';
+    </li>`).join('') : '<li class="empty">No march there yet. Want to run one? <a href="https://www.mobilize.us/stoptheairace/c/march-for-an-ai-treaty/event/create/" target="_blank" rel="noopener">Submit an event on Mobilize</a> (US) or <a href="https://luma.com/stop-the-ai-race" target="_blank" rel="noopener">Luma</a> (outside the US).</li>';
   ul.querySelectorAll('.ev').forEach(li => li.addEventListener('click', e => {
     if (e.target.closest('a, .rsvp')) return;
     openEvent(events.find(x => x.city === li.dataset.city));
