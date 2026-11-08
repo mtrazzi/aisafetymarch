@@ -569,6 +569,7 @@
         <div class="rsvp">
           <button class="cta" type="button">RSVP &darr;</button>
           <div class="menu">
+            <a href="https://partiful.com/e/xoNpfYqxlzuBUWkLaJEr" target="_blank" rel="noopener">Partiful &rarr;</a>
             <a href="https://www.mobilize.us/stoptheairace/event/1080108/" target="_blank" rel="noopener">Mobilize &rarr;</a>
           </div>
         </div>
@@ -737,7 +738,7 @@ const FALLBACK = [
     start: '2026-11-14T11:00:00-05:00', end: '2026-11-14T13:00:00-05:00', url: 'https://www.mobilize.us/stoptheairace/event/1069471/' },
   { city: 'New York', region: 'NY', lng: -73.9741, lat: 40.7626, venue: 'Trump Tower, 725 5th Ave', tz: 'America/New_York',
     start: '2026-11-14T12:00:00-05:00', end: '2026-11-14T14:00:00-05:00', url: 'https://www.mobilize.us/stoptheairace/event/1069424/' },
-  { city: 'Boston', region: 'MA', lng: -71.0637, lat: 42.3581, venue: 'Massachusetts State House, 28 Beacon St', tz: 'America/New_York',
+  { city: 'Boston', region: 'MA', lng: -71.0637, lat: 42.3581, venue: 'Massachusetts State House, 24 Beacon St', tz: 'America/New_York',
     start: '2026-11-14T12:00:00-05:00', end: '2026-11-14T14:00:00-05:00', url: 'https://www.mobilize.us/stoptheairace/event/1080108/' },
   { city: 'Chicago', region: 'IL', lng: -87.6292, lat: 41.8791, venue: 'Federal Plaza, 100 S Dearborn St', tz: 'America/Chicago',
     start: '2026-11-14T12:00:00-06:00', end: '2026-11-14T13:00:00-06:00', url: 'https://www.mobilize.us/stoptheairace/event/1080268/' },
@@ -855,7 +856,8 @@ async function loadEvents() {
         city: loc.locality, region: loc.region, lng: pt.longitude, lat: pt.latitude, tz,
         venue: [loc.venue, (loc.address_lines || [])[0]].filter(Boolean)
           .filter((x, i, a) => !(i === 0 && a[1]?.startsWith(x))).join(', ').replace(/ \(starting point\)/i, '')
-          .replace(/\bAvenue\b/g, 'Ave').replace(/\bStreet\b/g, 'St').replace(/\bNorthwest\b/g, 'NW'),
+          .replace(/\bAvenue\b/g, 'Ave').replace(/\bStreet\b/g, 'St').replace(/\bNorthwest\b/g, 'NW')
+          .replace(/\b28 Beacon St\b/, '24 Beacon St'), // Mobilize lists the MA State House at the wrong number
         start: slot.start_date * 1000, end: slot.end_date * 1000, url: e.browser_url,
       });
     }
