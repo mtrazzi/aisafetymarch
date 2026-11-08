@@ -436,11 +436,14 @@
     opacity: 0.7;
     margin-bottom: 1.25rem;
   }
+  /* --h scales the cards with the viewport so all logos stay on one row down to ~1200px wide
+     (a 16" MacBook at default scaling is ~1730px, where the fixed 92px cards + 40px gaps wrapped one logo) */
   .orgs-row {
+    --h: clamp(64px, 5.3vw, 92px);
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 2.5rem;
+    gap: clamp(0.75rem, 1.5vw, 2rem);
     flex-wrap: wrap;
   }
   /* every logo sits on an identical-height white card; wide wordmarks are capped so they don't dominate */
@@ -448,9 +451,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 92px;
-    max-width: 200px;
-    padding: 8px 12px;
+    height: var(--h);
+    max-width: calc(var(--h) * 2.17);
+    padding: calc(var(--h) * 0.087) calc(var(--h) * 0.13);
     background: #fff;
     border-radius: 4px;
     transition: transform 0.15s ease;
@@ -464,11 +467,9 @@
   }
   .orgs-row a:hover { transform: translateY(-3px); }
   /* portrait logo: widen its card to match the square ones */
-  .orgs-row a.sq { width: 100px; }
+  .orgs-row a.sq { width: calc(var(--h) * 1.087); }
   @media (max-width: 600px) {
-    .orgs-row { gap: 1.25rem; }
-    .orgs-row a { height: 68px; max-width: 150px; padding: 6px 9px; }
-    .orgs-row a.sq { width: 74px; }
+    .orgs-row { --h: 68px; gap: 1.25rem; }
   }
 
   /* handshake video behind the hero, faded in after load with the text turning light */
