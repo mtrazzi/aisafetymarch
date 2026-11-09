@@ -983,6 +983,12 @@ try {
     attributionControl: { compact: true },
   });
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
+  // MapLibre expands the compact attribution when the tile credits first arrive; collapse it to the
+  // (i) button at that moment, as it does itself on drag. Clicking (i) still opens it.
+  const attrib = map.getContainer().querySelector('.maplibregl-ctrl-attrib');
+  const collapse = () => attrib.classList.contains('maplibregl-compact') && !attrib.classList.remove('maplibregl-compact-show');
+  if (attrib && !collapse()) new MutationObserver((_, obs) => { if (collapse()) obs.disconnect(); })
+    .observe(attrib, { attributes: true, attributeFilter: ['class'] });
 } catch (err) {
   document.getElementById('map').hidden = true;
   document.querySelector('.find-grid').classList.add('no-map');
