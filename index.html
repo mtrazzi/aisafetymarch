@@ -35,6 +35,7 @@
     --paper: #f2eee6;
     --red: #d62828;
     --gray: #6b6b6b;
+    --gap: 2.5rem; /* even spacing: map → card → about text → partners banner */
     --font-display: 'Archivo Black', sans-serif;
     --font-body: 'Inter', sans-serif;
     --font-mono: 'IBM Plex Mono', monospace;
@@ -290,7 +291,7 @@
     width: 100%;
     max-width: 1180px;
     margin: 0 auto;
-    padding: 2rem 1rem 4rem; /* top matches the gap from the subtitle down to the map */
+    padding: 2rem 1rem calc(var(--gap) + 6px); /* top matches the subtitle-to-map gap; bottom leaves --gap below the card's 6px shadow */
   }
   .find h2, .find .sub { text-align: center; }
   .find h2 {
@@ -422,7 +423,7 @@
   }
   /* "don't see your city?" card, styled like the hero city cards */
   .no-city {
-    max-width: 640px; margin: 2.5rem auto 0; padding: 1.5rem 1.4rem 1.25rem; text-align: center;
+    max-width: 640px; margin: var(--gap) auto 0; padding: 1.5rem 1.4rem 1.25rem; text-align: center;
     background: #fff8ee; border: 3px solid var(--black); box-shadow: 6px 6px 0 var(--black);
   }
   .no-city h3 { font-family: var(--font-display); text-transform: uppercase; font-size: 1.4rem; line-height: 1.1; }
@@ -476,7 +477,7 @@
   }
 
   .about {
-    padding: 0 1rem 2.5rem;
+    padding: 0 1rem var(--gap);
     text-align: center;
   }
   .about p {
