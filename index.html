@@ -385,6 +385,24 @@
   .pop .rsvp.mini .menu { left: 0; right: auto; }
   .rsvp.up .menu { top: auto; bottom: calc(100% + 8px); }
   .rsvp .menu a { background: var(--paper); }
+  /* "notify me" email box for unconfirmed cities */
+  .notify { display: flex; margin-top: 0.6rem; max-width: 340px; }
+  .ev .notify { grid-column: 1 / -1; }
+  .notify input[type=email] {
+    flex: 1; min-width: 0; border: 2px solid var(--black); border-right: 0; background: #fff;
+    padding: 0.5rem 0.6rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--black); outline: none;
+  }
+  .notify button {
+    border: 2px solid var(--black); cursor: pointer; font-family: var(--font-mono); font-weight: 600; font-size: 0.75rem;
+    text-transform: uppercase; letter-spacing: 0.06em; color: var(--paper); background: var(--red); padding: 0.5rem 0.7rem; white-space: nowrap;
+  }
+  .notify button:disabled { opacity: 0.6; cursor: wait; }
+  .notify .hp { position: absolute; left: -5000px; }
+  .notify-msg { margin-top: 0.5rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--black); }
+  .notify-msg.err { color: var(--red); }
+  .ev .notify-msg { grid-column: 1 / -1; }
+  .ev.planned .city-name { color: var(--gray); }
+  .list .empty .notify { margin: 0.6rem 0 1rem; }
   .list .empty { padding: 1rem; font-family: var(--font-mono); font-size: 0.85rem; color: var(--gray); }
   .list .empty a { color: var(--red); }
 
@@ -873,6 +891,53 @@ async function loadEvents() {
 const label = ev => esc(ev.city) + (ev.region === 'DC' ? ', DC' : '');
 const metaLine = ev => ev.planned ? 'Unconfirmed · details coming soon' : when(ev);
 
+// "Notify me" signups for unconfirmed cities go to the Stop The AI Race Mailchimp audience
+// (same list as stoptherace.ai), with the city in its own field so it can be segmented later.
+// Mailchimp's form endpoint has no CORS, so this uses its JSONP variant (post-json).
+const MAILCHIMP_URL = 'https://stoptherace.us19.list-manage.com/subscribe/post-json?u=0c24053c9eb5c67a0fe52dd43&id=6c3370e4dc';
+const CITY_TAG = 'CITY'; // Audience → Settings → Audience fields → "City" (text)
+
+const notifyForm = city => `<form class="notify" data-city="${esc(city)}" novalidate>
+  <input type="email" name="email" placeholder="you@email.com" aria-label="Email to get notified about ${esc(city)}" required>
+  <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+  <button type="submit">Notify me</button></form>`;
+
+function mcSubscribe(params) {
+  return new Promise((resolve, reject) => {
+    const cb = 'mcNotify' + Date.now(), script = document.createElement('script');
+    const timer = setTimeout(() => { cleanup(); reject(new Error()); }, 10000);
+    function cleanup() { clearTimeout(timer); delete window[cb]; script.remove(); }
+    window[cb] = res => { cleanup(); resolve(res); };
+    script.onerror = () => { cleanup(); reject(new Error()); };
+    script.src = MAILCHIMP_URL + '&' + new URLSearchParams({ ...params, c: cb });
+    document.body.appendChild(script);
+  });
+}
+
+document.addEventListener('submit', async e => {
+  const form = e.target.closest('form.notify');
+  if (!form) return;
+  e.preventDefault();
+  const city = form.dataset.city, email = form.email.value.trim();
+  const say = (text, err) => {
+    let m = form.nextElementSibling?.classList.contains('notify-msg') ? form.nextElementSibling : null;
+    if (!m) { m = document.createElement('div'); m.className = 'notify-msg'; form.after(m); }
+    m.textContent = text; m.classList.toggle('err', !!err);
+  };
+  const thanks = () => { say(`Thanks! We'll email you if ${city ? city + ' is' : 'a march near you is'} confirmed.`); form.remove(); };
+  if (form.website.value) return thanks(); // honeypot: bots fill every field
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return say('Please enter a valid email.', true);
+  const btn = form.querySelector('button');
+  btn.disabled = true;
+  try {
+    const res = await mcSubscribe({ EMAIL: email, [CITY_TAG]: city });
+    if (res.result === 'success' || /already subscribed/i.test(res.msg)) return thanks();
+    const tmp = document.createElement('div'); tmp.innerHTML = res.msg || '';
+    say(tmp.textContent.replace(/^\d+ - /, '') || 'Something went wrong. Please try again.', true);
+  } catch { say('Something went wrong. Please try again.', true); }
+  btn.disabled = false;
+});
+
 // The map needs WebGL and a CDN; without them, drop it and keep the list working.
 let map = null;
 try {
@@ -897,7 +962,7 @@ function openEvent(ev) {
   popup = new maplibregl.Popup({ offset: 12, maxWidth: '280px' })
     .setLngLat([ev.lng, ev.lat])
     .setHTML(`<div class="pop"><div class="city-name">${label(ev)}</div>
-      <div class="meta">${esc(metaLine(ev))}</div>${ev.planned ? '' : rsvpLinks(ev)}</div>`)
+      <div class="meta">${esc(metaLine(ev))}</div>${ev.planned ? notifyForm(ev.city) : rsvpLinks(ev)}</div>`)
     .addTo(map);
   const route = ROUTES[ev.city];
   if (route) {
@@ -914,16 +979,23 @@ function renderList(events) {
   const ul = document.getElementById('events');
   const fold = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const q = fold(document.getElementById('q').value.trim());
-  const shown = events.filter(e => !e.planned && (!q || fold(`${e.city} ${e.region} ${e.venue}`).includes(q)));
-  ul.innerHTML = shown.length ? shown.map(e => `
+  const shown = events.filter(e => !q || fold(`${e.city} ${e.region} ${e.venue ?? ''}`).includes(q));
+  const raw = document.getElementById('q').value.trim();
+  ul.innerHTML = shown.length ? shown.map(e => e.planned ? `
+    <li class="ev planned" data-city="${esc(e.city)}">
+      <div class="city-name">${label(e)}</div>
+      <div class="meta">${esc(metaLine(e))}</div>
+      ${notifyForm(e.city)}
+    </li>` : `
     <li class="ev" data-city="${esc(e.city)}">
       <div class="city-name">${label(e)}</div>
       <div class="meta">${esc(when(e))}</div>
       <div class="venue">${esc(e.venue)}</div>
       ${rsvpLinks(e)}
-    </li>`).join('') : '<li class="empty">No march there yet. Want to run one? <a href="https://www.mobilize.us/stoptheairace/c/march-for-an-ai-treaty/event/create/" target="_blank" rel="noopener">Submit an event on Mobilize</a> (US) or <a href="https://luma.com/stop-the-ai-race" target="_blank" rel="noopener">Luma</a> (outside the US).</li>';
+    </li>`).join('') : '<li class="empty">No march there yet. Get an email if one is organized near you:' +
+    notifyForm(raw) + 'Want to run one? <a href="https://www.mobilize.us/stoptheairace/c/march-for-an-ai-treaty/event/create/" target="_blank" rel="noopener">Submit an event on Mobilize</a> (US) or <a href="https://luma.com/stop-the-ai-race" target="_blank" rel="noopener">Luma</a> (outside the US).</li>';
   ul.querySelectorAll('.ev').forEach(li => li.addEventListener('click', e => {
-    if (e.target.closest('a, .rsvp')) return;
+    if (e.target.closest('a, .rsvp, .notify, .notify-msg')) return;
     openEvent(events.find(x => x.city === li.dataset.city));
     if (window.innerWidth <= 800) document.getElementById('map').scrollIntoView({ behavior: 'smooth' });
   }));
