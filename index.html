@@ -290,8 +290,9 @@
     width: 100%;
     max-width: 1180px;
     margin: 0 auto;
-    padding: 1rem 1rem 4rem;
+    padding: 2rem 1rem 4rem; /* top matches the gap from the subtitle down to the map */
   }
+  .find h2, .find .sub { text-align: center; }
   .find h2 {
     font-family: var(--font-display);
     text-transform: uppercase;
@@ -316,6 +317,35 @@
     border: 3px solid var(--black);
     background: #e8e4dc;
   }
+  /* "back to all marches" button, shown on the map once zoomed into a city */
+  .map-back {
+    position: absolute; top: 10px; left: 10px; z-index: 2;
+    border: 2px solid var(--black); background: var(--paper); box-shadow: 3px 3px 0 var(--black); cursor: pointer;
+    font-family: var(--font-mono); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 0.45rem 0.7rem; color: var(--black);
+  }
+  .map-back:hover { background: var(--red); color: var(--paper); }
+  .map-back[hidden], .map-pan[hidden] { display: none; }
+  /* discreet round arrows on the overview's edges to slide between North America and France */
+  .map-pan {
+    position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
+    width: 36px; height: 36px; border-radius: 50%; padding: 0; cursor: pointer;
+    display: grid; place-items: center; border: 2px solid var(--black); background: var(--paper); color: var(--black);
+    box-shadow: 2px 2px 0 var(--black); transition: background 0.15s ease, color 0.15s ease;
+  }
+  .map-pan svg { display: block; width: 18px; height: 18px; }
+  .map-pan:hover { background: var(--red); color: var(--paper); }
+  .map-pan.right { right: 12px; }
+  .map-pan.left { left: 12px; }
+  /* hover label sits under the circle so it never covers the march dots */
+  .map-pan::after {
+    content: attr(data-label); position: absolute; top: calc(100% + 6px); white-space: nowrap; pointer-events: none;
+    font-family: var(--font-mono); font-weight: 600; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em;
+    background: var(--black); color: var(--paper); padding: 0.25rem 0.45rem; opacity: 0; transition: opacity 0.15s ease;
+  }
+  .map-pan.right::after { right: -2px; }
+  .map-pan.left::after { left: -2px; }
+  .map-pan:hover::after, .map-pan:focus-visible::after { opacity: 1; }
   .list {
     border: 3px solid var(--black);
     height: 480px;
@@ -1068,7 +1098,38 @@ if (map) Promise.all([eventsReady, new Promise(r => map.on('load', r))]).then(([
   // Open on the lower 48 plus the Canadian marches; cities across the Atlantic are a drag away.
   const home = events.filter(e => e.lng < -30).reduce((b, e) => b.extend([e.lng, e.lat]), new maplibregl.LngLatBounds([-124, 26], [-68, 48]));
   map.resize();
-  map.fitBounds(home, { padding: window.innerWidth <= 800 ? 20 : 60, maxZoom: 4, duration: 0 });
+  const homeView = { padding: window.innerWidth <= 800 ? 20 : 60, maxZoom: 4 };
+  map.fitBounds(home, { ...homeView, duration: 0 });
+
+  // The French marches get their own overview, reached by an arrow on the map's right edge.
+  const abroad = events.filter(e => e.lng >= -30);
+  const france = abroad.reduce((b, e) => b.extend([e.lng, e.lat]), new maplibregl.LngLatBounds([-4.5, 42.5], [8, 51]));
+  const inEurope = () => map.getCenter().lng > -30;
+  const button = (cls, html, label, hover) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = cls; b.hidden = true; b.innerHTML = html;
+    if (label) b.setAttribute('aria-label', label);
+    if (hover) b.dataset.label = hover;
+    map.getContainer().appendChild(b);
+    return b;
+  };
+  const back = button('map-back', '&larr; All marches');
+  const arrow = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+  const toFrance = button('map-pan right', arrow('M5 12h14M13 6l6 6-6 6'), 'Show the marches in France', 'Show more');
+  const toUS = button('map-pan left', arrow('M19 12H5M11 6l-6 6 6 6'), 'Back to the US and Canada', 'Back');
+  const update = () => {
+    const zoomedIn = map.getZoom() >= 6;
+    back.hidden = !zoomedIn;
+    toFrance.hidden = zoomedIn || !abroad.length || inEurope();
+    toUS.hidden = zoomedIn || !inEurope();
+  };
+  map.on('move', update);
+  update();
+  const reset = () => { popup?.remove(); document.querySelectorAll('.ev.on').forEach(li => li.classList.remove('on')); };
+  // "All marches" returns to whichever side of the Atlantic the map is on.
+  back.addEventListener('click', () => { reset(); map.fitBounds(inEurope() ? france : home, { ...homeView, duration: 1200 }); });
+  toFrance.addEventListener('click', () => { reset(); map.fitBounds(france, { ...homeView, maxZoom: 5, duration: 1600 }); });
+  toUS.addEventListener('click', () => { reset(); map.fitBounds(home, { ...homeView, duration: 1600 }); });
 
   for (const id of ['marches', 'stops']) {
     map.on('mouseenter', id, () => map.getCanvas().style.cursor = 'pointer');
