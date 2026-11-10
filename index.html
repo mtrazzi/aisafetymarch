@@ -703,6 +703,16 @@
           </div>
         </div>
       </div>
+      <div class="city">
+        <div class="name">Berlin</div>
+        <div class="when">Sat, Nov 14 &middot; 1 PM &rarr; 2 PM</div>
+        <div class="rsvp">
+          <button class="cta" type="button">RSVP &darr;</button>
+          <div class="menu">
+            <a href="https://luma.com/1k7hxuae" target="_blank" rel="noopener">Luma &rarr;</a>
+          </div>
+        </div>
+      </div>
     </div>
     <button class="arrow next" type="button" aria-label="More cities">&rarr;</button>
     </div>
@@ -844,6 +854,9 @@ const FALLBACK = [
     start: '2026-11-14T11:00:00+01:00', end: '2026-11-14T13:00:00+01:00', url: 'https://luma.com/stop-pjeb' },
   { city: 'Marseille', region: 'France', lng: 5.3789, lat: 43.2906, venue: 'US Consulate General, 12 Bd Paul Peytral', tz: 'Europe/Paris',
     start: '2026-11-14T10:00:00+01:00', end: '2026-11-14T12:00:00+01:00', url: 'https://luma.com/19ycjrpg' },
+  // venue and time still tentative per PauseAI Berlin; pin is the city centre until they pick a spot
+  { city: 'Berlin', region: 'Germany', lng: 13.4050, lat: 52.5200, venue: 'Venue TBD', tz: 'Europe/Berlin',
+    start: '2026-11-14T13:00:00+01:00', end: '2026-11-14T14:00:00+01:00', url: 'https://luma.com/1k7hxuae' },
 ];
 
 // Cities that may march but aren't confirmed; dropped once a real event exists there.
