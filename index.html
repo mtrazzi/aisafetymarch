@@ -852,6 +852,7 @@ const PLANNED = [
   { city: 'Seattle', region: 'WA', lng: -122.3321, lat: 47.6062 },
   { city: 'Los Angeles', region: 'CA', lng: -118.2437, lat: 34.0522 },
   { city: 'Nashville', region: 'TN', lng: -86.7816, lat: 36.1627 },
+  { city: 'Oslo', region: 'Norway', lng: 10.7522, lat: 59.9139 },
 ].map(e => ({ ...e, planned: true }));
 
 // Stops (and, for DC, the provisional path) keyed by city. [lng, lat]
@@ -1136,7 +1137,7 @@ if (map) Promise.all([eventsReady, new Promise(r => map.on('load', r))]).then(([
   };
   const back = button('map-back', '&larr; All marches');
   const arrow = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
-  const toFrance = button('map-pan right', arrow('M5 12h14M13 6l6 6-6 6'), 'Show the marches in France', 'Show more');
+  const toFrance = button('map-pan right', arrow('M5 12h14M13 6l6 6-6 6'), 'Show the marches in Europe', 'Show more');
   const toUS = button('map-pan left', arrow('M19 12H5M11 6l-6 6 6 6'), 'Back to the US and Canada', 'Back');
   const update = () => {
     const zoomedIn = map.getZoom() >= 6;
