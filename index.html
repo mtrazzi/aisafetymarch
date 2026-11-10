@@ -674,6 +674,16 @@
         </div>
       </div>
       <div class="city">
+        <div class="name">Vancouver</div>
+        <div class="when">Sat, Nov 14 &middot; 1 PM &rarr; 3 PM</div>
+        <div class="rsvp">
+          <button class="cta" type="button">RSVP &darr;</button>
+          <div class="menu">
+            <a href="https://luma.com/stop-of4z" target="_blank" rel="noopener">Luma &rarr;</a>
+          </div>
+        </div>
+      </div>
+      <div class="city">
         <div class="name">Paris</div>
         <div class="when">Sat, Nov 14 &middot; 11 AM &rarr; 1 PM</div>
         <div class="rsvp">
@@ -828,6 +838,8 @@ const FALLBACK = [
     start: '2026-11-14T13:00:00-05:00', end: '2026-11-14T15:00:00-05:00', url: 'https://luma.com/g93q6ksk' },
   { city: 'Toronto', region: 'ON, Canada', lng: -79.3925, lat: 43.6646, venue: "Queen's Park, King Edward VII statue", tz: 'America/Toronto',
     start: '2026-11-14T12:45:00-05:00', end: '2026-11-14T15:15:00-05:00', url: 'https://luma.com/20vit6m2' },
+  { city: 'Vancouver', region: 'BC, Canada', lng: -123.1116, lat: 49.2856, venue: 'Waterfront Station', tz: 'America/Vancouver',
+    start: '2026-11-14T13:00:00-08:00', end: '2026-11-14T15:00:00-08:00', url: 'https://luma.com/stop-of4z' },
   { city: 'Paris', region: 'France', lng: 2.3205, lat: 48.8663, venue: 'US Embassy, 2 Ave Gabriel', tz: 'Europe/Paris',
     start: '2026-11-14T11:00:00+01:00', end: '2026-11-14T13:00:00+01:00', url: 'https://luma.com/stop-pjeb' },
   { city: 'Marseille', region: 'France', lng: 5.3789, lat: 43.2906, venue: 'US Consulate General, 12 Bd Paul Peytral', tz: 'Europe/Paris',
@@ -837,9 +849,9 @@ const FALLBACK = [
 // Cities that may march but aren't confirmed; dropped once a real event exists there.
 const PLANNED = [
   { city: 'Philadelphia', region: 'PA', lng: -75.1652, lat: 39.9526 },
-  { city: 'Vancouver', region: 'BC, Canada', lng: -123.1207, lat: 49.2827 },
   { city: 'Seattle', region: 'WA', lng: -122.3321, lat: 47.6062 },
   { city: 'Los Angeles', region: 'CA', lng: -118.2437, lat: 34.0522 },
+  { city: 'Nashville', region: 'TN', lng: -86.7816, lat: 36.1627 },
 ].map(e => ({ ...e, planned: true }));
 
 // Stops (and, for DC, the provisional path) keyed by city. [lng, lat]
@@ -889,6 +901,12 @@ const ROUTES = {
       [[-79.3925, 43.6646], "1:00 · Rally at Queen's Park"],
       [[-79.3880, 43.6545], 'Rally at the US Consulate General'],
       [[-79.3835, 43.6525], 'Final rally at Nathan Phillips Square'],
+    ],
+  },
+  'Vancouver': {
+    stops: [
+      [[-123.1116, 49.2856], '1:00 · Meet at Waterfront Station'],
+      [[-123.1197, 49.2869], '1:45 · Rally at the US Consulate'],
     ],
   },
   'Paris': {
