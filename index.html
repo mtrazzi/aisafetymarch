@@ -540,6 +540,17 @@
     .orgs-row { --h: 68px; gap: 1.25rem; }
   }
 
+  .press-foot {
+    background: var(--black);
+    color: var(--paper);
+    text-align: center;
+    padding: 0 1rem 1.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+  }
+  .press-foot a { color: var(--paper); font-weight: 600; }
+
   /* handshake video behind the hero, faded in after load with the text turning light */
   /* clip the video in its own layer so the RSVP menus can overflow the hero */
   main { position: relative; isolation: isolate; z-index: 1; }
@@ -774,6 +785,7 @@
       <a href="https://pauseia.fr/en" target="_blank" rel="noopener"><img src="img/pauseia-circle.png" alt="Pause IA"></a>
     </div>
   </section>
+  <footer class="press-foot">Press &amp; media: <a href="mailto:press@stoptherace.ai">press@stoptherace.ai</a></footer>
 
 <script>
 // One handler for every RSVP menu, including the ones the map section draws later.
