@@ -872,6 +872,15 @@ const PLANNED = [
   { city: 'Los Angeles', region: 'CA', lng: -118.2437, lat: 34.0522 },
   { city: 'Nashville', region: 'TN', lng: -86.7816, lat: 36.1627 },
   { city: 'Oslo', region: 'Norway', lng: 10.7522, lat: 59.9139 },
+  { city: 'Atlanta', region: 'GA', lng: -84.3880, lat: 33.7490 },
+  { city: 'Cleveland', region: 'OH', lng: -81.6944, lat: 41.4993 },
+  { city: 'Durham', region: 'NC', lng: -78.8986, lat: 35.9940 },
+  { city: 'Madison', region: 'WI', lng: -89.4012, lat: 43.0731 },
+  { city: 'Orlando', region: 'FL', lng: -81.3792, lat: 28.5383 },
+  { city: 'Wichita', region: 'KS', lng: -97.3301, lat: 37.6872 },
+  { city: 'London', region: 'UK', lng: -0.1276, lat: 51.5072 },
+  { city: 'Barcelona', region: 'Spain', lng: 2.1734, lat: 41.3851 },
+  { city: 'Florianópolis', region: 'Brazil', lng: -48.5482, lat: -27.5954 },
 ].map(e => ({ ...e, planned: true }));
 
 // Stops (and, for DC, the provisional path) keyed by city. [lng, lat]
@@ -1137,7 +1146,8 @@ if (map) Promise.all([eventsReady, new Promise(r => map.on('load', r))]).then(([
              'circle-stroke-color': ['case', ['get', 'planned'], '#6b6b6b', '#111111'], 'circle-stroke-width': 3 } });
 
   // Open on the lower 48 plus the Canadian marches; cities across the Atlantic are a drag away.
-  const home = events.filter(e => e.lng < -30).reduce((b, e) => b.extend([e.lng, e.lat]), new maplibregl.LngLatBounds([-124, 26], [-68, 48]));
+  // South America stays out of the US/Canada overview so it doesn't zoom out to the whole hemisphere
+  const home = events.filter(e => e.lng < -30 && e.lat > 15).reduce((b, e) => b.extend([e.lng, e.lat]), new maplibregl.LngLatBounds([-124, 26], [-68, 48]));
   map.resize();
   const homeView = { padding: window.innerWidth <= 800 ? 20 : 60, maxZoom: 4 };
   map.fitBounds(home, { ...homeView, duration: 0 });
