@@ -454,16 +454,13 @@
   .notify-msg.err { color: var(--red); }
   .ev .notify-msg { grid-column: 1 / -1; }
   .ev.planned .city-name { color: var(--gray); }
-  /* notify form and Signal chat button side by side, wrapping when narrow */
-  .ev .actions, .pop .actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 0.6rem; margin-top: 0.6rem; }
-  .actions .notify { margin-top: 0; flex: 1 1 220px; }
-  .actions .notify-msg { margin-top: 0; flex: 1 1 100%; }
   .ev a.chat, .pop a.chat {
     display: inline-block; border: 2px solid var(--black); background: var(--paper); color: var(--black);
     padding: 0.45rem 0.7rem; font-size: 0.75rem; line-height: 1.3; white-space: normal;
   }
   .ev a.chat:hover, .pop a.chat:hover { background: var(--black); color: var(--paper); }
   .ev > a.chat { grid-column: 1; justify-self: start; margin-top: 0.4rem; }
+  .ev.planned > a.chat { grid-column: 1 / -1; margin-top: 0.6rem; }
   .pop > a.chat { margin-top: 0.6rem; }
   .list .empty .notify { margin: 0.6rem 0 1rem; }
   .list .empty { padding: 1rem; font-family: var(--font-mono); font-size: 0.85rem; color: var(--gray); }
@@ -1033,8 +1030,8 @@ const label = ev => esc(ev.city) + (ev.region === 'DC' ? ', DC' : '');
 const SIGNAL = Object.fromEntries(Object.entries(window.SIGNAL_CHATS || {}).map(([c, url]) => [cityKey(c), url]));
 const chatLink = ev => { const url = SIGNAL[cityKey(ev.city)]; return url ?
   `<a class="chat" href="${esc(url)}" target="_blank" rel="noopener">Join the ${esc(ev.city)} Signal chat &rarr;</a>` : ''; };
-// unconfirmed cities: notify form with the chat button beside it
-const plannedActions = ev => `<div class="actions">${notifyForm(ev.city)}${chatLink(ev)}</div>`;
+// unconfirmed cities: the Signal chat if there is one, otherwise the "notify me" email form
+const plannedActions = ev => chatLink(ev) || notifyForm(ev.city);
 const metaLine = ev => ev.planned ? 'Unconfirmed · details coming soon' : when(ev);
 
 // "Notify me" signups for unconfirmed cities go to the Stop The AI Race Mailchimp audience
@@ -1148,7 +1145,7 @@ function renderList(events) {
     </li>`).join('') : '<li class="empty">No march there yet. Get an email if one is organized near you:' +
     notifyForm(raw) + 'Want to run one? <a href="https://www.mobilize.us/stoptheairace/c/march-for-an-ai-treaty/event/create/" target="_blank" rel="noopener">Submit an event on Mobilize</a> (US) or <a href="https://luma.com/stop-the-ai-race" target="_blank" rel="noopener">Luma</a> (outside the US).</li>';
   ul.querySelectorAll('.ev').forEach(li => li.addEventListener('click', e => {
-    if (e.target.closest('a, .rsvp, .notify, .notify-msg, .actions')) return;
+    if (e.target.closest('a, .rsvp, .notify, .notify-msg')) return;
     openEvent(events.find(x => x.city === li.dataset.city));
     if (window.innerWidth <= 800) document.getElementById('map').scrollIntoView({ behavior: 'smooth' });
   }));
