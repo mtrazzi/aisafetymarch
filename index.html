@@ -883,6 +883,19 @@ const PLANNED = [
   { city: 'London', region: 'UK', lng: -0.1276, lat: 51.5072 },
   { city: 'Barcelona', region: 'Spain', lng: 2.1734, lat: 41.3851 },
   { city: 'Florianópolis', region: 'Brazil', lng: -48.5482, lat: -27.5954 },
+  { city: 'Denver', region: 'CO', lng: -104.9903, lat: 39.7392 },
+  { city: 'Dallas', region: 'TX', lng: -96.7970, lat: 32.7767 },
+  { city: 'Pittsburgh', region: 'PA', lng: -79.9959, lat: 40.4406 },
+  { city: 'Tampa', region: 'FL', lng: -82.4572, lat: 27.9506 },
+  { city: 'Miami', region: 'FL', lng: -80.1918, lat: 25.7617 },
+  { city: 'Grand Rapids', region: 'MI', lng: -85.6681, lat: 42.9634 },
+  { city: 'New Haven', region: 'CT', lng: -72.9279, lat: 41.3083 },
+  { city: 'Victoria', region: 'BC, Canada', lng: -123.3656, lat: 48.4284 },
+  { city: 'Madrid', region: 'Spain', lng: -3.7038, lat: 40.4168 },
+  { city: 'Edinburgh', region: 'UK', lng: -3.1883, lat: 55.9533 },
+  { city: 'Munich', region: 'Germany', lng: 11.5820, lat: 48.1351 },
+  { city: 'Melbourne', region: 'Australia', lng: 144.9631, lat: -37.8136 },
+  { city: 'Manila', region: 'Philippines', lng: 120.9842, lat: 14.5995 },
 ].map(e => ({ ...e, planned: true }));
 
 // Stops (and, for DC, the provisional path) keyed by city. [lng, lat]
@@ -1154,8 +1167,9 @@ if (map) Promise.all([eventsReady, new Promise(r => map.on('load', r))]).then(([
   const homeView = { padding: window.innerWidth <= 800 ? 20 : 60, maxZoom: 4 };
   map.fitBounds(home, { ...homeView, duration: 0 });
 
-  // The French marches get their own overview, reached by an arrow on the map's right edge.
-  const abroad = events.filter(e => e.lng >= -30);
+  // The European marches get their own overview, reached by an arrow on the map's right edge.
+  // Asia and Australia stay out of it so it doesn't zoom out to half the globe; they're a drag away.
+  const abroad = events.filter(e => e.lng >= -30 && e.lng < 60);
   const france = abroad.reduce((b, e) => b.extend([e.lng, e.lat]), new maplibregl.LngLatBounds([-4.5, 42.5], [8, 51]));
   const inEurope = () => map.getCenter().lng > -30;
   const button = (cls, html, label, hover) => {
