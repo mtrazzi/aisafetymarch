@@ -454,6 +454,17 @@
   .notify-msg.err { color: var(--red); }
   .ev .notify-msg { grid-column: 1 / -1; }
   .ev.planned .city-name { color: var(--gray); }
+  /* notify form and Signal chat button side by side, wrapping when narrow */
+  .ev .actions, .pop .actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 0.6rem; margin-top: 0.6rem; }
+  .actions .notify { margin-top: 0; flex: 1 1 220px; }
+  .actions .notify-msg { margin-top: 0; flex: 1 1 100%; }
+  .ev a.chat, .pop a.chat {
+    display: inline-block; border: 2px solid var(--black); background: var(--paper); color: var(--black);
+    padding: 0.45rem 0.7rem; font-size: 0.75rem; line-height: 1.3; white-space: normal;
+  }
+  .ev a.chat:hover, .pop a.chat:hover { background: var(--black); color: var(--paper); }
+  .ev > a.chat { grid-column: 1; justify-self: start; margin-top: 0.4rem; }
+  .pop > a.chat { margin-top: 0.6rem; }
   .list .empty .notify { margin: 0.6rem 0 1rem; }
   .list .empty { padding: 1rem; font-family: var(--font-mono); font-size: 0.85rem; color: var(--gray); }
   .list .empty a { color: var(--red); }
@@ -834,6 +845,7 @@ document.addEventListener('click', e => {
 })();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.js"></script>
+<script src="signal-chats.js"></script>
 <script>
 // Marches come live from the Stop The AI Race org on Mobilize; FALLBACK covers
 // cities not on Mobilize (yet) and the case where the API is unreachable.
@@ -1016,6 +1028,13 @@ async function loadEvents() {
 }
 
 const label = ev => esc(ev.city) + (ev.region === 'DC' ? ', DC' : '');
+
+// "Join the <City> Signal chat" button; links live in signal-chats.js. No link, no button.
+const SIGNAL = Object.fromEntries(Object.entries(window.SIGNAL_CHATS || {}).map(([c, url]) => [cityKey(c), url]));
+const chatLink = ev => { const url = SIGNAL[cityKey(ev.city)]; return url ?
+  `<a class="chat" href="${esc(url)}" target="_blank" rel="noopener">Join the ${esc(ev.city)} Signal chat &rarr;</a>` : ''; };
+// unconfirmed cities: notify form with the chat button beside it
+const plannedActions = ev => `<div class="actions">${notifyForm(ev.city)}${chatLink(ev)}</div>`;
 const metaLine = ev => ev.planned ? 'Unconfirmed · details coming soon' : when(ev);
 
 // "Notify me" signups for unconfirmed cities go to the Stop The AI Race Mailchimp audience
@@ -1096,7 +1115,7 @@ function openEvent(ev) {
   popup = new maplibregl.Popup({ offset: 12, maxWidth: '280px' })
     .setLngLat([ev.lng, ev.lat])
     .setHTML(`<div class="pop"><div class="city-name">${label(ev)}</div>
-      <div class="meta">${esc(metaLine(ev))}</div>${ev.planned ? notifyForm(ev.city) : rsvpLinks(ev)}</div>`)
+      <div class="meta">${esc(metaLine(ev))}</div>${ev.planned ? plannedActions(ev) : rsvpLinks(ev) + chatLink(ev)}</div>`)
     .addTo(map);
   const route = ROUTES[ev.city];
   if (route) {
@@ -1119,17 +1138,17 @@ function renderList(events) {
     <li class="ev planned" data-city="${esc(e.city)}">
       <div class="city-name">${label(e)}</div>
       <div class="meta">${esc(metaLine(e))}</div>
-      ${notifyForm(e.city)}
+      ${plannedActions(e)}
     </li>` : `
     <li class="ev" data-city="${esc(e.city)}">
       <div class="city-name">${label(e)}</div>
       <div class="meta">${esc(when(e))}</div>
       <div class="venue">${esc(e.venue)}</div>
-      ${rsvpLinks(e)}
+      ${rsvpLinks(e)}${chatLink(e)}
     </li>`).join('') : '<li class="empty">No march there yet. Get an email if one is organized near you:' +
     notifyForm(raw) + 'Want to run one? <a href="https://www.mobilize.us/stoptheairace/c/march-for-an-ai-treaty/event/create/" target="_blank" rel="noopener">Submit an event on Mobilize</a> (US) or <a href="https://luma.com/stop-the-ai-race" target="_blank" rel="noopener">Luma</a> (outside the US).</li>';
   ul.querySelectorAll('.ev').forEach(li => li.addEventListener('click', e => {
-    if (e.target.closest('a, .rsvp, .notify, .notify-msg')) return;
+    if (e.target.closest('a, .rsvp, .notify, .notify-msg, .actions')) return;
     openEvent(events.find(x => x.city === li.dataset.city));
     if (window.innerWidth <= 800) document.getElementById('map').scrollIntoView({ behavior: 'smooth' });
   }));
