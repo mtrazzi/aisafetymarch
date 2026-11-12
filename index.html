@@ -883,7 +883,7 @@ const PLANNED = [
   { city: 'Oslo', region: 'Norway', lng: 10.7522, lat: 59.9139 },
   { city: 'Atlanta', region: 'GA', lng: -84.3880, lat: 33.7490 },
   { city: 'Cleveland', region: 'OH', lng: -81.6944, lat: 41.4993 },
-  { city: 'Durham', region: 'NC', lng: -78.8986, lat: 35.9940 },
+  { city: 'Raleigh-Durham', region: 'NC', lng: -78.8986, lat: 35.9940 },
   { city: 'Madison', region: 'WI', lng: -89.4012, lat: 43.0731 },
   { city: 'Orlando', region: 'FL', lng: -81.3792, lat: 28.5383 },
   { city: 'Wichita', region: 'KS', lng: -97.3301, lat: 37.6872 },
@@ -894,17 +894,7 @@ const PLANNED = [
   { city: 'Florianópolis', region: 'Brazil', lng: -48.5482, lat: -27.5954 },
   { city: 'Denver', region: 'CO', lng: -104.9903, lat: 39.7392 },
   { city: 'Dallas', region: 'TX', lng: -96.7970, lat: 32.7767 },
-  { city: 'Pittsburgh', region: 'PA', lng: -79.9959, lat: 40.4406 },
-  { city: 'Tampa', region: 'FL', lng: -82.4572, lat: 27.9506 },
   { city: 'Miami', region: 'FL', lng: -80.1918, lat: 25.7617 },
-  { city: 'Grand Rapids', region: 'MI', lng: -85.6681, lat: 42.9634 },
-  { city: 'New Haven', region: 'CT', lng: -72.9279, lat: 41.3083 },
-  { city: 'Victoria', region: 'BC, Canada', lng: -123.3656, lat: 48.4284 },
-  { city: 'Madrid', region: 'Spain', lng: -3.7038, lat: 40.4168 },
-  { city: 'Edinburgh', region: 'UK', lng: -3.1883, lat: 55.9533 },
-  { city: 'Munich', region: 'Germany', lng: 11.5820, lat: 48.1351 },
-  { city: 'Melbourne', region: 'Australia', lng: 144.9631, lat: -37.8136 },
-  { city: 'Manila', region: 'Philippines', lng: 120.9842, lat: 14.5995 },
 ].map(e => ({ ...e, planned: true }));
 
 // Stops (and, for DC, the provisional path) keyed by city. [lng, lat]
@@ -1027,9 +1017,9 @@ async function loadEvents() {
 const label = ev => esc(ev.city) + (ev.region === 'DC' ? ', DC' : '');
 
 // "Join the <City> Signal chat" button; links live in signal-chats.js. No link, no button.
-const SIGNAL = Object.fromEntries(Object.entries(window.SIGNAL_CHATS || {}).map(([c, url]) => [cityKey(c), url]));
-const chatLink = ev => { const url = SIGNAL[cityKey(ev.city)]; return url ?
-  `<a class="chat" href="${esc(url)}" target="_blank" rel="noopener">Join the ${esc(ev.city)} Signal chat &rarr;</a>` : ''; };
+const SIGNAL = Object.fromEntries(Object.entries(window.SIGNAL_CHATS || {}).map(([c, v]) => [cityKey(c), typeof v === 'string' ? { url: v } : v]));
+const chatLink = ev => { const chat = SIGNAL[cityKey(ev.city)]; return chat?.url ?
+  `<a class="chat" href="${esc(chat.url)}" target="_blank" rel="noopener">Join the ${esc(chat.label || ev.city)} Signal chat &rarr;</a>` : ''; };
 // unconfirmed cities: the Signal chat if there is one, otherwise the "notify me" email form
 const plannedActions = ev => chatLink(ev) || notifyForm(ev.city);
 const metaLine = ev => ev.planned ? 'Unconfirmed · details coming soon' : when(ev);
@@ -1172,9 +1162,10 @@ if (map) Promise.all([eventsReady, new Promise(r => map.on('load', r))]).then(([
     paint: { 'circle-radius': 6, 'circle-color': '#f2eee6', 'circle-stroke-color': '#111111', 'circle-stroke-width': 3 } });
   map.addLayer({ id: 'marches', type: 'circle', source: 'marches',
     layout: { 'circle-sort-key': ['case', ['get', 'planned'], 0, 1] },
-    paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, ['case', ['get', 'planned'], 7, 9], 12, 11],
+    paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, ['case', ['get', 'planned'], 5.4, 9], 12, ['case', ['get', 'planned'], 6.6, 11]],
              'circle-color': ['case', ['get', 'planned'], '#f2eee6', '#d62828'],
-             'circle-stroke-color': ['case', ['get', 'planned'], '#6b6b6b', '#111111'], 'circle-stroke-width': 3 } });
+             'circle-stroke-color': ['case', ['get', 'planned'], '#6b6b6b', '#111111'],
+             'circle-stroke-width': ['case', ['get', 'planned'], 1.5, 3] } });
 
   // Open on the lower 48 plus the Canadian marches; cities across the Atlantic are a drag away.
   // South America stays out of the US/Canada overview so it doesn't zoom out to the whole hemisphere
