@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Treaty March</title>
-<meta name="description" content="March for an AI Treaty. Saturday, Nov 14 in San Francisco, Washington, DC, New York, Boston, Chicago, Philadelphia, Montréal, Toronto, Paris and Marseille.">
+<meta name="description" content="March for an AI Treaty. Saturday, Nov 14 in San Francisco, Washington, DC, New York, Boston, Chicago, Philadelphia, Seattle, Montréal, Toronto, Paris and Marseille.">
 <meta property="og:title" content="AI Treaty March">
-<meta property="og:description" content="March for an AI Treaty. Saturday, Nov 14 in San Francisco, Washington, DC, New York, Boston, Chicago, Philadelphia, Montréal, Toronto, Paris and Marseille.">
+<meta property="og:description" content="March for an AI Treaty. Saturday, Nov 14 in San Francisco, Washington, DC, New York, Boston, Chicago, Philadelphia, Seattle, Montréal, Toronto, Paris and Marseille.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aitreatymarch.org">
 <meta property="og:image" content="https://aitreatymarch.org/img/og-3.png">
@@ -678,6 +678,16 @@
         </div>
       </div>
       <div class="city">
+        <div class="name">Seattle</div>
+        <div class="when">Sat, Nov 14 &middot; 12 PM &rarr; 2 PM</div>
+        <div class="rsvp">
+          <button class="cta" type="button">RSVP &darr;</button>
+          <div class="menu">
+            <a href="https://www.mobilize.us/stoptheairace/event/1081187/" target="_blank" rel="noopener">Mobilize &rarr;</a>
+          </div>
+        </div>
+      </div>
+      <div class="city">
         <div class="name">Montr&eacute;al</div>
         <div class="when">Sat, Nov 14 &middot; 1 PM &rarr; 3 PM</div>
         <div class="rsvp">
@@ -872,6 +882,8 @@ const FALLBACK = [
     start: '2026-11-14T12:00:00-06:00', end: '2026-11-14T13:00:00-06:00', url: 'https://www.mobilize.us/stoptheairace/event/1080268/' },
   { city: 'Philadelphia', region: 'PA', lng: -75.1495, lat: 39.9503, venue: "People's Plaza (park next to the Liberty Bell), 530 Market St", tz: 'America/New_York',
     start: '2026-11-14T12:00:00-05:00', end: '2026-11-14T14:00:00-05:00', url: 'https://www.mobilize.us/stoptheairace/event/1081177/' },
+  { city: 'Seattle', region: 'WA', lng: -122.3372, lat: 47.6258, venue: 'Lake Union Park streetcar stop, Valley St & Terry Ave N', tz: 'America/Los_Angeles',
+    start: '2026-11-14T12:00:00-08:00', end: '2026-11-14T14:00:00-08:00', url: 'https://www.mobilize.us/stoptheairace/event/1081187/' },
   { city: 'Montréal', region: 'QC, Canada', lng: -73.5714, lat: 45.4999, venue: 'Dorchester Square, 2903 Rue Peel', tz: 'America/Toronto',
     start: '2026-11-14T13:00:00-05:00', end: '2026-11-14T15:00:00-05:00', url: 'https://luma.com/g93q6ksk' },
   { city: 'Toronto', region: 'ON, Canada', lng: -79.3925, lat: 43.6646, venue: "Queen's Park, King Edward VII statue", tz: 'America/Toronto',
@@ -888,7 +900,6 @@ const FALLBACK = [
 
 // Cities that may march but aren't confirmed; dropped once a real event exists there.
 const PLANNED = [
-  { city: 'Seattle', region: 'WA', lng: -122.3321, lat: 47.6062 },
   { city: 'Los Angeles', region: 'CA', lng: -118.2437, lat: 34.0522 },
   { city: 'Nashville', region: 'TN', lng: -86.7816, lat: 36.1627 },
   { city: 'Oslo', region: 'Norway', lng: 10.7522, lat: 59.9139 },
@@ -931,6 +942,12 @@ const ROUTES = {
            [-77.0237, 38.8937], [-77.0260, 38.8944], [-77.0285, 38.8952], [-77.0299, 38.8955],
            [-77.0320, 38.8956], [-77.0336, 38.8955], [-77.0337, 38.8988], [-77.0362, 38.8988],
            [-77.0365, 38.8995]],
+  },
+  'Seattle': {
+    stops: [
+      [[-122.3372, 47.6258], '12:00 · Gather at the Lake Union Park streetcar stop'],
+      [[-122.3335, 47.6224], "12:30 · March to Anthropic's Seattle office (400 Fairview Ave N); 1:00 · Chants & speeches"],
+    ],
   },
   'Philadelphia': {
     stops: [
