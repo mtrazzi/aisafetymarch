@@ -1021,10 +1021,10 @@ async function loadEvents() {
 
 const label = ev => esc(ev.city) + (ev.region === 'DC' ? ', DC' : '');
 
-// "Join the <City> Signal chat" button; links live in signal-chats.js. No link, no button.
+// "Join the Signal chat" button; links live in signal-chats.js. No link, no button.
 const SIGNAL = Object.fromEntries(Object.entries(window.SIGNAL_CHATS || {}).map(([c, v]) => [cityKey(c), typeof v === 'string' ? { url: v } : v]));
 const chatLink = ev => { const chat = SIGNAL[cityKey(ev.city)]; return chat?.url ?
-  `<a class="chat" href="${esc(chat.url)}" target="_blank" rel="noopener">Join the ${esc(chat.label || ev.city)} Signal chat &rarr;</a>` : ''; };
+  `<a class="chat" href="${esc(chat.url)}" target="_blank" rel="noopener">Join the Signal chat &rarr;</a>` : ''; };
 // unconfirmed cities: the Signal chat if there is one, otherwise the "notify me" email form
 const plannedActions = ev => chatLink(ev) || notifyForm(ev.city);
 const metaLine = ev => ev.planned ? 'Unconfirmed · details coming soon' : when(ev);

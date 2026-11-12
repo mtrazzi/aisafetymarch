@@ -1,7 +1,7 @@
-// City → Signal group chat link, shown as "Join the <City> Signal chat" on the map list and popups.
+// City → Signal group chat link, shown as a "Join the Signal chat" button on the map list and popups.
 // Add, change or remove a line here to update a city's link; cities without a line get no button.
 // City names must match the site's spelling (accents don't matter: 'Montreal' matches 'Montréal').
-// A city can also take { url, label } to borrow another chat, e.g. Miami → "Join the Florida Signal chat".
+// A city can share another city's chat by reusing its link (Miami uses the Florida chat, same as Orlando).
 window.SIGNAL_CHATS = {
   'Atlanta':       'https://signal.group/#CjQKIFl2Lg_8QzcbRrgo3tTIN8Xq-X-OatPbJ3CUpBKK2wjlEhA5-w3yLrnK41o0FPcD9vdH',
   'Barcelona':     'https://signal.group/#CjQKIO4zsTaI5ll8dUPdsOpx5vRphIFth-EUto60hnqMzn8OEhAcCEYwH4810br3XBHl_UNe',
@@ -15,7 +15,7 @@ window.SIGNAL_CHATS = {
   'London':        'https://signal.group/#CjQKIE_Y2R91r7wEvOExKPH0ZY-JWGKrZy2COH1YOVaODs8lEhBPgeQ1199mRp31JY7E_3XT',
   'Los Angeles':   'https://signal.group/#CjQKIJn8jXVr8ZTghWdamTZgMwAu4rTDxgpYjOZ-A1Kop2Z9EhC3rmrzm6jvpp2LTVP7FKvI',
   'Madison':       'https://signal.group/#CjQKIO5lfB-FX65nmyuvHNjwnLgoCanU4jmB0uZIPS4qVC6FEhB85m__BEEUgNTQDY0mH-6m',
-  'Miami':         { url: 'https://signal.group/#CjQKIF7svdXxPsnF6QU9PEZfRHpYr37wrIGmA2nRi-mXfoIDEhDZhelF0dOy-xqNzC0Yj7R6', label: 'Florida' },
+  'Miami':         'https://signal.group/#CjQKIF7svdXxPsnF6QU9PEZfRHpYr37wrIGmA2nRi-mXfoIDEhDZhelF0dOy-xqNzC0Yj7R6',
   'Nashville':     'https://signal.group/#CjQKIOOkP5UCCf08pRRuGhfzHUqBp6TH4UaMJcd17byeRaNfEhCEk3HjPQYSdgjEaYliWV1N',
   'Orlando':       'https://signal.group/#CjQKIF7svdXxPsnF6QU9PEZfRHpYr37wrIGmA2nRi-mXfoIDEhDZhelF0dOy-xqNzC0Yj7R6',
   'Oslo':          'https://signal.group/#CjQKIIST7SfpkcoX9aglcl4XlDTXJP2tY-4oFUpTm5ml6FK8EhC5U8772vnyo6tbrLyEW2XK',
