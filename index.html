@@ -1185,7 +1185,7 @@ if (map) Promise.all([eventsReady, new Promise(r => map.on('load', r))]).then(([
     paint: { 'circle-radius': 6, 'circle-color': '#f2eee6', 'circle-stroke-color': '#111111', 'circle-stroke-width': 3 } });
   map.addLayer({ id: 'marches', type: 'circle', source: 'marches',
     layout: { 'circle-sort-key': ['case', ['get', 'planned'], 0, 1] },
-    paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, ['case', ['get', 'planned'], 8, 9], 12, ['case', ['get', 'planned'], 10, 11]],
+    paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, 9, 12, 11],
              'circle-color': ['case', ['get', 'planned'], '#ffffff', '#d62828'],
              'circle-stroke-color': ['case', ['get', 'planned'], '#444444', '#111111'],
              'circle-stroke-width': 3 } });
