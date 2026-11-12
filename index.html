@@ -1167,10 +1167,10 @@ if (map) Promise.all([eventsReady, new Promise(r => map.on('load', r))]).then(([
     paint: { 'circle-radius': 6, 'circle-color': '#f2eee6', 'circle-stroke-color': '#111111', 'circle-stroke-width': 3 } });
   map.addLayer({ id: 'marches', type: 'circle', source: 'marches',
     layout: { 'circle-sort-key': ['case', ['get', 'planned'], 0, 1] },
-    paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, ['case', ['get', 'planned'], 5.4, 9], 12, ['case', ['get', 'planned'], 6.6, 11]],
-             'circle-color': ['case', ['get', 'planned'], '#f2eee6', '#d62828'],
-             'circle-stroke-color': ['case', ['get', 'planned'], '#6b6b6b', '#111111'],
-             'circle-stroke-width': ['case', ['get', 'planned'], 1.5, 3] } });
+    paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 3, ['case', ['get', 'planned'], 8, 9], 12, ['case', ['get', 'planned'], 10, 11]],
+             'circle-color': ['case', ['get', 'planned'], '#ffffff', '#d62828'],
+             'circle-stroke-color': ['case', ['get', 'planned'], '#444444', '#111111'],
+             'circle-stroke-width': 3 } });
 
   // Open on the lower 48 plus the Canadian marches; cities across the Atlantic are a drag away.
   // South America stays out of the US/Canada overview so it doesn't zoom out to the whole hemisphere
