@@ -509,11 +509,11 @@
   /* --h scales the cards with the viewport so all logos stay on one row down to ~1200px wide
      (a 16" MacBook at default scaling is ~1730px, where the fixed 92px cards + 40px gaps wrapped one logo) */
   .orgs-row {
-    --h: clamp(64px, 5.3vw, 92px);
+    --h: clamp(56px, 4.7vw, 92px);
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: clamp(0.75rem, 1.5vw, 2rem);
+    gap: clamp(0.6rem, 1.2vw, 2rem);
     flex-wrap: wrap;
   }
   /* every logo sits on an identical-height white card; wide wordmarks are capped so they don't dominate */
@@ -778,6 +778,7 @@
       <a href="https://peopleforapause.org/" target="_blank" rel="noopener"><img src="img/peopleforapause.svg" alt="People for a Pause"></a>
       <a href="https://pauseai.ca/en/" target="_blank" rel="noopener"><img src="img/pauseaicanada.png" alt="PauseAI Canada"></a>
       <a href="https://pauseia.fr/en" target="_blank" rel="noopener"><img src="img/pauseia-circle.png" alt="Pause IA"></a>
+      <a href="https://pause-ai.de/" target="_blank" rel="noopener"><img src="img/pauseai-germany.png" alt="PauseAI Germany"></a>
     </div>
   </section>
 
@@ -860,8 +861,7 @@ const FALLBACK = [
     start: '2026-11-14T11:00:00+01:00', end: '2026-11-14T13:00:00+01:00', url: 'https://luma.com/stop-pjeb' },
   { city: 'Marseille', region: 'France', lng: 5.3789, lat: 43.2906, venue: 'US Consulate General, 12 Bd Paul Peytral', tz: 'Europe/Paris',
     start: '2026-11-14T10:00:00+01:00', end: '2026-11-14T12:00:00+01:00', url: 'https://luma.com/19ycjrpg' },
-  // venue and time still tentative per PauseAI Berlin; pin is the city centre until they pick a spot
-  { city: 'Berlin', region: 'Germany', lng: 13.4050, lat: 52.5200, venue: 'Venue TBD', tz: 'Europe/Berlin',
+  { city: 'Berlin', region: 'Germany', lng: 13.3472, lat: 52.5015, venue: 'Arc de 124,5° sculpture by Bernar Venet, An der Urania', tz: 'Europe/Berlin',
     start: '2026-11-14T13:00:00+01:00', end: '2026-11-14T14:00:00+01:00', url: 'https://luma.com/1k7hxuae' },
 ];
 
