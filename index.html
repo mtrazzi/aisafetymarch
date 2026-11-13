@@ -747,6 +747,16 @@
           </div>
         </div>
       </div>
+      <div class="city">
+        <div class="name">Canberra</div>
+        <div class="when">Sat, Nov 14 &middot; 5 PM &rarr; 5:30 PM</div>
+        <div class="rsvp">
+          <button class="cta" type="button">RSVP &darr;</button>
+          <div class="menu">
+            <a href="https://luma.com/zlosrh4r" target="_blank" rel="noopener">Luma &rarr;</a>
+          </div>
+        </div>
+      </div>
     </div>
     <button class="arrow next" type="button" aria-label="More cities">&rarr;</button>
     </div>
@@ -896,6 +906,8 @@ const FALLBACK = [
     start: '2026-11-14T10:00:00+01:00', end: '2026-11-14T12:00:00+01:00', url: 'https://luma.com/19ycjrpg' },
   { city: 'Berlin', region: 'Germany', lng: 13.3472, lat: 52.5015, venue: 'Arc de 124,5° sculpture by Bernar Venet, An der Urania', tz: 'Europe/Berlin',
     start: '2026-11-14T13:00:00+01:00', end: '2026-11-14T14:00:00+01:00', url: 'https://luma.com/1k7hxuae' },
+  { city: 'Canberra', region: 'ACT, Australia', lng: 149.1306, lat: -35.2813, venue: 'ACT Legislative Assembly, 196 London Cct', tz: 'Australia/Sydney',
+    start: '2026-11-14T17:00:00+11:00', end: '2026-11-14T17:30:00+11:00', url: 'https://luma.com/zlosrh4r' },
 ];
 
 // Cities that may march but aren't confirmed; dropped once a real event exists there.
@@ -922,6 +934,7 @@ const PLANNED = [
   { city: 'Munich', region: 'Germany', lng: 11.5820, lat: 48.1351 },
   { city: 'Melbourne', region: 'Australia', lng: 144.9631, lat: -37.8136 },
   { city: 'Manila', region: 'Philippines', lng: 120.9842, lat: 14.5995 },
+  { city: 'Sacramento', region: 'CA', lng: -121.4944, lat: 38.5816 },
 ].map(e => ({ ...e, planned: true }));
 
 // Stops (and, for DC, the provisional path) keyed by city. [lng, lat]
