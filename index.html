@@ -757,6 +757,16 @@
           </div>
         </div>
       </div>
+      <div class="city">
+        <div class="name">Brisbane</div>
+        <div class="when">Sat, Nov 14 &middot; 11 AM</div>
+        <div class="rsvp">
+          <button class="cta" type="button">RSVP &darr;</button>
+          <div class="menu">
+            <a href="https://www.facebook.com/events/s/concerned-about-ai-and-our-fut/1423085412830781/" target="_blank" rel="noopener">Facebook &rarr;</a>
+          </div>
+        </div>
+      </div>
     </div>
     <button class="arrow next" type="button" aria-label="More cities">&rarr;</button>
     </div>
@@ -908,6 +918,8 @@ const FALLBACK = [
     start: '2026-11-14T13:00:00+01:00', end: '2026-11-14T14:00:00+01:00', url: 'https://luma.com/1k7hxuae' },
   { city: 'Canberra', region: 'ACT, Australia', lng: 149.1306, lat: -35.2813, venue: 'ACT Legislative Assembly, 196 London Cct', tz: 'Australia/Sydney',
     start: '2026-11-14T17:00:00+11:00', end: '2026-11-14T17:30:00+11:00', url: 'https://luma.com/zlosrh4r' },
+  { city: 'Brisbane', region: 'QLD, Australia', lng: 153.024340, lat: -27.468320, venue: 'King George Square', tz: 'Australia/Brisbane',
+    start: '2026-11-14T11:00:00+10:00', url: 'https://www.facebook.com/events/s/concerned-about-ai-and-our-fut/1423085412830781/' },
 ];
 
 // Cities that may march but aren't confirmed; dropped once a real event exists there.
@@ -1035,7 +1047,7 @@ function when(ev) {
     .format(new Date(d)).replace(':00', '');
   const zone = new Intl.DateTimeFormat('en-US', { timeZone: ev.tz, timeZoneName: 'short' })
     .formatToParts(new Date(ev.start)).find(p => p.type === 'timeZoneName').value;
-  return `Sat, Nov 14 · ${t(ev.start)} → ${t(ev.end)} ${zone}`;
+  return `Sat, Nov 14 · ${t(ev.start)}${ev.end ? ` → ${t(ev.end)}` : ''} ${zone}`;
 }
 
 async function loadEvents() {
