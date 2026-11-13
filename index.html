@@ -241,6 +241,7 @@
     background: var(--red);
     color: var(--paper);
     padding: 0.8rem 1.4rem;
+    text-decoration: none;
   }
 
 
@@ -401,7 +402,7 @@
     text-decoration: none;
     white-space: nowrap;
   }
-  .ev .rsvp { grid-column: 2; grid-row: 1 / span 3; }
+  .ev .rsvp, .ev .rsvp-go { grid-column: 2; grid-row: 1 / span 3; }
   .rsvp.mini { margin-top: 0; }
   .rsvp.mini > button {
     border: 0; cursor: pointer; font-family: var(--font-mono); font-weight: 600; font-size: 0.8rem;
@@ -482,7 +483,7 @@
 
   @media (max-width: 800px) {
     .find-grid { grid-template-columns: 1fr; }
-    #map { height: 260px; }
+    #map { height: 340px; }
     .list { height: auto; max-height: 420px; }
   }
 
@@ -660,122 +661,62 @@
       <div class="city">
         <div class="name">Chicago</div>
         <div class="when">Sat, Nov 14 &middot; 12 PM &rarr; 1 PM</div>
-        <div class="rsvp">
-          <button class="cta" type="button">RSVP &darr;</button>
-          <div class="menu">
-            <a href="https://www.mobilize.us/stoptheairace/event/1080268/" target="_blank" rel="noopener">Mobilize &rarr;</a>
-          </div>
-        </div>
+        <a class="cta" href="https://www.mobilize.us/stoptheairace/event/1080268/" target="_blank" rel="noopener">RSVP &rarr;</a>
       </div>
       <div class="city">
         <div class="name">Philadelphia</div>
         <div class="when">Sat, Nov 14 &middot; 12 PM &rarr; 2 PM</div>
-        <div class="rsvp">
-          <button class="cta" type="button">RSVP &darr;</button>
-          <div class="menu">
-            <a href="https://www.mobilize.us/stoptheairace/event/1081177/" target="_blank" rel="noopener">Mobilize &rarr;</a>
-          </div>
-        </div>
+        <a class="cta" href="https://www.mobilize.us/stoptheairace/event/1081177/" target="_blank" rel="noopener">RSVP &rarr;</a>
       </div>
       <div class="city">
         <div class="name">Seattle</div>
         <div class="when">Sat, Nov 14 &middot; 12 PM &rarr; 2 PM</div>
-        <div class="rsvp">
-          <button class="cta" type="button">RSVP &darr;</button>
-          <div class="menu">
-            <a href="https://www.mobilize.us/stoptheairace/event/1081187/" target="_blank" rel="noopener">Mobilize &rarr;</a>
-          </div>
-        </div>
+        <a class="cta" href="https://www.mobilize.us/stoptheairace/event/1081187/" target="_blank" rel="noopener">RSVP &rarr;</a>
       </div>
       <div class="city">
         <div class="name">Montr&eacute;al</div>
         <div class="when">Sat, Nov 14 &middot; 1 PM &rarr; 3 PM</div>
-        <div class="rsvp">
-          <button class="cta" type="button">RSVP &darr;</button>
-          <div class="menu">
-            <a href="https://luma.com/g93q6ksk" target="_blank" rel="noopener">Luma &rarr;</a>
-          </div>
-        </div>
+        <a class="cta" href="https://luma.com/g93q6ksk" target="_blank" rel="noopener">RSVP &rarr;</a>
       </div>
       <div class="city">
         <div class="name">Toronto</div>
         <div class="when">Sat, Nov 14 &middot; 12:45 PM &rarr; 3:15 PM</div>
-        <div class="rsvp">
-          <button class="cta" type="button">RSVP &darr;</button>
-          <div class="menu">
-            <a href="https://luma.com/20vit6m2" target="_blank" rel="noopener">Luma &rarr;</a>
-          </div>
-        </div>
+        <a class="cta" href="https://luma.com/20vit6m2" target="_blank" rel="noopener">RSVP &rarr;</a>
       </div>
       <div class="city">
         <div class="name">Vancouver</div>
         <div class="when">Sat, Nov 14 &middot; 1 PM &rarr; 3 PM</div>
-        <div class="rsvp">
-          <button class="cta" type="button">RSVP &darr;</button>
-          <div class="menu">
-            <a href="https://luma.com/stop-of4z" target="_blank" rel="noopener">Luma &rarr;</a>
-          </div>
-        </div>
+        <a class="cta" href="https://luma.com/stop-of4z" target="_blank" rel="noopener">RSVP &rarr;</a>
       </div>
       <div class="city">
         <div class="name">Paris</div>
         <div class="when">Sat, Nov 14 &middot; 11 AM &rarr; 1 PM</div>
-        <div class="rsvp">
-          <button class="cta" type="button">RSVP &darr;</button>
-          <div class="menu">
-            <a href="https://luma.com/stop-pjeb" target="_blank" rel="noopener">Luma &rarr;</a>
-          </div>
-        </div>
+        <a class="cta" href="https://luma.com/stop-pjeb" target="_blank" rel="noopener">RSVP &rarr;</a>
       </div>
       <div class="city">
         <div class="name">Marseille</div>
         <div class="when">Sat, Nov 14 &middot; 10 AM &rarr; 12 PM</div>
-        <div class="rsvp">
-          <button class="cta" type="button">RSVP &darr;</button>
-          <div class="menu">
-            <a href="https://luma.com/19ycjrpg" target="_blank" rel="noopener">Luma &rarr;</a>
-          </div>
-        </div>
+        <a class="cta" href="https://luma.com/19ycjrpg" target="_blank" rel="noopener">RSVP &rarr;</a>
       </div>
       <div class="city">
         <div class="name">Berlin</div>
         <div class="when">Sat, Nov 14 &middot; 1 PM &rarr; 2 PM</div>
-        <div class="rsvp">
-          <button class="cta" type="button">RSVP &darr;</button>
-          <div class="menu">
-            <a href="https://luma.com/1k7hxuae" target="_blank" rel="noopener">Luma &rarr;</a>
-          </div>
-        </div>
+        <a class="cta" href="https://luma.com/1k7hxuae" target="_blank" rel="noopener">RSVP &rarr;</a>
       </div>
       <div class="city">
         <div class="name">Canberra</div>
         <div class="when">Sat, Nov 14 &middot; 5 PM &rarr; 5:30 PM</div>
-        <div class="rsvp">
-          <button class="cta" type="button">RSVP &darr;</button>
-          <div class="menu">
-            <a href="https://luma.com/zlosrh4r" target="_blank" rel="noopener">Luma &rarr;</a>
-          </div>
-        </div>
+        <a class="cta" href="https://luma.com/zlosrh4r" target="_blank" rel="noopener">RSVP &rarr;</a>
       </div>
       <div class="city">
         <div class="name">Brisbane</div>
         <div class="when">Sat, Nov 14 &middot; 11 AM</div>
-        <div class="rsvp">
-          <button class="cta" type="button">RSVP &darr;</button>
-          <div class="menu">
-            <a href="https://www.facebook.com/events/s/concerned-about-ai-and-our-fut/1423085412830781/" target="_blank" rel="noopener">Facebook &rarr;</a>
-          </div>
-        </div>
+        <a class="cta" href="https://www.facebook.com/events/s/concerned-about-ai-and-our-fut/1423085412830781/" target="_blank" rel="noopener">RSVP &rarr;</a>
       </div>
       <div class="city">
         <div class="name">Santiago</div>
         <div class="when">Sat, Nov 14 &middot; 5 PM &rarr; 7 PM</div>
-        <div class="rsvp">
-          <button class="cta" type="button">RSVP &darr;</button>
-          <div class="menu">
-            <a href="https://luma.com/b7ayc9ak" target="_blank" rel="noopener">Luma &rarr;</a>
-          </div>
-        </div>
+        <a class="cta" href="https://luma.com/b7ayc9ak" target="_blank" rel="noopener">RSVP &rarr;</a>
       </div>
     </div>
     <button class="arrow next" type="button" aria-label="More cities">&rarr;</button>
@@ -848,8 +789,8 @@ document.addEventListener('click', e => {
   document.querySelectorAll('.rsvp.open').forEach(x => x.classList.remove('open', 'up'));
   if (!b || was) return;
   r.classList.add('open');
-  // In the scrolling event list, open upward if the menu would be cut off at the bottom.
-  const box = r.closest('ul');
+  // In the scrolling event list or the map, open upward if the menu would be cut off at the bottom.
+  const box = r.closest('ul, .maplibregl-map');
   if (box && r.querySelector('.menu').getBoundingClientRect().bottom > box.getBoundingClientRect().bottom) r.classList.add('up');
 });
 
@@ -1042,12 +983,14 @@ const ROUTES = {
 const cityKey = c => String(c ?? '').split(',')[0].normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
 const CARDS = [...document.querySelectorAll('.cities .city')].map(c => ({
   key: cityKey(c.querySelector('.name').textContent),
-  links: [...c.querySelectorAll('.menu a')].map(a => ({ href: a.href, text: a.textContent.replace(/\s*→\s*$/, '') })),
+  links: [...c.querySelectorAll('.menu a, a.cta')].map(a => ({ href: a.href, text: a.textContent.replace(/\s*→\s*$/, '') })),
 }));
 const cardIndex = ev => { const i = CARDS.findIndex(c => c.key === cityKey(ev.city)); return i < 0 ? Infinity : i; };
 function rsvpLinks(ev) {
   const card = CARDS.find(c => c.key === cityKey(ev.city));
   const links = card?.links.length ? card.links : [{ href: ev.url, text: 'RSVP' }];
+  // One sign-up page: link straight to it rather than opening a one-item menu.
+  if (links.length === 1) return `<a class="rsvp-go" href="${esc(links[0].href)}" target="_blank" rel="noopener">RSVP &rarr;</a>`;
   return `<div class="rsvp mini"><button type="button">RSVP &darr;</button><div class="menu">${links.map(l =>
     `<a href="${esc(l.href)}" target="_blank" rel="noopener">${esc(l.text)} &rarr;</a>`).join('')}</div></div>`;
 }
@@ -1176,7 +1119,7 @@ let popup;
 function openEvent(ev) {
   if (!map) return;
   popup?.remove();
-  popup = new maplibregl.Popup({ offset: 12, maxWidth: '280px' })
+  popup = new maplibregl.Popup({ offset: 12, maxWidth: '280px', anchor: 'top' })
     .setLngLat([ev.lng, ev.lat])
     .setHTML(`<div class="pop"><div class="city-name">${label(ev)}</div>
       <div class="meta">${esc(metaLine(ev))}</div>${ev.planned ? plannedActions(ev) : rsvpLinks(ev) + chatLink(ev)}</div>`)
@@ -1189,7 +1132,21 @@ function openEvent(ev) {
   } else {
     map.flyTo({ center: [ev.lng, ev.lat], zoom: 10, duration: 1200 });
   }
+  map.once('moveend', fitPopup);
   document.querySelectorAll('.ev').forEach(li => li.classList.toggle('on', li.dataset.city === ev.city));
+}
+
+// Slide the map so the open popup sits fully inside it, below the "All marches" button.
+function fitPopup() {
+  const el = popup?.getElement();
+  if (!map || !el?.isConnected) return;
+  const m = map.getContainer().getBoundingClientRect(), p = el.getBoundingClientRect();
+  const top = m.top + 52, bottom = m.bottom - 8;
+  let dy = Math.max(0, p.bottom - bottom);
+  if (p.top - dy < top) dy = p.top - top;
+  let dx = Math.max(0, p.right - (m.right - 8));
+  if (p.left - dx < m.left + 8) dx = p.left - (m.left + 8);
+  if (dx || dy) map.panBy([dx, dy], { duration: 300 });
 }
 
 function renderList(events) {
