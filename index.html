@@ -330,7 +330,7 @@
   }
   .map-back:hover { background: var(--red); color: var(--paper); }
   .map-back[hidden], .map-pan[hidden] { display: none; }
-  /* discreet round arrows on the overview's edges to slide between North America and France */
+  /* discreet round arrows on the overview's edges to slide between regions of the world */
   .map-pan {
     position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
     width: 36px; height: 36px; border-radius: 50%; padding: 0; cursor: pointer;
@@ -349,6 +349,11 @@
   }
   .map-pan.right::after { right: -2px; }
   .map-pan.left::after { left: -2px; }
+  .map-pan.up { top: 12px; left: 50%; transform: translateX(-50%); }
+  .map-pan.down { top: auto; bottom: 12px; left: 50%; transform: translateX(-50%); }
+  .map-pan.up::after, .map-pan.down::after { left: 50%; transform: translateX(-50%); }
+  /* the down arrow's label goes above it, inside the map */
+  .map-pan.down::after { top: auto; bottom: calc(100% + 6px); }
   .map-pan:hover::after, .map-pan:focus-visible::after { opacity: 1; }
   .list {
     border: 3px solid var(--black);
@@ -1213,18 +1218,56 @@ if (map) Promise.all([eventsReady, new Promise(r => map.on('load', r))]).then(([
              'circle-color': ['case', ['get', 'planned'], '#f2eee6', '#d62828'],
              'circle-stroke-color': ['case', ['get', 'planned'], '#6b6b6b', '#111111'], 'circle-stroke-width': 3 } });
 
-  // Open on the lower 48 plus the Canadian marches; cities across the Atlantic are a drag away.
-  // South America stays out of the US/Canada overview so it doesn't zoom out to the whole hemisphere
-  const home = events.filter(e => e.lng < -30 && e.lat > 15).reduce((b, e) => b.extend([e.lng, e.lat]), new maplibregl.LngLatBounds([-124, 26], [-68, 48]));
-  map.resize();
-  const homeView = { padding: window.innerWidth <= 800 ? 20 : 60, maxZoom: 4 };
-  map.fitBounds(home, { ...homeView, duration: 0 });
+  // Each region of the world gets its own overview, so none zooms out to the whole globe. Round
+  // arrows on the map's edges slide to the neighbouring region; a region with no marches
+  // (confirmed or not) gets no arrow. box = [west, south, east, north].
+  const REGIONS = {
+    na:     { name: 'North America', box: [-180, 15, -30, 90], base: [[-124, 26], [-68, 48]] },
+    sa:     { name: 'South America', box: [-180, -90, -30, 15] },
+    europe: { name: 'Europe', box: [-30, 35, 60, 90], base: [[-4.5, 42.5], [8, 51]], maxZoom: 5 },
+    africa: { name: 'Africa', box: [-30, -90, 60, 35] },
+    asia:   { name: 'Asia & Australia', box: [60, -90, 180, 90] },
+  };
+  // Which region each arrow leads to. Going left from the Americas wraps across the Pacific.
+  const NEXT = {
+    na:     { left: 'asia', right: 'europe', down: 'sa' },
+    sa:     { left: 'asia', right: 'africa', up: 'na' },
+    europe: { left: 'na', right: 'asia', down: 'africa' },
+    africa: { left: 'sa', right: 'asia', up: 'europe' },
+    asia:   { left: 'africa', right: 'na' },
+  };
+  for (const r of Object.values(REGIONS)) {
+    const [w, s, e, n] = r.box;
+    const inside = events.filter(ev => ev.lng >= w && ev.lng < e && ev.lat >= s && ev.lat < n);
+    if (!inside.length) continue;
+    r.bounds = inside.reduce((b, ev) => b.extend([ev.lng, ev.lat]),
+      r.base ? new maplibregl.LngLatBounds(...r.base) : new maplibregl.LngLatBounds([inside[0].lng, inside[0].lat], [inside[0].lng, inside[0].lat]));
+    r.center = r.bounds.getCenter();
+    // a lone march would otherwise fill the map; pull back enough to see the continent around it
+    if (inside.length === 1 && !r.base) r.maxZoom = 2.5;
+  }
+  const live = Object.keys(REGIONS).filter(k => REGIONS[k].bounds);
+  const wrapLng = d => ((d % 360) + 540) % 360 - 180;
+  // the region whose overview is closest to the map's centre, whatever the user dragged to
+  const here = () => {
+    const c = map.getCenter(), dist = k => wrapLng(c.lng - REGIONS[k].center.lng) ** 2 + (c.lat - REGIONS[k].center.lat) ** 2;
+    return live.reduce((a, b) => dist(b) < dist(a) ? b : a);
+  };
 
-  // The European marches get their own overview, reached by an arrow on the map's right edge.
-  // Asia and Australia stay out of it so it doesn't zoom out to half the globe; they're a drag away.
-  const abroad = events.filter(e => e.lng >= -30 && e.lng < 60);
-  const france = abroad.reduce((b, e) => b.extend([e.lng, e.lat]), new maplibregl.LngLatBounds([-4.5, 42.5], [8, 51]));
-  const inEurope = () => map.getCenter().lng > -30;
+  map.resize();
+  const phone = window.innerWidth <= 800;
+  const homeView = { padding: phone ? 20 : 60, maxZoom: 4 };
+  // On phones the smaller regions keep their dots clear of the side arrows; North America
+  // keeps the tight fit so the US doesn't shrink.
+  const padFor = k => phone && k !== 'na' ? { top: 20, bottom: 20, left: 52, right: 52 } : homeView.padding;
+  // Open on the lower 48 plus the Canadian marches.
+  map.fitBounds(REGIONS.na.bounds, { ...homeView, duration: 0 });
+  // Fly to a region by its copy of the world nearest the map's centre, so "left" really moves left.
+  const goTo = (k, duration) => {
+    const r = REGIONS[k], shift = Math.round((map.getCenter().lng - r.center.lng) / 360) * 360;
+    map.fitBounds([[r.bounds.getWest() + shift, r.bounds.getSouth()], [r.bounds.getEast() + shift, r.bounds.getNorth()]],
+      { ...homeView, padding: padFor(k), maxZoom: r.maxZoom || homeView.maxZoom, duration });
+  };
   const button = (cls, html, label, hover) => {
     const b = document.createElement('button');
     b.type = 'button'; b.className = cls; b.hidden = true; b.innerHTML = html;
@@ -1235,21 +1278,28 @@ if (map) Promise.all([eventsReady, new Promise(r => map.on('load', r))]).then(([
   };
   const back = button('map-back', '&larr; All marches');
   const arrow = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
-  const toFrance = button('map-pan right', arrow('M5 12h14M13 6l6 6-6 6'), 'Show the marches in Europe', 'Show more');
-  const toUS = button('map-pan left', arrow('M19 12H5M11 6l-6 6 6 6'), 'Back to the US and Canada', 'Back');
+  const ARROWS = { left: 'M19 12H5M11 6l-6 6 6 6', right: 'M5 12h14M13 6l6 6-6 6', up: 'M12 19V5M6 11l6-6 6 6', down: 'M12 5v14M6 13l6 6 6-6' };
+  const pans = Object.entries(ARROWS).map(([dir, d]) => {
+    const b = button(`map-pan ${dir}`, arrow(d));
+    b.addEventListener('click', () => { reset(); goTo(b.dataset.to, 1600); });
+    return [dir, b];
+  });
   const update = () => {
-    const zoomedIn = map.getZoom() >= 6;
+    const zoomedIn = map.getZoom() >= 6, at = here();
     back.hidden = !zoomedIn;
-    toFrance.hidden = zoomedIn || !abroad.length || inEurope();
-    toUS.hidden = zoomedIn || !inEurope();
+    for (const [dir, b] of pans) {
+      const to = NEXT[at][dir];
+      b.hidden = zoomedIn || !to || !REGIONS[to].bounds;
+      if (b.hidden || b.dataset.to === to) continue;
+      b.dataset.to = to; b.dataset.label = REGIONS[to].name;
+      b.setAttribute('aria-label', `Show the marches in ${REGIONS[to].name}`);
+    }
   };
   map.on('move', update);
   update();
   const reset = () => { popup?.remove(); document.querySelectorAll('.ev.on').forEach(li => li.classList.remove('on')); };
-  // "All marches" returns to whichever side of the Atlantic the map is on.
-  back.addEventListener('click', () => { reset(); map.fitBounds(inEurope() ? france : home, { ...homeView, duration: 1200 }); });
-  toFrance.addEventListener('click', () => { reset(); map.fitBounds(france, { ...homeView, maxZoom: 5, duration: 1600 }); });
-  toUS.addEventListener('click', () => { reset(); map.fitBounds(home, { ...homeView, duration: 1600 }); });
+  // "All marches" returns to the overview of whichever region the map is in.
+  back.addEventListener('click', () => { reset(); goTo(here(), 1200); });
 
   for (const id of ['marches', 'stops']) {
     map.on('mouseenter', id, () => map.getCanvas().style.cursor = 'pointer');
