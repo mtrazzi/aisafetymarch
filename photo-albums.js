@@ -18,6 +18,7 @@ window.PHOTO_ALBUMS = {
   'Paris':         'https://photos.app.goo.gl/a6d5QwSYkEZCFa416',
   'Marseille':     'https://photos.app.goo.gl/QYMT9sVd8cSLwNKi8',
   'Berlin':        'https://photos.app.goo.gl/wtPALbgK3mvp6e4NA',
+  'Hamburg':       'https://photos.app.goo.gl/LZ3K7MYgtJSkbi3C6',
   'Canberra':      'https://photos.app.goo.gl/awcbSKN8QBr5VrNz9',
   'Brisbane':      'https://photos.app.goo.gl/Zmnx9imRZGD3MgnF7',
   'Santiago':      'https://photos.app.goo.gl/HEwJ26PqPf1zTLXh9',
