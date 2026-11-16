@@ -2,7 +2,7 @@
 //   POST /vote   {album, winner, loser, voter}   → {ok:true}
 //   GET  /stats?album=sf                         → {photos:{id:{wins,shows}}, votes, voters}
 // Albums and how many photos each has; ids look like "sf-001".
-const ALBUMS = { sf: 194 };
+const ALBUMS = { sf: 194, movement: 8 };
 const ORIGINS = ['https://aitreatymarch.org', 'https://www.aitreatymarch.org'];
 
 function cors(req) {
@@ -54,7 +54,7 @@ export default {
       const photos = {};
       for (const r of w.results) (photos[r.id] ||= { wins: 0, shows: 0 }), (photos[r.id].wins += r.n), (photos[r.id].shows += r.n);
       for (const r of l.results) (photos[r.id] ||= { wins: 0, shows: 0 }), (photos[r.id].shows += r.n);
-      return json(req, { photos, ...t.results[0] }, 200, { 'Cache-Control': 'public, max-age=20' });
+      return json(req, { photos, ...t.results[0] }, 200, { 'Cache-Control': 'no-store' });
     }
 
     return json(req, { error: 'not found' }, 404);

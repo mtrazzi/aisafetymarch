@@ -75,7 +75,7 @@ a.city:hover .eyebrow { color: #bbb; }
   transition: opacity 0.2s;
 }
 .shield { position: absolute; inset: 0; z-index: 2; -webkit-touch-callout: none; }
-.loading .photo { opacity: 0; }
+.loading .pick .photo { opacity: 0; }
 
 .actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 1rem 0 2.5rem; }
 .btn {

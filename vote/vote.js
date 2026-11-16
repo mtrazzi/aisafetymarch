@@ -26,7 +26,7 @@
   async function fetchStats() {
     if (!API) return null;
     try {
-      const r = await fetch(`${API}/stats?album=${album}`);
+      const r = await fetch(`${API}/stats?album=${album}`, { cache: "no-store" });
       if (!r.ok) throw 0;
       return await r.json();
     } catch { return null; }
@@ -52,10 +52,25 @@
     for (let i = 0; i < ids.length; i++) { r -= w[i]; if (r <= 0) return ids[i]; }
     return ids[ids.length - 1];
   }
+  const allPairs = count * (count - 1) / 2;
+  const key = p => [...p].sort().join('|');
+  // A pair is off the table if already voted/skipped, or it's the one on screen right now.
+  const taken = p => seenPairs.has(key(p)) || (current && key(p) === key(current));
   function makePair() {
+    if (seenPairs.size >= allPairs) return null;              // small sets: every pair done
+    if (count <= 40) {                                        // small sets: pick among unseen pairs, least-shown first
+      const open = [];
+      for (let i = 0; i < count; i++) for (let j = i + 1; j < count; j++)
+        if (!taken([ids[i], ids[j]])) open.push([ids[i], ids[j]]);
+      if (!open.length) return null;
+      open.sort((x, y) => (shows[x[0]] + shows[x[1]]) - (shows[y[0]] + shows[y[1]]) || Math.random() - 0.5);
+      const pool = open.slice(0, Math.max(1, Math.ceil(open.length / 3)));
+      const pr = pool[Math.floor(Math.random() * pool.length)];
+      return Math.random() < 0.5 ? pr : [pr[1], pr[0]];
+    }
     for (let tries = 0; tries < 30; tries++) {
       const a = weightedPick(null), b = weightedPick(a);
-      if (!seenPairs.has([a, b].sort().join('|'))) return [a, b];
+      if (!taken([a, b])) return [a, b];
     }
     const a = weightedPick(null); return [a, weightedPick(a)];
   }
@@ -63,13 +78,15 @@
 
   function show(pair) {
     current = pair;
+    $('#done').hidden = !!pair; $('.pair').hidden = !pair; $('#skip').hidden = !pair;
+    if (!pair) { document.body.classList.remove('loading'); return; }
     [pickA, pickB].forEach((el, i) => {
       el.classList.remove('won', 'lost');
       el.querySelector('.photo').style.backgroundImage = `url("${src(pair[i])}")`;
     });
     document.body.classList.remove('loading');
     next = makePair();
-    preload(next);
+    if (next) preload(next);
   }
 
   async function choose(i) {
@@ -79,11 +96,16 @@
     [pickA, pickB][i].classList.add('won');
     [pickA, pickB][1 - i].classList.add('lost');
     record(winner, loser);
-    await Promise.all([preload(next), new Promise(r => setTimeout(r, 260))]);
+    await Promise.all([next ? preload(next) : 0, new Promise(r => setTimeout(r, 260))]);
     show(next);
     busy = false;
   }
-  function skip() { if (!busy && current) { current.forEach(id => shows[id]++); show(next); } }
+  function skip() {
+    if (busy || !current) return;
+    current.forEach(id => shows[id]++);
+    seenPairs.add([...current].sort().join('|'));   // don't offer the same pair again this visit
+    show(next || makePair());
+  }
 
   function record(winner, loser) {
     shows[winner]++; shows[loser]++;
@@ -97,7 +119,7 @@
   }
   function updateCount() {
     $('#count').textContent = myVotes.length;
-    $('#toTop').hidden = myVotes.length < 10;
+    $('#toTop').hidden = myVotes.length < Math.min(10, allPairs);
   }
 
   // ---------- top picks ----------
@@ -111,7 +133,7 @@
       .sort((a, b) => score(b[1]) - score(a[1]) || b[1].shows - a[1].shows).slice(0, 48);
     $('#boardMeta').textContent = s.local
       ? 'Your picks only (live tally not connected yet)'
-      : `${s.votes.toLocaleString()} votes from ${s.voters.toLocaleString()} people`;
+      : `${s.votes.toLocaleString()} vote${s.votes === 1 ? '' : 's'} from ${s.voters.toLocaleString()} ${s.voters === 1 ? 'person' : 'people'}`;
     if (!rows.length) { grid.innerHTML = '<p class="empty">Not enough votes yet. Each photo needs to be shown at least 3 times.</p>'; return; }
     grid.innerHTML = rows.map(([id, p], i) => `
       <div class="tile"><div class="photo" style="background-image:url('${src(id)}')"></div><div class="shield"></div>
