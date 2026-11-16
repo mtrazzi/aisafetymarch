@@ -26,27 +26,27 @@
     <p class="lede">We'll see two photos from the march at a time. Tap the one you'd rather click on in your feed. Your picks decide what we post on social media.</p>
   </section>
   <section class="cities">
-    <a class="city c-black" href="/vote/all/">
+    <a class="city c-black" href="/vote/all/" data-album="all">
       <div><p class="eyebrow">37 photos · every city</p><h2>Top 10 overall</h2></div>
       <span class="go">Start voting →</span>
     </a>
-    <a class="city c-red" href="/vote/sf/">
+    <a class="city c-red" href="/vote/sf/" data-album="sf2">
       <div><p class="eyebrow">12 photos</p><h2>San Francisco</h2></div>
       <span class="go">Start voting →</span>
     </a>
-    <a class="city c-blue" href="/vote/dc/">
+    <a class="city c-blue" href="/vote/dc/" data-album="dc">
       <div><p class="eyebrow">12 photos</p><h2>Washington, DC</h2></div>
       <span class="go">Start voting →</span>
     </a>
-    <a class="city" href="/vote/crowd/">
+    <a class="city" href="/vote/crowd/" data-album="movement">
       <div><p class="eyebrow">10 photos · every city</p><h2>Crowd shots</h2></div>
       <span class="go">Start voting →</span>
     </a>
-    <a class="city" href="/vote/mtl/">
+    <a class="city" href="/vote/mtl/" data-album="mtl">
       <div><p class="eyebrow">12 photos</p><h2>Montréal</h2></div>
       <span class="go">Start voting →</span>
     </a>
-    <a class="city" href="/vote/nyc/">
+    <a class="city" href="/vote/nyc/" data-album="nyc">
       <div><p class="eyebrow">8 photos</p><h2>New York</h2></div>
       <span class="go">Start voting →</span>
     </a>
@@ -56,5 +56,29 @@
     </div>
   </section>
 </main>
+<script src="/vote/config.js"></script>
+<script src="/vote/photos.js"></script>
+<script>
+// "Needs votes": any photo on a page with fewer than 10 votes (counting every page's votes on that photo).
+(async function () {
+  const API = (window.VOTE_API || '').replace(/\/$/, ''), KEYS = window.PHOTO_ALBUMS_KEYS || {}, MIN = 10;
+  if (!API) return;
+  let d; try { const r = await fetch(`${API}/all`, { cache: 'no-store' }); if (!r.ok) return; d = await r.json(); } catch { return; }
+  const shows = {};
+  for (const [alb, list] of Object.entries(d.albums || {})) for (const [w, l, n] of list) {
+    const a = window.photoKey(alb, w), b = window.photoKey(alb, l);
+    if (a) shows[a] = (shows[a] || 0) + n; if (b) shows[b] = (shows[b] || 0) + n;
+  }
+  document.querySelectorAll('.city[data-album]').forEach(card => {
+    const keys = KEYS[card.dataset.album]; if (!keys || card.dataset.album === 'all') return;
+    const low = keys.filter(k => (shows[k] || 0) < MIN).length;
+    if (!low) return;
+    const tag = document.createElement('span');
+    tag.className = 'needs';
+    tag.textContent = low === keys.length ? 'Needs votes' : `${low} photo${low === 1 ? ' needs' : 's need'} votes`;
+    card.prepend(tag);
+  });
+})();
+</script>
 </body>
 </html>

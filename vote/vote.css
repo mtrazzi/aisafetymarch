@@ -52,6 +52,12 @@ a.city.c-black:hover { background: var(--paper); color: var(--black); }
 a.city.c-red:hover { background: var(--paper); color: var(--red); }
 a.city.c-blue:hover { background: var(--paper); color: var(--blue); }
 a.city.c-black:hover .eyebrow, a.city.c-red:hover .eyebrow, a.city.c-blue:hover .eyebrow { color: var(--gray); }
+.city { position: relative; }
+.needs {
+  position: absolute; top: -11px; right: 10px; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.04em; background: #f2c94c; color: var(--black); padding: 3px 8px;
+  border: 2px solid var(--black);
+}
 .city.soon { border-style: dashed; border-color: var(--line); color: var(--gray); }
 
 /* ---------- voting ---------- */
