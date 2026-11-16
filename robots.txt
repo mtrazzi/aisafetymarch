@@ -3,6 +3,7 @@ Disallow: /vote/sf/p/
 Disallow: /vote/movement/p/
 Disallow: /vote/dc/p/
 Disallow: /vote/nyc/p/
+Disallow: /vote/mtl/p/
 
 User-agent: Googlebot-Image
 Disallow: /vote/

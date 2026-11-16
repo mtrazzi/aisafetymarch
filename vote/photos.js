@@ -17,6 +17,9 @@
   const NYC = ['4618', '4890', '4979', '5092', '5214', '5227', '5536', '5592'];
   NYC.forEach((n, i) => add(`NYC ${n}`, C.NYC, `/vote/nyc/p/nyc-${String(i + 1).padStart(3, '0')}.webp`, `_MG_${n}.jpg`));
 
+  const MTL = ['11', '13', '15', '16', '17', '18', '19', '23', '24', '28', '34', '35'];
+  MTL.forEach((n, i) => add(`Montréal ${n}`, C.MTL, `/vote/mtl/p/mtl-${String(i + 1).padStart(3, '0')}.webp`, `Manif_PauseAI_14nov_creditClaraLacasse-${n}.jpg`));
+
   add('Berlin 010', C.BER, '/vote/movement/p/movement-006.webp', 'berlin-ai-treaty-march-2026-11-14-010.jpg');
   add('Montréal 24', C.MTL, '/vote/movement/p/movement-007.webp', 'Manif_PauseAI_14nov_creditClaraLacasse-24.jpg');
   add('Montréal 28', C.MTL, '/vote/movement/p/movement-008.webp', 'Manif_PauseAI_14nov_creditClaraLacasse-28.jpg');
@@ -25,9 +28,11 @@
     dc: DC.map(n => `DC ${n}`),
     sf2: SF.map(n => `SF ${n}`),
     nyc: NYC.map(n => `NYC ${n}`),
+    mtl: MTL.map(n => `Montréal ${n}`),
     movement: ['SF 2080', 'SF 2142', 'DC 141', 'DC 143', 'DC 151', 'Berlin 010', 'Montréal 24', 'Montréal 28', 'DC 170', 'SF 1945'],
     // All cities: every city photo except New York. Append new photos at the end.
-    all: [...DC.slice(0, 12).map(n => `DC ${n}`), ...SF.map(n => `SF ${n}`), 'Berlin 010', 'Montréal 24', 'Montréal 28'],
+    all: [...DC.slice(0, 12).map(n => `DC ${n}`), ...SF.map(n => `SF ${n}`), 'Berlin 010', 'Montréal 24', 'Montréal 28',
+          ...MTL.filter(n => n !== '24' && n !== '28').map(n => `Montréal ${n}`)],
   };
 
   window.PHOTOS = P;
