@@ -2,7 +2,7 @@
 //   POST /vote   {album, winner, loser, voter}   → {ok:true}
 //   GET  /stats?album=sf                         → {photos:{id:{wins,shows}}, votes, voters}
 // Albums and how many photos each has; ids look like "sf-001".
-const ALBUMS = { sf: 194, movement: 9 };
+const ALBUMS = { sf: 194, movement: 10 };
 const ORIGINS = ['https://aitreatymarch.org', 'https://www.aitreatymarch.org'];
 
 function cors(req) {
