@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS votes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  album TEXT NOT NULL,
+  winner TEXT NOT NULL,
+  loser TEXT NOT NULL,
+  voter TEXT,
+  ts INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS votes_album ON votes(album);
