@@ -1,9 +1,10 @@
 // Vote API for aitreatymarch.org/vote — stores "A beat B" picks in a D1 table.
 //   POST /vote   {album, winner, loser, voter}   → {ok:true}
 //   GET  /stats?album=sf                         → {photos:{id:{wins,shows}}, votes, voters}
+//   GET  /all                                    → {albums:{album:[[winner, loser, n]]}, votes, voters}
 //   GET  /pairs?album=sf                         → {pairs:[[winner, loser, n]], votes, voters}
 // Albums and how many photos each has; ids look like "sf-001".
-const ALBUMS = { sf2: 12, movement: 10, dc: 8, nyc: 8 };   // sf2 = the 12-photo SF pick (old 194-photo 'sf' retired)
+const ALBUMS = { sf2: 12, movement: 10, dc: 12, nyc: 8, all: 27 };   // sf2 = the 12-photo SF pick (old 194-photo 'sf' retired)
 const ORIGINS = ['https://aitreatymarch.org', 'https://www.aitreatymarch.org'];
 
 function cors(req) {
@@ -67,6 +68,18 @@ export default {
         env.DB.prepare('SELECT COUNT(*) AS votes, COUNT(DISTINCT voter) AS voters FROM votes WHERE album=?').bind(album),
       ]);
       return json(req, { pairs: p.results.map(r => [r.winner, r.loser, r.n]), ...t.results[0] }, 200, { 'Cache-Control': 'no-store' });
+    }
+
+    // Every album's match-ups at once, for the pooled ranking (Top picks pools votes on the same photo).
+    if (url.pathname === '/all' && req.method === 'GET') {
+      const names = Object.keys(ALBUMS), q = names.map(() => '?').join(',');
+      const [p, t] = await env.DB.batch([
+        env.DB.prepare(`SELECT album, winner, loser, COUNT(*) AS n FROM votes WHERE album IN (${q}) GROUP BY album, winner, loser`).bind(...names),
+        env.DB.prepare(`SELECT COUNT(*) AS votes, COUNT(DISTINCT voter) AS voters FROM votes WHERE album IN (${q})`).bind(...names),
+      ]);
+      const albums = {};
+      for (const r of p.results) (albums[r.album] ||= []).push([r.winner, r.loser, r.n]);
+      return json(req, { albums, ...t.results[0] }, 200, { 'Cache-Control': 'no-store' });
     }
 
     return json(req, { error: 'not found' }, 404);

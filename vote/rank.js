@@ -39,7 +39,9 @@
   }
 
   // pairs: [[winner, loser, count]]. Returns rows sorted by score, best first.
-  function rank(ids, pairs, { resamples = 300 } = {}) {
+  // among: only these photos are returned, and Chance #1 / top 3 are counted among them.
+  function rank(ids, pairs, { resamples = 300, among = ids } = {}) {
+    const keep = new Set(among), sub = ids.map((id, i) => keep.has(id) ? i : -1).filter(i => i >= 0);
     const n = ids.length;
     const score = fit(ids, pairs);
     const shows = new Array(n).fill(0), wins = new Array(n).fill(0);
@@ -55,19 +57,20 @@
       const bag = new Array(votes.length);
       for (let k = 0; k < votes.length; k++) bag[k] = votes[(Math.random() * votes.length) | 0];
       const sc = fit(ids, bag, 30);
-      const order = sc.map((x, i) => [x, i]).sort((a, b) => b[0] - a[0]);
-      first[order[0][1]]++;
-      for (let k = 0; k < Math.min(3, n); k++) top3[order[k][1]]++;
+      const order = sub.map(i => [sc[i], i]).sort((a, b) => b[0] - a[0]);
+      if (order.length) first[order[0][1]]++;
+      for (let k = 0; k < Math.min(3, order.length); k++) top3[order[k][1]]++;
       sc.forEach((x, i) => samples[i].push(x));
     }
     const pct = (arr, p) => { if (!arr.length) return null; const a = [...arr].sort((x, y) => x - y); return a[Math.min(a.length - 1, Math.floor(p * a.length))]; };
-    const R = votes.length ? resamples : 1;
-    return ids.map((id, i) => ({
+    const R = Math.max(1, resamples), boot = votes.length && resamples > 0;
+    return sub.map(i => ids[i]).map(id => [id, idx[id]]).map(([id, i]) => ({
       id, score: score[i], wins: wins[i], shows: shows[i],
       low: pct(samples[i], 0.05) ?? 0, high: pct(samples[i], 0.95) ?? 100,
-      pFirst: votes.length ? first[i] / R : 0, pTop3: votes.length ? top3[i] / R : 0,
+      pFirst: boot ? first[i] / R : 0, pTop3: boot ? top3[i] / R : 0,
     })).sort((a, b) => b.score - a.score);
   }
 
   root.rankPhotos = rank;
+  root.fitPhotos = fit;
 })(typeof window !== 'undefined' ? window : globalThis);

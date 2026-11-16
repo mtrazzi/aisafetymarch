@@ -4,7 +4,14 @@
   const { album, count } = window.VOTE;
   const API = (window.VOTE_API || '').replace(/\/$/, '');
   const ids = Array.from({ length: count }, (_, i) => `${album}-${String(i + 1).padStart(3, '0')}`);
-  const src = id => `p/${id}.webp`;
+  const PHOTOS = window.PHOTOS || {};
+  const keyOf = id => (window.photoKey && window.photoKey(album, id)) || id;   // "dc-003" → "DC 138"
+  const src = id => (PHOTOS[id] || PHOTOS[keyOf(id)] || {}).src || `p/${id}.webp`;
+  const cityOf = id => (PHOTOS[keyOf(id)] || {}).city || '';
+  // All cities: only pair photos from two different cities, and favour the ones doing best overall.
+  const crossCity = album === 'all';
+  const allow = (a, b) => !crossCity || cityOf(a) !== cityOf(b);
+  const strength = {};   // id → 0..1 from the pooled ranking (All cities only)
   const $ = s => document.querySelector(s);
 
   const store = {
@@ -52,7 +59,10 @@
     for (let i = 0; i < ids.length; i++) { r -= w[i]; if (r <= 0) return ids[i]; }
     return ids[ids.length - 1];
   }
-  const allPairs = count * (count - 1) / 2;
+  let allPairs = 0;
+  for (let i = 0; i < count; i++) for (let j = i + 1; j < count; j++) if (allow(ids[i], ids[j])) allPairs++;
+  // Lower = shown sooner: least-seen pairs first, and on All cities, strong photos get more turns.
+  const priority = ([a, b]) => (shows[a] + shows[b]) / ((1 + 3 * (strength[a] ?? 0.5) ** 2) * (1 + 3 * (strength[b] ?? 0.5) ** 2));
   const key = p => [...p].sort().join('|');
   // A pair is off the table if already voted/skipped, or it's the one on screen right now.
   const taken = p => seenPairs.has(key(p)) || (current && key(p) === key(current));
@@ -61,16 +71,16 @@
     if (count <= 40) {                                        // small sets: pick among unseen pairs, least-shown first
       const open = [];
       for (let i = 0; i < count; i++) for (let j = i + 1; j < count; j++)
-        if (!taken([ids[i], ids[j]])) open.push([ids[i], ids[j]]);
+        if (allow(ids[i], ids[j]) && !taken([ids[i], ids[j]])) open.push([ids[i], ids[j]]);
       if (!open.length) return null;
-      open.sort((x, y) => (shows[x[0]] + shows[x[1]]) - (shows[y[0]] + shows[y[1]]) || Math.random() - 0.5);
+      open.sort((x, y) => priority(x) - priority(y) || Math.random() - 0.5);
       const pool = open.slice(0, Math.max(1, Math.ceil(open.length / 3)));
       const pr = pool[Math.floor(Math.random() * pool.length)];
       return Math.random() < 0.5 ? pr : [pr[1], pr[0]];
     }
     for (let tries = 0; tries < 30; tries++) {
       const a = weightedPick(null), b = weightedPick(a);
-      if (!taken([a, b])) return [a, b];
+      if (allow(a, b) && !taken([a, b])) return [a, b];
     }
     const a = weightedPick(null); return [a, weightedPick(a)];
   }
@@ -154,46 +164,77 @@
   }
 
   // ---------- top picks ----------
-  // Score + confidence come from rank.js (Bradley–Terry fit + bootstrap).
-  async function fetchPairs() {
-    if (!API) return null;
-    try { const r = await fetch(`${API}/pairs?album=${album}`, { cache: 'no-store' }); if (!r.ok) throw 0; return await r.json(); }
-    catch { return null; }
+  // Pools every vote on the same real photo across all vote pages (photos.js), then scores with rank.js
+  // (Bradley–Terry fit + bootstrap). Each page shows its own photos; chances are among those photos.
+  async function loadPooled() {
+    const KEYS = window.PHOTO_ALBUMS_KEYS || {};
+    let d = null;
+    if (API) try { const r = await fetch(`${API}/all`, { cache: 'no-store' }); if (r.ok) d = await r.json(); } catch {}
+    let local = false;
+    if (!d) {
+      local = true;
+      const m = {}; for (const [w, l] of myVotes) m[w + '|' + l] = (m[w + '|' + l] || 0) + 1;
+      d = { albums: { [album]: Object.entries(m).map(([k, n]) => [...k.split('|'), n]) }, votes: myVotes.length, voters: myVotes.length ? 1 : 0 };
+    }
+    const pairs = [];
+    for (const [alb, list] of Object.entries(d.albums || {})) {
+      if (!KEYS[alb]) continue;
+      for (const [w, l, n] of list) {
+        const kw = window.photoKey(alb, w), kl = window.photoKey(alb, l);
+        if (kw && kl) pairs.push([kw, kl, n]);
+      }
+    }
+    return { keys: Object.keys(PHOTOS), pairs, votes: d.votes, voters: d.voters, local };
+  }
+  // Photos only ever compared within a group that's cut off from the rest can't be placed against it.
+  function mainGroup(keys, pairs, mine) {
+    const parent = Object.fromEntries(keys.map(k => [k, k]));
+    const find = k => parent[k] === k ? k : (parent[k] = find(parent[k]));
+    for (const [a, b] of pairs) if (a in parent && b in parent) parent[find(a)] = find(b);
+    const size = {};
+    for (const k of mine) size[find(k)] = (size[find(k)] || 0) + 1;
+    const top = Object.entries(size).sort((x, y) => y[1] - x[1])[0];
+    return new Set(mine.filter(k => top && find(k) === top[0]));
   }
   const pctTxt = p => p >= 0.995 ? '>99%' : p < 0.01 ? '<1%' : `${Math.round(p * 100)}%`;
   function verdict(r) {
+    if (!r.linked) return ['early', 'Not linked yet'];
     if (r.shows < 10) return ['early', 'Too early'];
     if (r.pTop3 >= 0.9) return ['safe', 'Safe pick'];
     if (r.pTop3 >= 0.5) return ['likely', 'Likely top 3'];
     if (r.pTop3 < 0.02 && r.high < 50) return ['skip', 'Skip'];
     return ['', ''];
   }
+  const caption = k => { const p = PHOTOS[k]; if (!p) return k; const i = ids.findIndex(id => keyOf(id) === k);
+    return `${crossCity || i < 0 ? p.city : 'Photo #' + (i + 1)} · ${k.split(' ').pop()}`; };
   async function renderTop() {
     const grid = $('#grid');
     grid.innerHTML = '<p class="empty">Loading…</p>';
-    let d = await fetchPairs(), local = false;
-    if (!d) {
-      local = true;
-      const m = {}; for (const [w, l] of myVotes) m[w + '|' + l] = (m[w + '|' + l] || 0) + 1;
-      d = { pairs: Object.entries(m).map(([k, n]) => [...k.split('|'), n]), votes: myVotes.length, voters: myVotes.length ? 1 : 0 };
-    }
-    $('#boardMeta').textContent = local
+    const d = await loadPooled();
+    const mine = [...new Set(ids.map(keyOf))];
+    const used = d.pairs.filter(([a, b]) => mine.includes(a) || mine.includes(b)).reduce((t, x) => t + x[2], 0);
+    $('#boardMeta').textContent = d.local
       ? 'Your picks only (live tally not reachable)'
-      : `${d.votes.toLocaleString()} vote${d.votes === 1 ? '' : 's'} from ${d.voters.toLocaleString()} ${d.voters === 1 ? 'person' : 'people'}`;
-    if (!d.votes) { grid.innerHTML = '<p class="empty">No votes yet.</p>'; return; }
+      : `${used.toLocaleString()} votes on these photos · ${d.voters.toLocaleString()} people voting across all pages`;
+    if (!used) { grid.innerHTML = '<p class="empty">No votes yet.</p>'; return; }
     await new Promise(r => setTimeout(r, 0));   // let "Loading…" paint before the number crunching
-    const rows = window.rankPhotos(ids, d.pairs).filter(r => r.shows > 0).slice(0, 48);
-    grid.innerHTML = rows.map((r, i) => {
+    const linked = mainGroup(d.keys, d.pairs, mine);
+    const rows = window.rankPhotos(d.keys, d.pairs, { among: [...linked] })
+      .map(r => ({ ...r, linked: true }));
+    const rest = window.rankPhotos(d.keys, d.pairs, { among: mine.filter(k => !linked.has(k)), resamples: 0 })
+      .map(r => ({ ...r, linked: false }));
+    const all = [...rows, ...rest].filter(r => r.shows > 0).slice(0, 60);
+    grid.innerHTML = all.map((r, i) => {
       const [cls, label] = verdict(r);
       return `
-      <figure class="tile">
+      <figure class="tile${r.linked ? '' : ' unlinked'}">
         <div class="img"><div class="photo" style="background-image:url('${src(r.id)}')"></div><div class="shield"></div>
-          <span class="rank">${i + 1}</span>${label ? `<span class="badge ${cls}">${label}</span>` : ''}</div>
+          <span class="rank">${r.linked ? i + 1 : '–'}</span>${label ? `<span class="badge ${cls}">${label}</span>` : ''}</div>
         <figcaption>
           <div class="score"><b>${Math.round(r.score)}</b><span>likely ${Math.round(r.low)}–${Math.round(r.high)}</span></div>
           <div class="range" aria-hidden="true"><i style="left:${r.low}%;width:${Math.max(1, r.high - r.low)}%"></i><u style="left:${r.score}%"></u></div>
-          <dl><div><dt>Chance #1</dt><dd>${pctTxt(r.pFirst)}</dd></div><div><dt>Top 3</dt><dd>${pctTxt(r.pTop3)}</dd></div><div><dt>Won</dt><dd>${r.wins}/${r.shows}</dd></div></dl>
-          <span class="pid">Photo #${r.id.split('-')[1]}</span>
+          <dl><div><dt>Chance #1</dt><dd>${r.linked ? pctTxt(r.pFirst) : '–'}</dd></div><div><dt>Top 3</dt><dd>${r.linked ? pctTxt(r.pTop3) : '–'}</dd></div><div><dt>Won</dt><dd>${r.wins}/${r.shows}</dd></div></dl>
+          <span class="pid">${caption(r.id)}</span>
         </figcaption>
       </figure>`;
     }).join('');
@@ -222,5 +263,10 @@
   // Seed exposure counts from the live tally so new visitors see under-voted photos first.
   fetchStats().then(s => { if (s) for (const [id, p] of Object.entries(s.photos)) if (id in shows) shows[id] += p.shows / Math.max(1, s.voters); });
   updateCount();
-  route();
+  // All cities: rank everything first so the strongest photos get more match-ups.
+  const ready = crossCity ? loadPooled().then(d => {
+    const fit = window.fitPhotos(d.keys, d.pairs);
+    d.keys.forEach((k, i) => { const id = ids.find(x => keyOf(x) === k); if (id) strength[id] = fit[i] / 100; });
+  }).catch(() => {}) : Promise.resolve();
+  ready.then(route);
 })();
