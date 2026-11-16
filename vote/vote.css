@@ -2,6 +2,7 @@
   --black: #111111;
   --paper: #f2eee6;
   --red: #d62828;
+  --blue: #1f4fbf;
   --gray: #6b6b6b;
   --line: rgba(17,17,17,0.15);
   --frame: #1b1b1b;
@@ -42,6 +43,15 @@ a.city:hover { background: var(--black); color: var(--paper); }
 a.city:hover .eyebrow { color: #bbb; }
 .city h2 { font-family: var(--font-display); text-transform: uppercase; font-size: 1.6rem; line-height: 1; }
 .city .go { font-family: var(--font-mono); font-size: 0.85rem; }
+.city.c-black, .city.c-red, .city.c-blue { color: #fff; }
+.city.c-black { background: var(--black); }
+.city.c-red { background: var(--red); border-color: var(--red); }
+.city.c-blue { background: var(--blue); border-color: var(--blue); }
+.city.c-black .eyebrow, .city.c-red .eyebrow, .city.c-blue .eyebrow { color: rgba(255,255,255,0.75); }
+a.city.c-black:hover { background: var(--paper); color: var(--black); }
+a.city.c-red:hover { background: var(--paper); color: var(--red); }
+a.city.c-blue:hover { background: var(--paper); color: var(--blue); }
+a.city.c-black:hover .eyebrow, a.city.c-red:hover .eyebrow, a.city.c-blue:hover .eyebrow { color: var(--gray); }
 .city.soon { border-style: dashed; border-color: var(--line); color: var(--gray); }
 
 /* ---------- voting ---------- */

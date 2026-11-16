@@ -7,8 +7,8 @@
 // with 2 wins from 2 doesn't jump to the top on luck.
 //
 // Confidence: bootstrap. Re-run the fit many times on votes resampled at random; the spread of a
-// photo's score gives its likely range, and how often it lands first / top 3 gives "Chance #1" and
-// "Chance top 3".
+// photo's score gives its likely range, and how often it lands first / in the top K (3, or 10 on
+// All cities) gives "Chance #1" and "Top K".
 (function (root) {
   function fit(ids, pairs, iters = 60) {
     const n = ids.length, idx = Object.fromEntries(ids.map((id, i) => [id, i]));
@@ -40,7 +40,7 @@
 
   // pairs: [[winner, loser, count]]. Returns rows sorted by score, best first.
   // among: only these photos are returned, and Chance #1 / top 3 are counted among them.
-  function rank(ids, pairs, { resamples = 300, among = ids } = {}) {
+  function rank(ids, pairs, { resamples = 300, among = ids, topK = 3 } = {}) {
     const keep = new Set(among), sub = ids.map((id, i) => keep.has(id) ? i : -1).filter(i => i >= 0);
     const n = ids.length;
     const score = fit(ids, pairs);
@@ -59,7 +59,7 @@
       const sc = fit(ids, bag, 30);
       const order = sub.map(i => [sc[i], i]).sort((a, b) => b[0] - a[0]);
       if (order.length) first[order[0][1]]++;
-      for (let k = 0; k < Math.min(3, order.length); k++) top3[order[k][1]]++;
+      for (let k = 0; k < Math.min(topK, order.length); k++) top3[order[k][1]]++;
       sc.forEach((x, i) => samples[i].push(x));
     }
     const pct = (arr, p) => { if (!arr.length) return null; const a = [...arr].sort((x, y) => x - y); return a[Math.min(a.length - 1, Math.floor(p * a.length))]; };
@@ -67,7 +67,7 @@
     return sub.map(i => ids[i]).map(id => [id, idx[id]]).map(([id, i]) => ({
       id, score: score[i], wins: wins[i], shows: shows[i],
       low: pct(samples[i], 0.05) ?? 0, high: pct(samples[i], 0.95) ?? 100,
-      pFirst: boot ? first[i] / R : 0, pTop3: boot ? top3[i] / R : 0,
+      pFirst: boot ? first[i] / R : 0, pTop: boot ? top3[i] / R : 0,
     })).sort((a, b) => b.score - a.score);
   }
 

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>All Cities Photo Vote · AI Treaty March</title>
-<meta name="description" content="Two photos from two different cities' Marches for an AI Treaty. Tap the one you'd rather click on.">
+<title>Top 10 Overall · AI Treaty March</title>
+<meta name="description" content="The best March for an AI Treaty photos from every city, head to head. Tap the one you'd rather click on.">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, noimageindex">
@@ -23,9 +23,9 @@
   <section id="voteView">
     <div class="vote-head">
       <div>
-        <p class="eyebrow">All cities · Nov 14</p>
+        <p class="eyebrow">All cities · Top 10 overall</p>
         <h1>Which would you click?</h1>
-        <p class="lede">Two cities, two photos: tap the one you'd rather see in your feed. The ranking uses every vote from every page.</p>
+        <p class="lede">The best photos from every city, head to head. Tap the one you'd rather see in your feed: this decides our top 10.</p>
       </div>
       <p class="count"><b id="count">0</b> picks</p>
     </div>
@@ -52,11 +52,11 @@
       </div>
       <a class="btn solid" href="#">Keep voting →</a>
     </div>
-    <p class="explain"><b>Score</b> = chance the photo beats an average photo from this set (50 = average). <b>Likely</b> = the range the score probably sits in; it narrows as votes come in. <b>Chance #1 / Top 3</b> = how often it lands there when we re-run the ranking on randomly resampled votes.</p>
+    <p class="explain"><b>Score</b> = chance the photo beats an average photo from this set (50 = average). <b>Likely</b> = the range the score probably sits in; it narrows as votes come in. <b>Chance #1 / Top 10</b> = how often it lands there when we re-run the ranking on randomly resampled votes.</p>
     <div class="grid" id="grid"></div>
   </section>
 </main>
-<script>window.VOTE = { album: 'all', count: 37 };</script>
+<script>window.VOTE = { album: 'all', count: 37, topK: 10 };</script>
 <script src="/vote/config.js"></script>
 <script src="/vote/photos.js"></script>
 <script src="/vote/rank.js"></script>

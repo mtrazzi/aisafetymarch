@@ -8,10 +8,12 @@
   const keyOf = id => (window.photoKey && window.photoKey(album, id)) || id;   // "dc-003" → "DC 138"
   const src = id => (PHOTOS[id] || PHOTOS[keyOf(id)] || {}).src || `p/${id}.webp`;
   const cityOf = id => (PHOTOS[keyOf(id)] || {}).city || '';
-  // All cities: only pair photos from two different cities, and favour the ones doing best overall.
+  // All cities = "Top 10 overall": spend votes where they decide the top 10 (see focusPair).
   const crossCity = album === 'all';
-  const allow = (a, b) => !crossCity || cityOf(a) !== cityOf(b);
-  const strength = {};   // id → 0..1 from the pooled ranking (All cities only)
+  const TOPK = window.VOTE.topK || 3;
+  const allow = () => true;
+  const strength = {};   // id → 0..100 pooled score (All cities only)
+  let cand = new Set();  // All cities: the ~15 photos currently ranked highest
   const $ = s => document.querySelector(s);
 
   const store = {
@@ -62,12 +64,33 @@
   let allPairs = 0;
   for (let i = 0; i < count; i++) for (let j = i + 1; j < count; j++) if (allow(ids[i], ids[j])) allPairs++;
   // Lower = shown sooner: least-seen pairs first, and on All cities, strong photos get more turns.
-  const priority = ([a, b]) => (shows[a] + shows[b]) / ((1 + 3 * (strength[a] ?? 0.5) ** 2) * (1 + 3 * (strength[b] ?? 0.5) ** 2));
+  const priority = ([a, b]) => shows[a] + shows[b];
+
+  // All cities: mostly match-ups between the current top ~15, closest scores first (that's where a
+  // vote can change the top 10). 1 in 5 is a challenger: a less-tested photo vs one near the cut-off.
+  function focusPair() {
+    const open = [];
+    for (let i = 0; i < count; i++) for (let j = i + 1; j < count; j++)
+      if (!taken([ids[i], ids[j]])) open.push([ids[i], ids[j]]);
+    if (!open.length) return null;
+    const sc = id => strength[id] ?? 50;
+    const ranked = [...cand].sort((a, b) => sc(b) - sc(a)), edge = new Set(ranked.slice(7));
+    const core = open.filter(([a, b]) => cand.has(a) && cand.has(b));
+    const challenge = open.filter(([a, b]) => cand.has(a) !== cand.has(b) && (edge.has(a) || edge.has(b)));
+    let pool = Math.random() < 0.2 && challenge.length ? challenge : core.length ? core : open;
+    const cost = pool === challenge
+      ? ([a, b]) => shows[a] + shows[b] + Math.random()
+      : ([a, b]) => 2 * (shows[a] + shows[b]) + Math.abs(sc(a) - sc(b)) / 4 + Math.random();
+    pool = pool.map(p => [cost(p), p]).sort((x, y) => x[0] - y[0]).slice(0, Math.max(1, Math.ceil(pool.length / 4)));
+    const pr = pool[Math.floor(Math.random() * pool.length)][1];
+    return Math.random() < 0.5 ? pr : [pr[1], pr[0]];
+  }
   const key = p => [...p].sort().join('|');
   // A pair is off the table if already voted/skipped, or it's the one on screen right now.
   const taken = p => seenPairs.has(key(p)) || (current && key(p) === key(current));
   function makePair() {
     if (seenPairs.size >= allPairs) return null;              // small sets: every pair done
+    if (crossCity) return focusPair();
     if (count <= 40) {                                        // small sets: pick among unseen pairs, least-shown first
       const open = [];
       for (let i = 0; i < count; i++) for (let j = i + 1; j < count; j++)
@@ -200,9 +223,9 @@
   function verdict(r) {
     if (!r.linked) return ['early', 'Not linked yet'];
     if (r.shows < 10) return ['early', 'Too early'];
-    if (r.pTop3 >= 0.9) return ['safe', 'Safe pick'];
-    if (r.pTop3 >= 0.5) return ['likely', 'Likely top 3'];
-    if (r.pTop3 < 0.02 && r.high < 50) return ['skip', 'Skip'];
+    if (r.pTop >= 0.9) return ['safe', TOPK === 3 ? 'Safe pick' : `Safe top ${TOPK}`];
+    if (r.pTop >= 0.5) return ['likely', `Likely top ${TOPK}`];
+    if (r.pTop < 0.02 && r.high < 50) return ['skip', 'Skip'];
     return ['', ''];
   }
   const caption = k => { const p = PHOTOS[k]; if (!p) return k; const i = ids.findIndex(id => keyOf(id) === k);
@@ -219,10 +242,10 @@
     if (!used) { grid.innerHTML = '<p class="empty">No votes yet.</p>'; return; }
     await new Promise(r => setTimeout(r, 0));   // let "Loading…" paint before the number crunching
     const linked = mainGroup(d.keys, d.pairs, mine);
-    const rows = window.rankPhotos(d.keys, d.pairs, { among: [...linked] })
-      .map(r => ({ ...r, linked: true }));
-    const rest = window.rankPhotos(d.keys, d.pairs, { among: mine.filter(k => !linked.has(k)), resamples: 0 })
-      .map(r => ({ ...r, linked: false }));
+    // Chances are counted against every photo on this page; photos with no votes yet count as average.
+    const ranked = window.rankPhotos(d.keys, d.pairs, { among: mine, topK: TOPK });
+    const rows = ranked.filter(r => linked.has(r.id)).map(r => ({ ...r, linked: true }));
+    const rest = ranked.filter(r => !linked.has(r.id)).map(r => ({ ...r, linked: false, low: 0, high: 100 }));
     const all = [...rows, ...rest].filter(r => r.shows > 0).slice(0, 60);
     grid.innerHTML = all.map((r, i) => {
       const [cls, label] = verdict(r);
@@ -233,7 +256,7 @@
         <figcaption>
           <div class="score"><b>${Math.round(r.score)}</b><span>likely ${Math.round(r.low)}–${Math.round(r.high)}</span></div>
           <div class="range" aria-hidden="true"><i style="left:${r.low}%;width:${Math.max(1, r.high - r.low)}%"></i><u style="left:${r.score}%"></u></div>
-          <dl><div><dt>Chance #1</dt><dd>${r.linked ? pctTxt(r.pFirst) : '–'}</dd></div><div><dt>Top 3</dt><dd>${r.linked ? pctTxt(r.pTop3) : '–'}</dd></div><div><dt>Won</dt><dd>${r.wins}/${r.shows}</dd></div></dl>
+          <dl><div><dt>Chance #1</dt><dd>${r.linked ? pctTxt(r.pFirst) : '–'}</dd></div><div><dt>Top ${TOPK}</dt><dd>${r.linked ? pctTxt(r.pTop) : '–'}</dd></div><div><dt>Won</dt><dd>${r.wins}/${r.shows}</dd></div></dl>
           <span class="pid">${caption(r.id)}</span>
         </figcaption>
       </figure>`;
@@ -266,7 +289,8 @@
   // All cities: rank everything first so the strongest photos get more match-ups.
   const ready = crossCity ? loadPooled().then(d => {
     const fit = window.fitPhotos(d.keys, d.pairs);
-    d.keys.forEach((k, i) => { const id = ids.find(x => keyOf(x) === k); if (id) strength[id] = fit[i] / 100; });
+    d.keys.forEach((k, i) => { const id = ids.find(x => keyOf(x) === k); if (id) strength[id] = fit[i]; });
+    cand = new Set([...ids].sort((a, b) => (strength[b] ?? 50) - (strength[a] ?? 50)).slice(0, 15));
   }).catch(() => {}) : Promise.resolve();
   ready.then(route);
 })();

@@ -1,65 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Movement Photo Vote · AI Treaty March</title>
-<meta name="description" content="Two photos from the March for an AI Treaty around the world. Tap the one you'd rather click on.">
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex, noimageindex">
-<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="/img/favicon-32.png" type="image/png" sizes="32x32">
-<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/vote/vote.css">
+<title>Crowd Shots Photo Vote · AI Treaty March</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://aitreatymarch.org/vote/crowd/">
+<meta http-equiv="refresh" content="0; url=/vote/crowd/">
+<script>location.replace('/vote/crowd/' + location.hash);</script>
 </head>
-<body class="loading">
-<header class="top">
-  <a class="brand" href="/vote/">AI Treaty <span>March</span></a>
-  <nav><a href="#" data-view="vote">Vote</a><a href="#top" data-view="top">Top picks</a><a class="wide" href="/vote/">All cities</a></nav>
-</header>
-<main class="wrap">
-  <section id="voteView">
-    <div class="vote-head">
-      <div>
-        <p class="eyebrow">Around the world · Nov 14</p>
-        <h1>Which would you click?</h1>
-        <p class="lede">Tap the photo you'd rather see in your feed. 10 photos, 45 match-ups.</p>
-      </div>
-      <p class="count"><b id="count">0</b> picks</p>
-    </div>
-    <div class="pair">
-      <button class="pick" id="pickA" aria-label="Pick the left photo"><span class="key">1</span><div class="photo"></div><div class="shield"></div></button>
-      <button class="pick" id="pickB" aria-label="Pick the right photo"><span class="key">2</span><div class="photo"></div><div class="shield"></div></button>
-    </div>
-    <div class="empty" id="done" hidden>
-      <h1 style="font-size:clamp(1.5rem,4vw,2.2rem);color:var(--black);margin-bottom:.6rem">You've seen every pair. Thank you!</h1>
-      <a class="btn solid" href="#top">See top picks →</a>
-    </div>
-    <div class="actions">
-      <button class="btn" id="skip">Can't decide, skip</button>
-      <span class="hint keys">Keys: ← / → to pick, S to skip</span>
-      <a class="btn solid" id="toTop" href="#top" hidden>See top picks →</a>
-    </div>
-    <p class="note">Photos © the photographer, shared with the AI Treaty March for this vote only. Please don't download or repost them; we'll share the final picks ourselves.</p>
-  </section>
-  <section id="topView" hidden>
-    <div class="board-head">
-      <div>
-        <p class="eyebrow" id="boardMeta">&nbsp;</p>
-        <h1>Top picks so far</h1>
-      </div>
-      <a class="btn solid" href="#">Keep voting →</a>
-    </div>
-    <p class="explain"><b>Score</b> = chance the photo beats an average photo from this set (50 = average). <b>Likely</b> = the range the score probably sits in; it narrows as votes come in. <b>Chance #1 / Top 3</b> = how often it lands there when we re-run the ranking on randomly resampled votes.</p>
-    <div class="grid" id="grid"></div>
-  </section>
-</main>
-<script>window.VOTE = { album: 'movement', count: 10 };</script>
-<script src="/vote/config.js"></script>
-<script src="/vote/photos.js"></script>
-<script src="/vote/rank.js"></script>
-<script src="/vote/vote.js"></script>
-</body>
+<body><p>"The movement" is now <a href="/vote/crowd/">Crowd shots</a>.</p></body>
 </html>
