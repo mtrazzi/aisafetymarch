@@ -1,6 +1,7 @@
 // Vote API for aitreatymarch.org/vote — stores "A beat B" picks in a D1 table.
 //   POST /vote   {album, winner, loser, voter}   → {ok:true}
 //   GET  /stats?album=sf                         → {photos:{id:{wins,shows}}, votes, voters}
+//   GET  /pairs?album=sf                         → {pairs:[[winner, loser, n]], votes, voters}
 // Albums and how many photos each has; ids look like "sf-001".
 const ALBUMS = { sf: 194, movement: 10 };
 const ORIGINS = ['https://aitreatymarch.org', 'https://www.aitreatymarch.org'];
@@ -55,6 +56,17 @@ export default {
       for (const r of w.results) (photos[r.id] ||= { wins: 0, shows: 0 }), (photos[r.id].wins += r.n), (photos[r.id].shows += r.n);
       for (const r of l.results) (photos[r.id] ||= { wins: 0, shows: 0 }), (photos[r.id].shows += r.n);
       return json(req, { photos, ...t.results[0] }, 200, { 'Cache-Control': 'no-store' });
+    }
+
+    // Every match-up result as [winner, loser, times], for the score + confidence on Top picks.
+    if (url.pathname === '/pairs' && req.method === 'GET') {
+      const album = url.searchParams.get('album');
+      if (!ALBUMS[album]) return json(req, { error: 'unknown album' }, 404);
+      const [p, t] = await env.DB.batch([
+        env.DB.prepare('SELECT winner, loser, COUNT(*) AS n FROM votes WHERE album=? GROUP BY winner, loser').bind(album),
+        env.DB.prepare('SELECT COUNT(*) AS votes, COUNT(DISTINCT voter) AS voters FROM votes WHERE album=?').bind(album),
+      ]);
+      return json(req, { pairs: p.results.map(r => [r.winner, r.loser, r.n]), ...t.results[0] }, 200, { 'Cache-Control': 'no-store' });
     }
 
     return json(req, { error: 'not found' }, 404);

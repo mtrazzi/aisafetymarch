@@ -154,22 +154,49 @@
   }
 
   // ---------- top picks ----------
-  // Score = smoothed win rate, so a photo that won 1 of 1 doesn't beat one that won 18 of 20.
-  const score = p => (p.wins + 1) / (p.shows + 2);
+  // Score + confidence come from rank.js (Bradley–Terry fit + bootstrap).
+  async function fetchPairs() {
+    if (!API) return null;
+    try { const r = await fetch(`${API}/pairs?album=${album}`, { cache: 'no-store' }); if (!r.ok) throw 0; return await r.json(); }
+    catch { return null; }
+  }
+  const pctTxt = p => p >= 0.995 ? '>99%' : p < 0.01 ? '<1%' : `${Math.round(p * 100)}%`;
+  function verdict(r) {
+    if (r.shows < 10) return ['early', 'Too early'];
+    if (r.pTop3 >= 0.9) return ['safe', 'Safe pick'];
+    if (r.pTop3 >= 0.5) return ['likely', 'Likely top 3'];
+    if (r.pTop3 < 0.02 && r.high < 50) return ['skip', 'Skip'];
+    return ['', ''];
+  }
   async function renderTop() {
     const grid = $('#grid');
     grid.innerHTML = '<p class="empty">Loading…</p>';
-    const s = (await fetchStats()) || localStats();
-    const rows = Object.entries(s.photos).filter(([, p]) => p.shows >= 3)
-      .sort((a, b) => score(b[1]) - score(a[1]) || b[1].shows - a[1].shows).slice(0, 48);
-    $('#boardMeta').textContent = s.local
-      ? 'Your picks only (live tally not connected yet)'
-      : `${s.votes.toLocaleString()} vote${s.votes === 1 ? '' : 's'} from ${s.voters.toLocaleString()} ${s.voters === 1 ? 'person' : 'people'}`;
-    if (!rows.length) { grid.innerHTML = '<p class="empty">Not enough votes yet. Each photo needs to be shown at least 3 times.</p>'; return; }
-    grid.innerHTML = rows.map(([id, p], i) => `
-      <div class="tile"><div class="photo" style="background-image:url('${src(id)}')"></div><div class="shield"></div>
-        <span class="rank">${i + 1}</span>
-        <span class="meta"><span>#${id.split('-')[1]}</span><span>won ${p.wins}/${p.shows}</span></span></div>`).join('');
+    let d = await fetchPairs(), local = false;
+    if (!d) {
+      local = true;
+      const m = {}; for (const [w, l] of myVotes) m[w + '|' + l] = (m[w + '|' + l] || 0) + 1;
+      d = { pairs: Object.entries(m).map(([k, n]) => [...k.split('|'), n]), votes: myVotes.length, voters: myVotes.length ? 1 : 0 };
+    }
+    $('#boardMeta').textContent = local
+      ? 'Your picks only (live tally not reachable)'
+      : `${d.votes.toLocaleString()} vote${d.votes === 1 ? '' : 's'} from ${d.voters.toLocaleString()} ${d.voters === 1 ? 'person' : 'people'}`;
+    if (!d.votes) { grid.innerHTML = '<p class="empty">No votes yet.</p>'; return; }
+    await new Promise(r => setTimeout(r, 0));   // let "Loading…" paint before the number crunching
+    const rows = window.rankPhotos(ids, d.pairs).filter(r => r.shows > 0).slice(0, 48);
+    grid.innerHTML = rows.map((r, i) => {
+      const [cls, label] = verdict(r);
+      return `
+      <figure class="tile">
+        <div class="img"><div class="photo" style="background-image:url('${src(r.id)}')"></div><div class="shield"></div>
+          <span class="rank">${i + 1}</span>${label ? `<span class="badge ${cls}">${label}</span>` : ''}</div>
+        <figcaption>
+          <div class="score"><b>${Math.round(r.score)}</b><span>likely ${Math.round(r.low)}–${Math.round(r.high)}</span></div>
+          <div class="range" aria-hidden="true"><i style="left:${r.low}%;width:${Math.max(1, r.high - r.low)}%"></i><u style="left:${r.score}%"></u></div>
+          <dl><div><dt>Chance #1</dt><dd>${pctTxt(r.pFirst)}</dd></div><div><dt>Top 3</dt><dd>${pctTxt(r.pTop3)}</dd></div><div><dt>Won</dt><dd>${r.wins}/${r.shows}</dd></div></dl>
+          <span class="pid">Photo #${r.id.split('-')[1]}</span>
+        </figcaption>
+      </figure>`;
+    }).join('');
   }
 
   // ---------- views ----------
