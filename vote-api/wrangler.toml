@@ -5,4 +5,4 @@ compatibility_date = "2026-11-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "aitreatymarch-vote"
-database_id = "REPLACE_AFTER_d1_create"
+database_id = "85ae9f40-bf7f-4b6e-901d-a94bd7f17e77"
