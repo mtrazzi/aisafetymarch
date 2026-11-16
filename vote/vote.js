@@ -74,17 +74,48 @@
     }
     const a = weightedPick(null); return [a, weightedPick(a)];
   }
-  const preload = pair => Promise.all(pair.map(id => new Promise(res => { const i = new Image(); i.onload = i.onerror = res; i.src = src(id); })));
+  // Preload a pair and remember each photo's shape (width / height).
+  const ratio = {};
+  const preload = pair => Promise.all(pair.map(id => new Promise(res => {
+    if (ratio[id]) return res();
+    const i = new Image();
+    i.onload = () => { ratio[id] = i.naturalWidth / i.naturalHeight; res(); };
+    i.onerror = () => { ratio[id] = 1.5; res(); };
+    i.src = src(id);
+  })));
+
+  // Give both photos the same height, as big as fits, so neither looks "bigger" and none is cropped.
+  function layout() {
+    if (!current || current.some(id => !ratio[id])) return;
+    const box = $('.pair'), W = box.clientWidth, gap = 12;
+    const stacked = window.innerWidth <= 700;
+    const [r1, r2] = current.map(id => ratio[id]);
+    const top = box.getBoundingClientRect().top + window.scrollY;
+    let h;
+    if (stacked) {
+      const avail = Math.max(440, window.innerHeight - Math.min(top, 160) - 70);
+      h = Math.min(W / Math.max(r1, r2), (avail - 10) / 2);
+    } else {
+      const avail = Math.max(320, Math.min(window.innerHeight - 150, 760));
+      h = Math.min((W - gap) / (r1 + r2), avail);
+    }
+    [pickA, pickB].forEach((el, i) => { el.style.height = h + 'px'; el.style.width = h * [r1, r2][i] + 'px'; });
+  }
+  window.addEventListener('resize', layout);
 
   function show(pair) {
     current = pair;
     $('#done').hidden = !!pair; $('.pair').hidden = !pair; $('#skip').hidden = !pair;
     if (!pair) { document.body.classList.remove('loading'); return; }
-    [pickA, pickB].forEach((el, i) => {
-      el.classList.remove('won', 'lost');
-      el.querySelector('.photo').style.backgroundImage = `url("${src(pair[i])}")`;
+    preload(pair).then(() => {
+      if (current !== pair) return;
+      [pickA, pickB].forEach((el, i) => {
+        el.classList.remove('won', 'lost');
+        el.querySelector('.photo').style.backgroundImage = `url("${src(pair[i])}")`;
+      });
+      layout();
+      document.body.classList.remove('loading');
     });
-    document.body.classList.remove('loading');
     next = makePair();
     if (next) preload(next);
   }
