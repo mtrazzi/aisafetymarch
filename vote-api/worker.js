@@ -4,7 +4,7 @@
 //   GET  /all                                    → {albums:{album:[[winner, loser, n]]}, votes, voters}
 //   GET  /pairs?album=sf                         → {pairs:[[winner, loser, n]], votes, voters}
 // Albums and how many photos each has; ids look like "sf-001".
-const ALBUMS = { sf2: 18, movement: 10, dc: 12, nyc: 8, mtl: 12, all: 43 };   // sf2 = the 12-photo SF pick (old 194-photo 'sf' retired)
+const ALBUMS = { sf2: 18, movement: 10, dc: 12, nyc: 10, mtl: 12, all: 43 };   // sf2 = the 12-photo SF pick (old 194-photo 'sf' retired)
 const ORIGINS = ['https://aitreatymarch.org', 'https://www.aitreatymarch.org'];
 
 function cors(req) {
