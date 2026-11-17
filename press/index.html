@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>
+/* ==========================================================================
+   VALUES TO CONFIRM. Every bracketed value in the press release lives here.
+   A value left as null shows on the page as a red [KEY] tag, and a banner at
+   the top counts how many are still open. Fill them all in before deploying.
+   ========================================================================== */
+window.PRESS = {
+  CITY_COUNT: null,          // e.g. '20'. Used in the headline, body and footer.
+  COUNTRY_COUNT: null,       // e.g. '7'
+  DC_TURNOUT: null,          // e.g. 'About 300'. Start with a capital: it opens a sentence.
+  SF_TURNOUT: null,          // e.g. '250'
+  COALITION_SUMMARY: null,   // e.g. 'a coalition of 12 partner organizations'
+  OTHER_CITIES: null,        // e.g. 'New York, Boston, ... and Kinshasa'
+  MEDIA_KIT_URL: null,       // full URL, e.g. 'https://...'
+
+  // Hero photo. The file itself goes at /press/hero.jpg (the Open Graph tags below point there).
+  HERO_CITY: null,           // e.g. 'Washington, DC'
+  HERO_PHOTOGRAPHER: null,   // e.g. 'Jane Doe'
+
+  // Photo grid: one entry per photo, e.g. { src: '/press/photos/dc-1.jpg', city: 'Washington, DC', photographer: 'Jane Doe' }
+  PHOTOS: null,
+};
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Press · AI Treaty March</title>
+<meta name="description" content="Press release: Susan Rice calls the &ldquo;But China&rdquo; argument &ldquo;BS&rdquo; as marchers demand an AI Treaty ahead of the Trump-Xi meeting. November 14, 2026.">
+<meta property="og:title" content="Susan Rice Calls &ldquo;But China&rdquo; Argument &ldquo;BS&rdquo; as Marchers Demand an AI Treaty">
+<meta property="og:description" content="Press release: marchers call on Trump and Xi to negotiate an AI Treaty ahead of their meeting. November 14, 2026.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://aitreatymarch.org/press/">
+<meta property="og:image" content="https://aitreatymarch.org/press/hero.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://aitreatymarch.org/press/hero.jpg">
+<link rel="canonical" href="https://aitreatymarch.org/press/">
+<link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/img/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8NCK01J1MQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-8NCK01J1MQ');
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #111111;
+    --paper: #f2eee6;
+    --red: #d62828;
+    --red-dark: #a31f1f;
+    --gray: #6b6b6b;
+    --font-display: 'Archivo Black', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  ::selection { background: var(--red); color: var(--paper); }
+
+  body {
+    background: var(--paper);
+    color: var(--black);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+  }
+
+  /* grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+  }
+
+  a { color: var(--red); text-decoration: none; }
+  a:hover { color: var(--red-dark); text-decoration: underline; }
+
+  /* unconfirmed value from window.PRESS */
+  .tbd {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: #ffe3e3;
+    color: var(--red);
+    border: 1px dashed var(--red);
+    padding: 0 0.25em;
+    white-space: nowrap;
+  }
+  .draft-banner {
+    position: sticky; top: 0; z-index: 1000;
+    background: var(--red); color: var(--paper);
+    font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.05em;
+    text-align: center; padding: 0.5rem 1rem;
+  }
+
+  /* BACK NAV (same bar as the home page's topbar) */
+  .back-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 2rem;
+    border-bottom: 3px solid var(--black);
+  }
+  .back-link, .nav-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+  .back-link:hover { color: var(--black); text-decoration: none; }
+  .nav-label { letter-spacing: 0.2em; }
+
+  /* HEADER */
+  .press-header {
+    padding: 4rem 2rem 3rem;
+    text-align: center;
+  }
+  .press-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 1.5rem;
+  }
+  .press-title {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-size: clamp(1.5rem, 4.5vw, 2.8rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    max-width: 900px;
+    margin: 0 auto;
+    text-wrap: balance;
+  }
+  .press-title .red { color: var(--red); }
+  .press-title .tbd { font-size: 0.6em; vertical-align: middle; }
+  .press-date {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--gray);
+    margin-top: 1.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* HERO IMAGE */
+  .press-hero-image {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+  .press-hero-image img, .ph {
+    width: 100%;
+    display: block;
+    border: 3px solid var(--black);
+  }
+  .press-hero-image img { height: auto; }
+  /* stands in for a photo that isn't there yet */
+  .ph {
+    aspect-ratio: 3 / 2;
+    background: repeating-linear-gradient(45deg, #e6e0d4 0 12px, #ece7dd 12px 24px);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono); font-size: 0.75rem; color: var(--red);
+  }
+  .press-hero-caption {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--gray);
+    text-align: center;
+    margin-top: 0.75rem;
+    letter-spacing: 0.03em;
+    line-height: 1.6;
+  }
+
+  /* BODY */
+  .press-body {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 3rem 2rem 4rem;
+  }
+  .press-body p {
+    font-size: 1.02rem;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    color: #2a2a2a;
+  }
+  .press-body > p:first-child { font-size: 1.12rem; }
+  .press-body p strong { color: var(--black); }
+
+  /* QUOTES */
+  .quote {
+    margin: 2rem 0;
+    padding-left: 1.25rem;
+    border-left: 4px solid var(--red);
+  }
+  .quote p { margin-bottom: 0.6rem; }
+  .quote figcaption {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: var(--gray);
+    letter-spacing: 0.03em;
+  }
+  .quote figcaption strong { color: var(--black); font-weight: 600; }
+
+  /* COALITION (same cards as the home page's partner row, on paper) */
+  .press-orgs { margin: 2.5rem 0; text-align: center; }
+  .section-title {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 1.2rem;
+    font-weight: 600;
+  }
+  .orgs-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+  }
+  .org-tile {
+    background: #fff;
+    border: 2px solid var(--black);
+    width: 74px;
+    height: 74px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.45rem;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .org-tile:hover { box-shadow: 4px 4px 0 var(--red); transform: translateY(-2px); }
+  .org-tile img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+
+  /* PHOTO GRID */
+  .top-picks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 2rem 0 1rem;
+  }
+  .top-picks figure { margin: 0; }
+  .top-picks a { display: block; border: 3px solid var(--black); transition: box-shadow 0.2s ease, transform 0.2s ease; }
+  .top-picks a:hover { box-shadow: 5px 5px 0 var(--red); transform: translateY(-2px); }
+  .top-picks img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; display: block; }
+  .top-picks figcaption, .press-body .photo-note {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--gray);
+    letter-spacing: 0.03em;
+    line-height: 1.5;
+    margin-top: 0.4rem;
+  }
+  .press-body .photo-note { margin: 0 0 2.5rem; }
+
+  /* EVENT DETAILS */
+  .about-block {
+    margin: 2.5rem 0;
+    padding: 2rem;
+    background: #fff;
+    border: 3px solid var(--black);
+  }
+  .about-block h3, .contact-block h3 {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+  .event-details dt {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-top: 1rem;
+  }
+  .event-details dt:first-of-type { margin-top: 0; }
+  .event-details dd {
+    margin: 0.2rem 0 0;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #2a2a2a;
+    overflow-wrap: anywhere;
+  }
+
+  /* CONTACT */
+  .contact-block {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(17, 17, 17, 0.15);
+  }
+  .press-body .contact-block p { font-size: 0.95rem; color: #444; margin-bottom: 0; }
+
+  /* FOOTER CTA */
+  .press-footer-cta {
+    text-align: center;
+    padding: 3rem 2rem 5rem;
+  }
+  .cta-primary {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: var(--red);
+    color: var(--paper);
+    padding: 1.1rem 3rem;
+    border: 3px solid var(--black);
+    transition: all 0.2s ease;
+  }
+  .cta-primary:hover {
+    background: var(--red-dark);
+    box-shadow: 6px 6px 0 var(--black);
+    transform: translateY(-2px);
+    color: var(--paper);
+    text-decoration: none;
+  }
+  .press-footer-cta p {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--gray);
+    margin-top: 1.2rem;
+    letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 600px) {
+    .back-nav { padding: 1rem; }
+    .press-header { padding: 2.5rem 1rem 2rem; }
+    .press-hero-image { padding: 0 1rem; }
+    .press-body { padding: 2.5rem 1rem 3rem; }
+    .about-block { padding: 1.5rem 1.25rem; }
+    .org-tile { width: 60px; height: 60px; }
+    .top-picks { grid-template-columns: 1fr; }
+    .press-footer-cta { padding: 2.5rem 1rem 4rem; }
+    .cta-primary { padding: 1rem 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="back-nav">
+  <a href="/" class="back-link">&larr; aitreatymarch.org</a>
+  <span class="nav-label">Press</span>
+</nav>
+
+<header class="press-header">
+  <p class="press-label">For Immediate Release</p>
+  <h1 class="press-title">Susan Rice Calls &ldquo;But China&rdquo; Argument &ldquo;BS&rdquo; as Marchers in <span data-v="CITY_COUNT"></span> Cities <span class="red">Demand an AI Treaty</span> Ahead of Trump-Xi Meeting</h1>
+  <p class="press-date">San Francisco and Washington, DC &middot; November 17, 2026</p>
+</header>
+
+<figure class="press-hero-image">
+  <img id="hero" src="/press/hero.jpg" alt="March for an AI Treaty, November 14, 2026">
+  <figcaption class="press-hero-caption">&ldquo;March for an AI Treaty&rdquo;, <span data-v="HERO_CITY"></span>, November 14, 2026. Photo by <span data-v="HERO_PHOTOGRAPHER"></span>.</figcaption>
+</figure>
+
+<article class="press-body">
+
+  <p>On Saturday, November 14, protesters marched in <span data-v="CITY_COUNT"></span> cities across <span data-v="COUNTRY_COUNT"></span> countries, calling on President Trump and President Xi to begin negotiating an international treaty that halts the development of more powerful AI systems until it can be done safely. The marches took place days before the two leaders are due to meet.</p>
+
+  <p>In Washington, DC, <span data-v="DC_TURNOUT"></span> people marched from the US Capitol, where Ambassador Susan Rice, former National Security Advisor and UN Ambassador, and Nate Soares, president of the Machine Intelligence Research Institute, addressed the crowd. In San Francisco, <span data-v="SF_TURNOUT"></span> people rallied outside OpenAI and marched to the Veterans Building, where the UN Charter was signed in 1945.</p>
+
+  <figure class="quote">
+    <blockquote><p>&ldquo;There are many who say, in the administration and Silicon Valley, &lsquo;But China. We can&rsquo;t freeze or pause or pace, because China will race ahead, and America must win the AI race.&rsquo; Well, let me tell you, as a former national security advisor: the &lsquo;but China&rsquo; argument is BS. I don&rsquo;t know a single national security expert of either party who understands AI and who thinks the race with China is a good enough reason to drive humanity off a cliff. Not one. Yes, we should aim to win the AI race against China, but not at any cost. At the end of the day, the people of China are humans like us. And none of us want to be subordinate to machines.&rdquo;</p></blockquote>
+    <figcaption><strong>Ambassador Susan Rice</strong>, former National Security Advisor and UN Ambassador, in Washington, DC</figcaption>
+  </figure>
+
+  <figure class="quote">
+    <blockquote><p>&ldquo;Very few people actually want these companies to build superintelligent AI right now. Republicans, Democrats, foreigners, natives, nobody really wants this. If we can get to the point where it&rsquo;s a very serious topic and everyone&rsquo;s talking about it, then I think we will get very serious change very fast.&rdquo;</p></blockquote>
+    <figcaption><strong>Daniel Kokotajlo</strong>, former OpenAI researcher and co-author of AI&nbsp;2027, in San Francisco</figcaption>
+  </figure>
+
+  <figure class="quote">
+    <blockquote><p>&ldquo;We don&rsquo;t have to trust China, and China doesn&rsquo;t have to trust us. We need to be able to verify that we are complying with this deal. And that&rsquo;s possible. There&rsquo;s no real big obstacle here, other than the political obstacles.&rdquo;</p></blockquote>
+    <figcaption><strong>David Krueger</strong>, founder of Evitable, in San Francisco</figcaption>
+  </figure>
+
+  <figure class="quote">
+    <blockquote><p>&ldquo;The US government said they want the US to win the race in AI. There&rsquo;s no winner. The way we get a treaty is if people in other countries say: we are also scared of AI, we also want a treaty. On Saturday they did.&rdquo;</p></blockquote>
+    <figcaption><strong>Micha&euml;l Trazzi</strong>, organizer and founder of Stop the AI Race</figcaption>
+  </figure>
+
+  <p>The March for an AI Treaty was organized by <a href="https://stoptherace.ai/">Stop the AI Race</a> with <span data-v="COALITION_SUMMARY"></span>. It follows marches in March, July and September, and a 39-day daily presence outside OpenAI calling for an AI treaty.</p>
+
+  <!-- Same partners, logos and order as the "Coalition partners" row on the home page -->
+  <div class="press-orgs">
+    <p class="section-title">The Coalition</p>
+    <div class="orgs-grid">
+      <a class="org-tile" href="https://stoptherace.ai/" target="_blank" rel="noopener" title="Stop The AI Race"><img src="/img/stoptheairace.jpeg" alt="Stop The AI Race" loading="lazy"></a>
+      <a class="org-tile" href="https://coalitionaitreaty.ca/" target="_blank" rel="noopener" title="Coalition for an AI Treaty"><img src="/img/coalitionaitreaty.avif" alt="Coalition for an AI Treaty" loading="lazy"></a>
+      <a class="org-tile" href="https://irreplaceable.org/" target="_blank" rel="noopener" title="Irreplaceable"><img src="/img/irreplaceable.jpg" alt="Irreplaceable" loading="lazy"></a>
+      <a class="org-tile" href="https://humansincontrol.org/" target="_blank" rel="noopener" title="Humans in Control"><img src="/img/humansincontrol-logo.png" alt="Humans in Control" loading="lazy"></a>
+      <a class="org-tile" href="https://www.foodandwaterwatch.org/" target="_blank" rel="noopener" title="Food &amp; Water Watch"><img src="/img/foodandwaterwatch.jpg" alt="Food &amp; Water Watch" loading="lazy"></a>
+      <a class="org-tile" href="https://evitable.com/" target="_blank" rel="noopener" title="Evitable"><img src="/img/evitable.webp" alt="Evitable" loading="lazy"></a>
+      <a class="org-tile" href="https://home.nuhw.org/" target="_blank" rel="noopener" title="National Union of Healthcare Workers"><img src="/img/nuhw.jpg" alt="National Union of Healthcare Workers" loading="lazy"></a>
+      <a class="org-tile" href="https://dcaisafety.org/" target="_blank" rel="noopener" title="D.C. AI Safety Collective"><img src="/img/dmvaisafety.png" alt="D.C. AI Safety Collective" loading="lazy"></a>
+      <a class="org-tile" href="https://aiactionnow.org/" target="_blank" rel="noopener" title="AI Action"><img src="/img/aiaction.png" alt="AI Action" loading="lazy"></a>
+      <a class="org-tile" href="https://peopleforapause.org/" target="_blank" rel="noopener" title="People for a Pause"><img src="/img/peopleforapause.svg" alt="People for a Pause" loading="lazy"></a>
+      <a class="org-tile" href="https://pauseai.ca/en/" target="_blank" rel="noopener" title="PauseAI Canada"><img src="/img/pauseaicanada.png" alt="PauseAI Canada" loading="lazy"></a>
+      <a class="org-tile" href="https://pauseia.fr/en" target="_blank" rel="noopener" title="Pause IA"><img src="/img/pauseia-circle.png" alt="Pause IA" loading="lazy"></a>
+      <a class="org-tile" href="https://pause-ai.de/" target="_blank" rel="noopener" title="PauseAI Germany"><img src="/img/pauseai-germany.png" alt="PauseAI Germany" loading="lazy"></a>
+    </div>
+  </div>
+
+  <p>High-resolution pictures, cleared for use with credit: <a data-link="MEDIA_KIT_URL"></a>.</p>
+
+  <div class="top-picks" id="photos"></div>
+  <p class="photo-note">Please credit the photographer when using these photos.</p>
+
+  <div class="about-block event-details">
+    <h3>Event Details</h3>
+    <dl>
+      <dt>What</dt>
+      <dd>March for an AI Treaty</dd>
+      <dt>Link</dt>
+      <dd><a href="https://aitreatymarch.org">aitreatymarch.org</a></dd>
+      <dt>Who</dt>
+      <dd>Stop the AI Race and <span data-v="COALITION_SUMMARY"></span></dd>
+      <dt>When</dt>
+      <dd>Saturday, November 14, 2026</dd>
+      <dt>Where</dt>
+      <dd>San Francisco: OpenAI, 1455 3rd St, to the Veterans Building, 401 Van Ness Ave.<br>Washington, DC: US Capitol.<br>Plus <span data-v="OTHER_CITIES"></span>.</dd>
+    </dl>
+  </div>
+
+  <div class="contact-block">
+    <h3>Contact</h3>
+    <p>
+      Stop the AI Race: <a href="mailto:contact@stoptherace.ai">contact@stoptherace.ai</a>.<br>
+      Micha&euml;l Trazzi: mtrazzi.99 on Signal.
+    </p>
+  </div>
+
+</article>
+
+<div class="press-footer-cta">
+  <a class="cta-primary" data-href="MEDIA_KIT_URL">Get the Media Kit</a>
+  <p>Saturday, November 14 &middot; <span data-v="CITY_COUNT"></span> cities</p>
+</div>
+
+<script>
+(() => {
+  const P = window.PRESS, open = new Set();
+  const tag = k => { open.add(k); const s = document.createElement('span'); s.className = 'tbd'; s.textContent = `[${k}]`; return s; };
+  const val = k => (P[k] == null || P[k] === '') ? null : String(P[k]);
+
+  document.querySelectorAll('[data-v]').forEach(el => {
+    const v = val(el.dataset.v);
+    v ? (el.textContent = v) : el.replaceChildren(tag(el.dataset.v));
+  });
+  // Links whose text is the URL itself
+  document.querySelectorAll('[data-link]').forEach(el => {
+    const v = val(el.dataset.link);
+    if (v) { el.href = v; el.textContent = v.replace(/^https?:\/\//, '').replace(/\/$/, ''); }
+    else el.replaceWith(tag(el.dataset.link));
+  });
+  // Links with their own text (the button)
+  document.querySelectorAll('[data-href]').forEach(el => {
+    const v = val(el.dataset.href);
+    v ? (el.href = v) : (open.add(el.dataset.href), el.href = '#');
+  });
+
+  // Hero: a striped stand-in until /press/hero.jpg exists
+  const hero = document.getElementById('hero');
+  const heroMissing = () => {
+    open.add('hero.jpg');
+    const ph = document.createElement('div'); ph.className = 'ph'; ph.textContent = '[HERO PHOTO: /press/hero.jpg]';
+    hero.replaceWith(ph); banner();
+  };
+  if (hero.complete && !hero.naturalWidth) heroMissing(); else hero.addEventListener('error', heroMissing);
+
+  // Photo grid
+  const grid = document.getElementById('photos');
+  const photos = Array.isArray(P.PHOTOS) && P.PHOTOS.length ? P.PHOTOS : null;
+  if (photos) {
+    photos.forEach(p => {
+      const f = document.createElement('figure');
+      const a = document.createElement('a'); a.href = p.src; a.target = '_blank'; a.rel = 'noopener';
+      const img = document.createElement('img'); img.src = p.src; img.loading = 'lazy';
+      img.alt = `March for an AI Treaty${p.city ? ', ' + p.city : ''}, photo by ${p.photographer || 'unknown'}`;
+      a.append(img);
+      const c = document.createElement('figcaption');
+      c.append('Photo by ', p.photographer ? p.photographer : tag('PHOTOGRAPHER'), '.');
+      f.append(a, c); grid.append(f);
+    });
+  } else {
+    open.add('PHOTOS');
+    for (let i = 0; i < 4; i++) {
+      const f = document.createElement('figure');
+      const ph = document.createElement('div'); ph.className = 'ph'; ph.textContent = '[PHOTO]';
+      const c = document.createElement('figcaption'); c.append('Photo by ', tag('PHOTOGRAPHER'), '.');
+      f.append(ph, c); grid.append(f);
+    }
+  }
+
+  function banner() {
+    let b = document.querySelector('.draft-banner');
+    if (!open.size) { b?.remove(); return; }
+    if (!b) { b = document.createElement('div'); b.className = 'draft-banner'; document.body.prepend(b); }
+    b.textContent = `Draft: ${open.size} value${open.size > 1 ? 's' : ''} to confirm: ${[...open].join(', ')}`;
+  }
+  banner();
+})();
+</script>
+
+</body>
+</html>
