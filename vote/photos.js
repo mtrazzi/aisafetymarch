@@ -12,7 +12,7 @@
   DC.forEach((n, i) => add(`DC ${n}`, C.DC, `/vote/dc/p/dc-${String(i + 1).padStart(3, '0')}.webp`, `${n}-AItreatyDemo-111426-.jpg`));
 
   const SF = ['1945', '1428', '1469', '1476', '2244', '1657', '2080', '2122', '1447', '2142', '1141', '1939',
-              '1629', '2106', '1271', '1920', '1907'];   // 13–16 vertical, 17 horizontal
+              '1629', '2106', '1271', '1920', '1907', '1971'];   // 13–16 and 18 vertical, 17 horizontal
   SF.forEach((n, i) => add(`SF ${n}`, C.SF, `/vote/sf/p/sf2-${String(i + 1).padStart(3, '0')}.webp`, `0G6A${n}.jpg`));
 
   const NYC = ['4618', '4890', '4979', '5092', '5214', '5227', '5536', '5592'];
@@ -35,7 +35,7 @@
     // Frozen order: each block is sliced to the photos it had when added, new photos go at the end.
     all: [...DC.slice(0, 12).map(n => `DC ${n}`), ...SF.slice(0, 12).map(n => `SF ${n}`), 'Berlin 010', 'Montréal 24', 'Montréal 28',
           ...MTL.slice(0, 12).filter(n => n !== '24' && n !== '28').map(n => `Montréal ${n}`),
-          ...SF.slice(12, 17).map(n => `SF ${n}`)],
+          ...SF.slice(12, 17).map(n => `SF ${n}`), ...SF.slice(17, 18).map(n => `SF ${n}`)],
   };
 
   window.PHOTOS = P;
