@@ -739,11 +739,6 @@
         <div class="when">Sat, Nov 14</div>
       </div>
       <div class="city">
-        <div class="name">Canberra</div>
-        <div class="when">Sat, Nov 14 &middot; 5 PM &rarr; 5:30 PM</div>
-        <a class="cta" href="https://luma.com/zlosrh4r" target="_blank" rel="noopener">RSVP &rarr;</a>
-      </div>
-      <div class="city">
         <div class="name">Brisbane</div>
         <div class="when">Sat, Nov 14 &middot; 11 AM</div>
         <a class="cta" href="https://www.facebook.com/events/s/concerned-about-ai-and-our-fut/1423085412830781/" target="_blank" rel="noopener">RSVP &rarr;</a>
@@ -752,11 +747,6 @@
         <div class="name">Santiago</div>
         <div class="when">Sat, Nov 14 &middot; 5 PM &rarr; 7 PM</div>
         <a class="cta" href="https://luma.com/b7ayc9ak" target="_blank" rel="noopener">RSVP &rarr;</a>
-      </div>
-      <div class="city">
-        <div class="name">Kinshasa</div>
-        <div class="when">Sat, Nov 14 &middot; 2 PM &rarr; 5:30 PM</div>
-        <a class="cta" href="https://luma.com/3hgpn4ss" target="_blank" rel="noopener">RSVP &rarr;</a>
       </div>
     </div>
     <button class="arrow next" type="button" aria-label="More cities">&rarr;</button>
@@ -912,21 +902,19 @@ const FALLBACK = [
     start: '2026-11-14T13:00:00+01:00', end: '2026-11-14T14:00:00+01:00', url: 'https://luma.com/1k7hxuae' },
   // no event page; dot on the city centre (Rathausmarkt) until we know the exact spot and time
   { city: 'Hamburg', region: 'Germany', lng: 9.9930, lat: 53.5503, tz: 'Europe/Berlin' },
-  { city: 'Canberra', region: 'ACT, Australia', lng: 149.1306, lat: -35.2813, venue: 'ACT Legislative Assembly, 196 London Cct', tz: 'Australia/Sydney',
-    start: '2026-11-14T17:00:00+11:00', end: '2026-11-14T17:30:00+11:00', url: 'https://luma.com/zlosrh4r' },
   { city: 'Brisbane', region: 'QLD, Australia', lng: 153.024340, lat: -27.468320, venue: 'King George Square', tz: 'Australia/Brisbane',
     start: '2026-11-14T11:00:00+10:00', url: 'https://www.facebook.com/events/s/concerned-about-ai-and-our-fut/1423085412830781/' },
   { city: 'Santiago', region: 'Chile', lng: -70.6114, lat: -33.4405, venue: 'Parque Inés de Suárez, Antonio Varas 1510, Providencia', tz: 'America/Santiago',
     start: '2026-11-14T17:00:00-03:00', end: '2026-11-14T19:00:00-03:00', url: 'https://luma.com/b7ayc9ak' },
-  { city: 'Kinshasa', region: 'DR Congo', lng: 15.3031, lat: -4.3324, venue: 'Palais du Peuple, Lingwala', tz: 'Africa/Kinshasa',
-    start: '2026-11-14T14:00:00+01:00', end: '2026-11-14T17:30:00+01:00', url: 'https://luma.com/3hgpn4ss' },
 ];
+
+// Cities kept off the map and lists even if Mobilize still lists them.
+const HIDDEN = new Set(['Atlanta', 'Canberra', 'Kinshasa']);
 
 // Cities that may march but aren't confirmed; dropped once a real event exists there.
 const PLANNED = [
   { city: 'Nashville', region: 'TN', lng: -86.7816, lat: 36.1627 },
   { city: 'Oslo', region: 'Norway', lng: 10.7522, lat: 59.9139 },
-  { city: 'Atlanta', region: 'GA', lng: -84.3880, lat: 33.7490 },
   { city: 'Cleveland', region: 'OH', lng: -81.6944, lat: 41.4993 },
   { city: 'Raleigh-Durham', region: 'NC', lng: -78.8986, lat: 35.9940 },
   { city: 'Madison', region: 'WI', lng: -89.4012, lat: 43.0731 },
@@ -1075,6 +1063,7 @@ async function loadEvents() {
       });
     }
   } catch (err) { /* fall back to the static list */ }
+  live = live.filter(e => !HIDDEN.has(e.city));
   const have = new Set(live.map(e => e.city));
   const confirmed = live.concat(FALLBACK.filter(e => !have.has(e.city)));
   confirmed.forEach(e => have.add(e.city));
