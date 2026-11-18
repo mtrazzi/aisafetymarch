@@ -15,8 +15,9 @@ window.PRESS = {
   OTHER_CITIES: null,        // e.g. 'New York, Boston, ... and Kinshasa'
   MEDIA_KIT_URL: null,       // full URL, e.g. 'https://...'
 
-  // Hero photo. The file itself goes at /press/hero.jpg (the Open Graph tags below point there).
-  HERO_CITY: null,           // e.g. 'Washington, DC'
+  // Hero photo: DC 141 (/press/hero-dc-141.jpg; the Open Graph tags below point there too).
+  // To swap it, add the new file under a new name and update every path, so caches don't keep the old one.
+  HERO_CITY: 'Washington, DC',
   HERO_PHOTOGRAPHER: null,   // e.g. 'Jane Doe'
 
   // Photo grid: one entry per photo, e.g. { src: '/press/photos/dc-1.jpg', city: 'Washington, DC', photographer: 'Jane Doe' }
@@ -30,9 +31,11 @@ window.PRESS = {
 <meta property="og:description" content="Press release: marchers call on Trump and Xi to negotiate an AI Treaty ahead of their meeting. November 14, 2026.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://aitreatymarch.org/press/">
-<meta property="og:image" content="https://aitreatymarch.org/press/hero.jpg">
+<meta property="og:image" content="https://aitreatymarch.org/press/hero-dc-141.jpg">
+<meta property="og:image:width" content="1800">
+<meta property="og:image:height" content="1025">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://aitreatymarch.org/press/hero.jpg">
+<meta name="twitter:image" content="https://aitreatymarch.org/press/hero-dc-141.jpg">
 <link rel="canonical" href="https://aitreatymarch.org/press/">
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/img/favicon-32.png" type="image/png" sizes="32x32">
@@ -366,7 +369,7 @@ window.PRESS = {
 </header>
 
 <figure class="press-hero-image">
-  <img id="hero" src="/press/hero.jpg" alt="March for an AI Treaty, November 14, 2026">
+  <img id="hero" src="/press/hero-dc-141.jpg" width="1800" height="1025" alt="Marchers carrying &ldquo;Stop the AI Race&rdquo; and &ldquo;AI Treaty Now!&rdquo; banners walk away from the US Capitol in Washington, DC, November 14, 2026">
   <figcaption class="press-hero-caption">&ldquo;March for an AI Treaty&rdquo;, <span data-v="HERO_CITY"></span>, November 14, 2026. Photo by <span data-v="HERO_PHOTOGRAPHER"></span>.</figcaption>
 </figure>
 
@@ -480,11 +483,11 @@ window.PRESS = {
     v ? (el.href = v) : (open.add(el.dataset.href), el.href = '#');
   });
 
-  // Hero: a striped stand-in until /press/hero.jpg exists
+  // Hero: a striped stand-in if the file is missing
   const hero = document.getElementById('hero');
   const heroMissing = () => {
-    open.add('hero.jpg');
-    const ph = document.createElement('div'); ph.className = 'ph'; ph.textContent = '[HERO PHOTO: /press/hero.jpg]';
+    open.add('hero photo');
+    const ph = document.createElement('div'); ph.className = 'ph'; ph.textContent = '[HERO PHOTO missing]';
     hero.replaceWith(ph); banner();
   };
   if (hero.complete && !hero.naturalWidth) heroMissing(); else hero.addEventListener('error', heroMissing);
