@@ -18,10 +18,17 @@ window.PRESS = {
   // Hero photo: DC 141 (/press/hero-dc-141.jpg; the Open Graph tags below point there too).
   // To swap it, add the new file under a new name and update every path, so caches don't keep the old one.
   HERO_CITY: 'Washington, DC',
-  HERO_PHOTOGRAPHER: null,   // e.g. 'Jane Doe'
+  HERO_PHOTOGRAPHER: 'Nancy Shia',
 
-  // Photo grid: one entry per photo, e.g. { src: '/press/photos/dc-1.jpg', city: 'Washington, DC', photographer: 'Jane Doe' }
-  PHOTOS: null,
+  // Photo grid: one entry per photo. The first one spans the full width.
+  PHOTOS: [
+    { src: '/press/photos/sf-kokotajlo-1469.jpg', city: 'San Francisco', photographer: null,   // SF 0G6A1469, folder "SF/Rachel"
+      alt: 'Daniel Kokotajlo speaks outside OpenAI in San Francisco, beside a giant US-China handshake' },
+    { src: '/press/photos/sf-crowd-1945.jpg', city: 'San Francisco', photographer: null,       // SF 0G6A1945, folder "SF/Rachel"
+      alt: 'Marchers in San Francisco under a “Stop the AI Race” banner, one sign reading “Trump & Xi: we need an AI treaty”' },
+    { src: '/press/photos/hamburg-08418.jpg', city: 'Hamburg', photographer: null,             // Hamburg DSC08418
+      alt: 'Protesters in Hamburg holding signs including “Jetzt KI regulieren” and “Only the AI wins the AI race”' },
+  ],
 };
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -254,6 +261,7 @@ window.PRESS = {
     margin: 2rem 0 1rem;
   }
   .top-picks figure { margin: 0; }
+  .top-picks figure:first-child:nth-last-child(odd) { grid-column: 1 / -1; }
   .top-picks a { display: block; border: 3px solid var(--black); transition: box-shadow 0.2s ease, transform 0.2s ease; }
   .top-picks a:hover { box-shadow: 5px 5px 0 var(--red); transform: translateY(-2px); }
   .top-picks img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; display: block; }
@@ -403,7 +411,7 @@ window.PRESS = {
 
   <p>Beyond the US, Matthew Tromp spoke in Montr&eacute;al for Stop the AI Race, as part of Canada&rsquo;s new Coalition for an AI Treaty, which includes PauseAI Canada. Vancouver also marched. In Paris, Berlin and Hamburg, Pause IA, PauseAI Germany, Stop the AI Race and Stop IA France marched together, with partner events as far away as Australia.</p>
 
-  <p>The March for an AI Treaty was organized by <a href="https://stoptherace.ai/">Stop the AI Race</a> with <span data-v="COALITION_SUMMARY"></span>. It follows marches in March, July and September, and a 39-day daily presence outside OpenAI calling for an AI treaty.</p>
+  <p>The March for an AI Treaty was organized by <a href="https://stoptherace.ai/">Stop the AI Race</a> with <span data-v="COALITION_SUMMARY"></span>. It follows marches in March, July and September, and a 39-day daily presence outside OpenAI, asking Sam Altman to urge the US government to negotiate an AI treaty.</p>
 
   <!-- Same partners, logos and order as the "Coalition partners" row on the home page -->
   <div class="press-orgs">
@@ -500,10 +508,10 @@ window.PRESS = {
       const f = document.createElement('figure');
       const a = document.createElement('a'); a.href = p.src; a.target = '_blank'; a.rel = 'noopener';
       const img = document.createElement('img'); img.src = p.src; img.loading = 'lazy';
-      img.alt = `March for an AI Treaty${p.city ? ', ' + p.city : ''}, photo by ${p.photographer || 'unknown'}`;
+      img.alt = p.alt || `March for an AI Treaty${p.city ? ', ' + p.city : ''}`;
       a.append(img);
       const c = document.createElement('figcaption');
-      c.append('Photo by ', p.photographer ? p.photographer : tag('PHOTOGRAPHER'), '.');
+      c.append(p.city ? `${p.city}. ` : '', 'Photo by ', p.photographer ? p.photographer : tag('PHOTOGRAPHER'), '.');
       f.append(a, c); grid.append(f);
     });
   } else {
