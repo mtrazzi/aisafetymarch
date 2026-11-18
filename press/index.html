@@ -40,9 +40,9 @@ window.PRESS = {
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Press · AI Treaty March</title>
-<meta name="description" content="Press release: Susan Rice calls the &ldquo;But China&rdquo; argument &ldquo;BS&rdquo; as marchers demand an AI Treaty ahead of the Trump-Xi meeting. November 14, 2026.">
-<meta property="og:title" content="Susan Rice Calls &ldquo;But China&rdquo; Argument &ldquo;BS&rdquo; as Marchers Demand an AI Treaty">
-<meta property="og:description" content="Press release: marchers call on Trump and Xi to negotiate an AI Treaty ahead of their meeting. November 14, 2026.">
+<meta name="description" content="Press release: Susan Rice calls the &ldquo;But China&rdquo; argument &ldquo;BS&rdquo; ahead of the Trump-Xi meeting, as over 1,000 march in 17 cities across six countries to demand an AI Treaty.">
+<meta property="og:title" content="Susan Rice Calls &ldquo;But China&rdquo; Argument &ldquo;BS&rdquo; Ahead of Trump-Xi Meeting">
+<meta property="og:description" content="Over 1,000 march in 17 cities across six countries to demand an AI Treaty.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://aitreatymarch.org/press/">
 <meta property="og:image" content="https://aitreatymarch.org/press/hero-dc-141.jpg">
@@ -161,6 +161,14 @@ window.PRESS = {
   }
   .press-title .red { color: var(--red); }
   .press-title .tbd { font-size: 0.6em; vertical-align: middle; }
+  .press-deck {
+    font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+    line-height: 1.45;
+    color: #333;
+    max-width: 720px;
+    margin: 1.25rem auto 0;
+    text-wrap: balance;
+  }
   .press-date {
     font-family: var(--font-mono);
     font-size: 0.8rem;
@@ -390,7 +398,8 @@ window.PRESS = {
 
 <header class="press-header">
   <p class="press-label">For Immediate Release</p>
-  <h1 class="press-title">Susan Rice Calls &ldquo;But China&rdquo; Argument &ldquo;BS&rdquo; as Marchers in <span data-v="CITY_COUNT"></span> Cities <span class="red">Demand an AI Treaty</span> Ahead of Trump-Xi Meeting</h1>
+  <h1 class="press-title">Susan Rice Calls &ldquo;But China&rdquo; Argument <span class="red">&ldquo;BS&rdquo;</span> Ahead of Trump-Xi Meeting</h1>
+  <p class="press-deck">Over 1,000 march in <span data-v="CITY_COUNT"></span> cities across <span data-v="COUNTRY_COUNT"></span> countries to demand an AI Treaty</p>
   <p class="press-date">San Francisco and Washington, DC &middot; November 17, 2026</p>
 </header>
 
