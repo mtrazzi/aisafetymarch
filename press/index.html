@@ -20,13 +20,20 @@ window.PRESS = {
   HERO_CITY: 'Washington, DC',
   HERO_PHOTOGRAPHER: 'Nancy Shia',
 
-  // Photo grid: one entry per photo. The first one spans the full width.
+  // Photo grid, in this order. With an odd count the first photo spans the full width.
+  // photographer: 'a volunteer' when nobody knows who took it ("Photo by a volunteer.").
   PHOTOS: [
-    { src: '/press/photos/sf-kokotajlo-1469.jpg', city: 'San Francisco', photographer: null,   // SF 0G6A1469, folder "SF/Rachel"
+    { src: '/press/photos/sf-kokotajlo-1469.jpg', city: 'San Francisco', photographer: 'Rachel Bujalski',   // 0G6A1469
       alt: 'Daniel Kokotajlo speaks outside OpenAI in San Francisco, beside a giant US-China handshake' },
-    { src: '/press/photos/sf-crowd-1945.jpg', city: 'San Francisco', photographer: null,       // SF 0G6A1945, folder "SF/Rachel"
+    { src: '/press/photos/sf-crowd-1945.jpg', city: 'San Francisco', photographer: 'Rachel Bujalski',       // 0G6A1945
       alt: 'Marchers in San Francisco under a “Stop the AI Race” banner, one sign reading “Trump & Xi: we need an AI treaty”' },
-    { src: '/press/photos/hamburg-08418.jpg', city: 'Hamburg', photographer: null,             // Hamburg DSC08418
+    { src: '/press/photos/nyc-5092.jpg', city: 'New York', photographer: 'Luiz Bicalho',                    // _MG_5092
+      alt: 'Children marching in New York, one carrying a sign in Chinese calling for the US-China AI race to stop' },
+    { src: '/press/photos/montreal-23.jpg', city: 'Montréal', photographer: 'Clara Lacasse',                // Manif_PauseAI_14nov_creditClaraLacasse-23
+      alt: 'Marchers in Montréal with a megaphone and handmade signs' },
+    { src: '/press/photos/paris-03342.jpg', city: 'Paris', photographer: 'a volunteer',                     // DSC03342
+      alt: 'A protester in Paris speaks through a megaphone in front of a “Stop the AI Race” banner' },
+    { src: '/press/photos/hamburg-08418.jpg', city: 'Hamburg', photographer: 'a volunteer',                 // DSC08418
       alt: 'Protesters in Hamburg holding signs including “Jetzt KI regulieren” and “Only the AI wins the AI race”' },
   ],
 };
