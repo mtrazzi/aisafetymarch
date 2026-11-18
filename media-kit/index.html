@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Media Kit · AI Treaty March</title>
-<meta name="description" content="High-resolution photos from the March for an AI Treaty, November 14, 2026, cleared for use with credit.">
+<meta name="description" content="High-resolution photos and video from the March for an AI Treaty, November 14, 2026, cleared for use with credit.">
 <meta property="og:title" content="Media Kit · AI Treaty March">
-<meta property="og:description" content="High-resolution photos from the March for an AI Treaty, November 14, 2026, cleared for use with credit.">
+<meta property="og:description" content="High-resolution photos and video from the March for an AI Treaty, November 14, 2026, cleared for use with credit.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aitreatymarch.org/media-kit/">
 <meta property="og:image" content="https://aitreatymarch.org/press/hero-dc-141.jpg">
@@ -67,15 +67,24 @@
   .kit .img { display: block; border-bottom: 3px solid var(--black); }
   .kit img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; display: block; }
   .kit figcaption { padding: 0.9rem 1rem 1rem; display: flex; flex-direction: column; gap: 0.35rem; flex: 1; }
-  .kit .city { font-family: var(--font-display); text-transform: uppercase; font-size: 1rem; }
-  .kit .credit { font-family: var(--font-mono); font-size: 0.75rem; color: var(--gray); letter-spacing: 0.03em; }
-  .kit .dl {
+  .video .city, .kit .city { font-family: var(--font-display); text-transform: uppercase; font-size: 1rem; }
+  .video .credit, .kit .credit { font-family: var(--font-mono); font-size: 0.75rem; color: var(--gray); letter-spacing: 0.03em; }
+  .video .dl, .kit .dl {
     margin-top: auto; align-self: flex-start;
     font-family: var(--font-mono); font-weight: 600; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
     background: var(--red); color: var(--paper); border: 2px solid var(--black); padding: 0.5rem 0.9rem;
     transition: box-shadow 0.2s ease, transform 0.2s ease;
   }
-  .kit .dl:hover { background: var(--red-dark); color: var(--paper); text-decoration: none; box-shadow: 4px 4px 0 var(--black); transform: translateY(-2px); }
+  .video .dl:hover, .kit .dl:hover { background: var(--red-dark); color: var(--paper); text-decoration: none; box-shadow: 4px 4px 0 var(--black); transform: translateY(-2px); }
+
+  .section-label {
+    font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--red); font-weight: 600; text-align: center; margin-bottom: 1rem;
+  }
+  .video { padding: 0 2rem 3rem; }
+  .video figure { max-width: 360px; margin: 0 auto; background: #fff; border: 3px solid var(--black); }
+  .video video { width: 100%; height: auto; aspect-ratio: 9 / 16; display: block; background: var(--black); border-bottom: 3px solid var(--black); }
+  .video figcaption { padding: 0.9rem 1rem 1rem; display: flex; flex-direction: column; gap: 0.35rem; }
 
   .foot { max-width: 680px; margin: 0 auto; padding: 0 2rem 5rem; text-align: center; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.8; color: #444; }
   .foot h3 { font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red); margin-bottom: 0.8rem; font-weight: 600; }
@@ -84,6 +93,7 @@
     .back-nav { padding: 1rem; }
     header { padding: 2.5rem 1rem 2rem; }
     .kit { padding: 0 1rem 3rem; grid-template-columns: 1fr; }
+    .video { padding: 0 1rem 2.5rem; }
     .foot { padding: 0 1rem 4rem; }
   }
 </style>
@@ -98,10 +108,25 @@
 <header>
   <p class="label">March for an AI Treaty &middot; November 14, 2026</p>
   <h1>Media Kit</h1>
-  <p class="lede">High-resolution photos from the march, cleared for use with credit.</p>
+  <p class="lede">High-resolution photos and video from the march, cleared for use with credit.</p>
   <p class="lede">Please credit the photographer when using these photos.</p>
 </header>
 
+<section class="video" id="video">
+  <p class="section-label">Video</p>
+  <figure>
+    <video controls playsinline preload="none" poster="/media-kit/thumbs/susan_rice_but_china_dc.jpg" width="1080" height="1920">
+      <source src="/media-kit/susan_rice_but_china_dc.mp4" type="video/mp4">
+    </video>
+    <figcaption>
+      <span class="city">Washington, DC</span>
+      <span class="credit">Ambassador Susan Rice, former National Security Advisor: &ldquo;the &lsquo;but China&rsquo; argument is BS&rdquo; &middot; 1:08, vertical</span>
+      <a class="dl" href="/media-kit/susan_rice_but_china_dc.mp4" download="susan_rice_but_china_dc.mp4">Download MP4 &darr;</a>
+    </figcaption>
+  </figure>
+</section>
+
+<p class="section-label">Photos</p>
 <main class="kit" id="kit"></main>
 
 <div class="foot">
