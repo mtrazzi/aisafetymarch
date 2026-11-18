@@ -11,7 +11,7 @@
 window.PRESS = {
   CITY_COUNT: '17',          // confirmed Nov 17. Used in the headline, body and footer.
   COUNTRY_COUNT: 'six',      // confirmed Nov 17 (spelled out in running text)
-  COALITION_SUMMARY: null,   // e.g. 'a coalition of 12 partner organizations'
+  COALITION_SUMMARY: 'the D.C. AI Safety Collective, PauseAI and the Coalition for an AI Treaty',   // the organizers after Stop the AI Race
   OTHER_CITIES: null,        // e.g. 'New York, Boston, ... and Kinshasa'
   MEDIA_KIT_URL: 'https://aitreatymarch.org/media-kit/',
 
@@ -258,6 +258,16 @@ window.PRESS = {
     transition: box-shadow 0.2s ease, transform 0.2s ease;
   }
   .org-tile:hover { box-shadow: 4px 4px 0 var(--red); transform: translateY(-2px); }
+  .orgs-sub {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin: 1.4rem 0 0.7rem;
+  }
+  .press-orgs .section-title + .orgs-sub { margin-top: 0; }
+  .orgs-grid.lead .org-tile { width: 104px; height: 104px; padding: 0.6rem; }
   .org-tile img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
 
   /* PHOTO GRID */
@@ -364,6 +374,7 @@ window.PRESS = {
     .press-body { padding: 2.5rem 1rem 3rem; }
     .about-block { padding: 1.5rem 1.25rem; }
     .org-tile { width: 60px; height: 60px; }
+    .orgs-grid.lead .org-tile { width: 76px; height: 76px; }
     .top-picks { grid-template-columns: 1fr; }
     .press-footer-cta { padding: 2.5rem 1rem 4rem; }
     .cta-primary { padding: 1rem 2rem; }
@@ -420,23 +431,25 @@ window.PRESS = {
 
   <p>The March for an AI Treaty was organized by <a href="https://stoptherace.ai/">Stop the AI Race</a> with <span data-v="COALITION_SUMMARY"></span>. It follows marches in March, July and September, and a 39-day daily presence outside OpenAI, asking Sam Altman to urge the US government to negotiate an AI treaty.</p>
 
-  <!-- Same partners, logos and order as the "Coalition partners" row on the home page -->
+  <!-- Organizers, then endorsers: the rest of the home page's "Coalition partners" row. PauseAI Canada, Pause IA and PauseAI Germany show as one PauseAI tile. -->
   <div class="press-orgs">
     <p class="section-title">The Coalition</p>
-    <div class="orgs-grid">
-      <a class="org-tile" href="https://stoptherace.ai/" target="_blank" rel="noopener" title="Stop The AI Race"><img src="/img/stoptheairace.jpeg" alt="Stop The AI Race" loading="lazy"></a>
+    <p class="orgs-sub">Organized by</p>
+    <div class="orgs-grid lead">
+      <a class="org-tile" href="https://stoptherace.ai/" target="_blank" rel="noopener" title="Stop the AI Race"><img src="/img/stoptheairace.jpeg" alt="Stop the AI Race" loading="lazy"></a>
+      <a class="org-tile" href="https://dcaisafety.org/" target="_blank" rel="noopener" title="D.C. AI Safety Collective"><img src="/img/dmvaisafety.png" alt="D.C. AI Safety Collective" loading="lazy"></a>
+      <a class="org-tile" href="https://pauseai.info/" target="_blank" rel="noopener" title="PauseAI"><img src="/img/pauseia-circle.png" alt="PauseAI" loading="lazy"></a>
       <a class="org-tile" href="https://coalitionaitreaty.ca/" target="_blank" rel="noopener" title="Coalition for an AI Treaty"><img src="/img/coalitionaitreaty.avif" alt="Coalition for an AI Treaty" loading="lazy"></a>
+    </div>
+    <p class="orgs-sub">Endorsed by</p>
+    <div class="orgs-grid">
+      <a class="org-tile" href="https://www.foodandwaterwatch.org/" target="_blank" rel="noopener" title="Food &amp; Water Watch"><img src="/img/foodandwaterwatch.jpg" alt="Food &amp; Water Watch" loading="lazy"></a>
+      <a class="org-tile" href="https://home.nuhw.org/" target="_blank" rel="noopener" title="National Union of Healthcare Workers"><img src="/img/nuhw.jpg" alt="National Union of Healthcare Workers" loading="lazy"></a>
+      <a class="org-tile" href="https://evitable.com/" target="_blank" rel="noopener" title="Evitable"><img src="/img/evitable.webp" alt="Evitable" loading="lazy"></a>
       <a class="org-tile" href="https://irreplaceable.org/" target="_blank" rel="noopener" title="Irreplaceable"><img src="/img/irreplaceable.jpg" alt="Irreplaceable" loading="lazy"></a>
       <a class="org-tile" href="https://humansincontrol.org/" target="_blank" rel="noopener" title="Humans in Control"><img src="/img/humansincontrol-logo.png" alt="Humans in Control" loading="lazy"></a>
-      <a class="org-tile" href="https://www.foodandwaterwatch.org/" target="_blank" rel="noopener" title="Food &amp; Water Watch"><img src="/img/foodandwaterwatch.jpg" alt="Food &amp; Water Watch" loading="lazy"></a>
-      <a class="org-tile" href="https://evitable.com/" target="_blank" rel="noopener" title="Evitable"><img src="/img/evitable.webp" alt="Evitable" loading="lazy"></a>
-      <a class="org-tile" href="https://home.nuhw.org/" target="_blank" rel="noopener" title="National Union of Healthcare Workers"><img src="/img/nuhw.jpg" alt="National Union of Healthcare Workers" loading="lazy"></a>
-      <a class="org-tile" href="https://dcaisafety.org/" target="_blank" rel="noopener" title="D.C. AI Safety Collective"><img src="/img/dmvaisafety.png" alt="D.C. AI Safety Collective" loading="lazy"></a>
       <a class="org-tile" href="https://aiactionnow.org/" target="_blank" rel="noopener" title="AI Action"><img src="/img/aiaction.png" alt="AI Action" loading="lazy"></a>
       <a class="org-tile" href="https://peopleforapause.org/" target="_blank" rel="noopener" title="People for a Pause"><img src="/img/peopleforapause.svg" alt="People for a Pause" loading="lazy"></a>
-      <a class="org-tile" href="https://pauseai.ca/en/" target="_blank" rel="noopener" title="PauseAI Canada"><img src="/img/pauseaicanada.png" alt="PauseAI Canada" loading="lazy"></a>
-      <a class="org-tile" href="https://pauseia.fr/en" target="_blank" rel="noopener" title="Pause IA"><img src="/img/pauseia-circle.png" alt="Pause IA" loading="lazy"></a>
-      <a class="org-tile" href="https://pause-ai.de/" target="_blank" rel="noopener" title="PauseAI Germany"><img src="/img/pauseai-germany.png" alt="PauseAI Germany" loading="lazy"></a>
     </div>
   </div>
 
@@ -453,7 +466,7 @@ window.PRESS = {
       <dt>Link</dt>
       <dd><a href="https://aitreatymarch.org">aitreatymarch.org</a></dd>
       <dt>Who</dt>
-      <dd>Stop the AI Race and <span data-v="COALITION_SUMMARY"></span></dd>
+      <dd>Stop the AI Race, <span data-v="COALITION_SUMMARY"></span></dd>
       <dt>When</dt>
       <dd>Saturday, November 14, 2026</dd>
       <dt>Where</dt>
