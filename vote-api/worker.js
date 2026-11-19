@@ -4,7 +4,7 @@
 //   GET  /all                                    → {albums:{album:[[winner, loser, n]]}, votes, voters}
 //   GET  /pairs?album=sf                         → {pairs:[[winner, loser, n]], votes, voters}
 // Albums and how many photos each has; ids look like "sf-001".
-const ALBUMS = { sf2: 18, movement: 10, dc: 12, nyc: 10, mtl: 12, all: 43, banrsi: 13 };   // sf2 = the 12-photo SF pick (old 194-photo 'sf' retired)
+const ALBUMS = { sf2: 18, movement: 10, dc: 12, nyc: 10, mtl: 12, all: 43, banrsi: 15 };   // sf2 = the 12-photo SF pick (old 194-photo 'sf' retired)
 // Albums for other sites (banrsi = stoptherace.ai/banrsi/vote). Left out of /all so they don't mix into the march's pooled ranking.
 const EXTERNAL = new Set(['banrsi']);
 const ORIGINS = ['https://aitreatymarch.org', 'https://www.aitreatymarch.org', 'https://stoptherace.ai', 'https://www.stoptherace.ai'];
