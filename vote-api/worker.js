@@ -1,11 +1,13 @@
-// Vote API for aitreatymarch.org/vote — stores "A beat B" picks in a D1 table.
+// Vote API for aitreatymarch.org/vote and stoptherace.ai/banrsi/vote — stores "A beat B" picks in a D1 table.
 //   POST /vote   {album, winner, loser, voter}   → {ok:true}
 //   GET  /stats?album=sf                         → {photos:{id:{wins,shows}}, votes, voters}
 //   GET  /all                                    → {albums:{album:[[winner, loser, n]]}, votes, voters}
 //   GET  /pairs?album=sf                         → {pairs:[[winner, loser, n]], votes, voters}
 // Albums and how many photos each has; ids look like "sf-001".
-const ALBUMS = { sf2: 18, movement: 10, dc: 12, nyc: 10, mtl: 12, all: 43 };   // sf2 = the 12-photo SF pick (old 194-photo 'sf' retired)
-const ORIGINS = ['https://aitreatymarch.org', 'https://www.aitreatymarch.org'];
+const ALBUMS = { sf2: 18, movement: 10, dc: 12, nyc: 10, mtl: 12, all: 43, banrsi: 13 };   // sf2 = the 12-photo SF pick (old 194-photo 'sf' retired)
+// Albums for other sites (banrsi = stoptherace.ai/banrsi/vote). Left out of /all so they don't mix into the march's pooled ranking.
+const EXTERNAL = new Set(['banrsi']);
+const ORIGINS = ['https://aitreatymarch.org', 'https://www.aitreatymarch.org', 'https://stoptherace.ai', 'https://www.stoptherace.ai'];
 
 function cors(req) {
   const o = req.headers.get('Origin') || '';
@@ -72,7 +74,7 @@ export default {
 
     // Every album's match-ups at once, for the pooled ranking (Top picks pools votes on the same photo).
     if (url.pathname === '/all' && req.method === 'GET') {
-      const names = Object.keys(ALBUMS), q = names.map(() => '?').join(',');
+      const names = Object.keys(ALBUMS).filter(a => !EXTERNAL.has(a)), q = names.map(() => '?').join(',');
       const [p, t] = await env.DB.batch([
         env.DB.prepare(`SELECT album, winner, loser, COUNT(*) AS n FROM votes WHERE album IN (${q}) GROUP BY album, winner, loser`).bind(...names),
         env.DB.prepare(`SELECT COUNT(*) AS votes, COUNT(DISTINCT voter) AS voters FROM votes WHERE album IN (${q})`).bind(...names),
